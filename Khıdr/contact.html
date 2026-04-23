@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHIDR — İletişim — KHIDR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --red:#A41E1E; --red-light:#c42a2a;
+  --dark:#1a1a1a; --gray:#6b6b6b;
+  --light:#f7f5f2; --white:#ffffff;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--dark); overflow-x:hidden; }
+
+#navbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.4rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 1px 0 rgba(0,0,0,0.07);
+  backdrop-filter:blur(8px);
+  transition:background 0.4s;
+}
+.nav-links { display:flex; align-items:center; gap:2.5rem; list-style:none; }
+.nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--red); }
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.lang-switch { font-size:0.78rem; letter-spacing:0.1em; font-weight:500; cursor:pointer; color:var(--gray); background:none; border:none; text-transform:uppercase; }
+.lang-switch .active { color:var(--dark); font-weight:600; }
+.nav-cta { padding:0.55rem 1.4rem; background:var(--red); color:white; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--red-light); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
+
+.page-hero {
+  padding: 10rem 3rem 5rem;
+  background: var(--light);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.15; color:var(--dark); }
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+.btn-primary { padding:0.85rem 2.2rem; background:var(--red); color:white; font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s,transform 0.2s; display:inline-block; }
+.btn-primary:hover { background:var(--red-light); transform:translateY(-1px); }
+.btn-outline { padding:0.85rem 2.2rem; border:1px solid var(--dark); color:var(--dark); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-block; }
+.btn-outline:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
+
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .page-hero { padding:8rem 1.5rem 4rem; }
+}
+
+
+.contact-section { padding:5rem 3rem 8rem; max-width:1100px; margin:0 auto; }
+.contact-grid { display:grid; grid-template-columns:1fr 1.4fr; gap:6rem; }
+.contact-info h2 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; margin-bottom:1.5rem; }
+.contact-info p { font-size:0.88rem; color:var(--gray); line-height:1.8; font-weight:300; margin-bottom:2rem; }
+.info-list { list-style:none; }
+.info-list li { padding:1rem 0; border-bottom:1px solid rgba(0,0,0,0.07); display:flex; flex-direction:column; gap:0.25rem; }
+.info-label { font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--red); font-weight:500; }
+.info-val { font-size:0.92rem; color:var(--dark); font-weight:400; }
+.info-val a { color:var(--dark); text-decoration:none; transition:color 0.2s; }
+.info-val a:hover { color:var(--red); }
+
+.quote-form { background:var(--light); padding:2.5rem; }
+.form-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400; margin-bottom:0.5rem; }
+.form-sub { font-size:0.85rem; color:var(--gray); font-weight:300; margin-bottom:2rem; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.form-group { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
+.form-group label { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray); font-weight:500; }
+.form-group input, .form-group select, .form-group textarea {
+  padding:0.8rem 1rem;
+  background:white;
+  border:1px solid rgba(0,0,0,0.1);
+  font-size:0.88rem;
+  font-family:'DM Sans',sans-serif;
+  color:var(--dark);
+  outline:none;
+  transition:border-color 0.2s;
+  width:100%;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--red); }
+.form-group textarea { height:120px; resize:vertical; }
+.form-submit { width:100%; padding:0.9rem; background:var(--red); color:white; border:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s; }
+.form-submit:hover { background:var(--red-light); }
+.success-msg { display:none; text-align:center; padding:2rem; }
+.success-msg h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400; color:var(--dark); margin-bottom:0.5rem; }
+.success-msg p { font-size:0.88rem; color:var(--gray); }
+@media(max-width:768px){ .contact-grid{ grid-template-columns:1fr; gap:3rem; } .form-row{ grid-template-columns:1fr; } .contact-section{ padding:3rem 1.5rem 5rem; } }
+
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html">
+    <img id="nav-svg" src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"   data-en="Products">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"  data-en="Contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-switch" onclick="toggleLang()">
+      <span id="lang-tr" class="active">TR</span> / <span id="lang-en">EN</span>
+    </button>
+    <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+
+<div class="page-hero">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="section-label reveal" data-tr="İletişim & Teklif" data-en="Contact & Quote">İletişim & Teklif</p>
+    <h1 class="section-title reveal" data-tr="Ekibiniz için doğru<br>çözümü bulalım." data-en="Let's find the right<br>solution for your team.">Ekibiniz için doğru<br>çözümü bulalım.</h1>
+  </div>
+</div>
+
+<div class="contact-section">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h2 data-tr="Bize ulaşın" data-en="Get in touch">Bize ulaşın</h2>
+      <p data-tr="Ürünlerimiz, teknik detaylar veya özel teklif için ekibimiz size yardımcı olmaya hazır." data-en="Our team is ready to help you with our products, technical details, or a custom quote.">Ürünlerimiz, teknik detaylar veya özel teklif için ekibimiz size yardımcı olmaya hazır.</p>
+      <ul class="info-list">
+        <li>
+          <span class="info-label" data-tr="E-posta" data-en="Email">E-posta</span>
+          <span class="info-val"><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></span>
+        </li>
+        <li>
+          <span class="info-label" data-tr="Telefon" data-en="Phone">Telefon</span>
+          <span class="info-val"><a href="tel:+905001234567">+90 500 123 45 67</a></span>
+        </li>
+        <li>
+          <span class="info-label" data-tr="Adres" data-en="Address">Adres</span>
+          <span class="info-val" data-tr="Örnek Mah. Örnek Cad. No:1<br>İstanbul, Türkiye" data-en="Sample St. No:1<br>Istanbul, Turkey">Örnek Mah. Örnek Cad. No:1<br>İstanbul, Türkiye</span>
+        </li>
+        <li>
+          <span class="info-label" data-tr="Çalışma Saatleri" data-en="Working Hours">Çalışma Saatleri</span>
+          <span class="info-val" data-tr="Pazartesi – Cuma: 09:00 – 18:00" data-en="Monday – Friday: 09:00 – 18:00">Pazartesi – Cuma: 09:00 – 18:00</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="quote-form reveal">
+      <div id="formWrap">
+        <h2 class="form-title" data-tr="Teklif Formu" data-en="Quote Form">Teklif Formu</h2>
+        <p class="form-sub" data-tr="Formu doldurun, en kısa sürede dönüş yapalım." data-en="Fill out the form and we'll get back to you as soon as possible.">Formu doldurun, en kısa sürede dönüş yapalım.</p>
+        <form onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label data-tr="Adınız" data-en="First Name">Adınız</label>
+              <input type="text" required placeholder="Ad">
+            </div>
+            <div class="form-group">
+              <label data-tr="Soyadınız" data-en="Last Name">Soyadınız</label>
+              <input type="text" required placeholder="Soyad">
+            </div>
+          </div>
+          <div class="form-group">
+            <label data-tr="Kurum / Şirket" data-en="Institution / Company">Kurum / Şirket</label>
+            <input type="text" placeholder="AFAD, Hastane, Özel...">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label data-tr="E-posta" data-en="Email">E-posta</label>
+              <input type="email" required placeholder="ornek@kurum.com">
+            </div>
+            <div class="form-group">
+              <label data-tr="Telefon" data-en="Phone">Telefon</label>
+              <input type="tel" placeholder="+90 500 000 00 00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label data-tr="İlgilendiğiniz Ürün" data-en="Product of Interest">İlgilendiğiniz Ürün</label>
+            <select>
+              <option data-tr="Seçiniz..." data-en="Select...">Seçiniz...</option>
+              <option>KHIDR K-1</option>
+              <option>KHIDR K-2</option>
+              <option>KHIDR K-3</option>
+              <option data-tr="Özel Çözüm" data-en="Custom Solution">Özel Çözüm</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-tr="Mesajınız" data-en="Your Message">Mesajınız</label>
+            <textarea placeholder="..."></textarea>
+          </div>
+          <button type="submit" class="form-submit" data-tr="Teklif Gönder" data-en="Send Quote">Teklif Gönder</button>
+        </form>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <div style="font-size:2rem;margin-bottom:1rem;color:var(--red)">✓</div>
+        <h3 data-tr="Talebiniz alındı!" data-en="Your request received!">Talebiniz alındı!</h3>
+        <p data-tr="En kısa sürede size dönüş yapacağız." data-en="We'll get back to you as soon as possible.">En kısa sürede size dönüş yapacağız.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="KHIDR_logosgv.svg" height="22" style="filter:brightness(0) invert(1);opacity:0.85;margin-bottom:1rem">
+      <p class="footer-tagline" data-tr="Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz." data-en="We design and manufacture life-saving equipment for critical moments.">Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Sayfalar" data-en="Pages">Sayfalar</h4>
+      <ul>
+        <li><a href="index.html"    data-tr="Ana Sayfa"  data-en="Home">Ana Sayfa</a></li>
+        <li><a href="products.html" data-tr="Ürünler"    data-en="Products">Ürünler</a></li>
+        <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
+        <li><a href="contact.html"  data-tr="İletişim"   data-en="Contact">İletişim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
+      <ul>
+        <li><a href="products.html">KHIDR K-1</a></li>
+        <li><a href="products.html">KHIDR K-2</a></li>
+        <li><a href="products.html">KHIDR K-3</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></li>
+        <li><a href="tel:+905001234567">+90 500 123 45 67</a></li>
+        <li><a href="#">İstanbul, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-tr="© 2025 KHIDR. Tüm hakları saklıdır." data-en="© 2025 KHIDR. All rights reserved.">© 2025 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
+  </div>
+</footer>
+
+<script>
+
+let currentLang = 'tr';
+function toggleLang() {
+  currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + currentLang);
+    if (text) el.innerHTML = text;
+  });
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.delay)||0);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach((el,i) => {
+  el.dataset.delay = i * 80;
+  observer.observe(el);
+});
+
+document.querySelector('[href="contact.html"]')?.classList.add('active');
+
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('formWrap').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+
+</script>
+</body>
+</html>
