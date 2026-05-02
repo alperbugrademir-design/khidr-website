@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KHIDR — Hakkımızda — KHIDR</title>
+<title>KHIDR — Hakkımızda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root {
   --red:#A41E1E; --red-light:#c42a2a;
@@ -26,7 +25,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
   backdrop-filter:blur(8px);
   transition:background 0.4s;
 }
-.nav-links { display:flex; align-items:center; gap:2.5rem; list-style:none; }
+.nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
 .nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
 .nav-links a:hover, .nav-links a.active { color:var(--red); }
 .nav-right { display:flex; align-items:center; gap:1.5rem; }
@@ -37,41 +36,33 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
 .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
 .hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
 
-.page-hero {
-  padding: 10rem 3rem 5rem;
-  background: var(--light);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
+.page-hero { padding:10rem 3rem 4rem; background:var(--light); border-bottom:1px solid rgba(0,0,0,0.06); }
 .section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
 .section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.15; color:var(--dark); }
 .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
 .reveal.visible { opacity:1; transform:translateY(0); }
 
-.btn-primary { padding:0.85rem 2.2rem; background:var(--red); color:white; font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s,transform 0.2s; display:inline-block; }
-.btn-primary:hover { background:var(--red-light); transform:translateY(-1px); }
-.btn-outline { padding:0.85rem 2.2rem; border:1px solid var(--dark); color:var(--dark); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-block; }
-.btn-outline:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
-
-footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
-.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
-.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
-.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
-.footer-col ul { list-style:none; }
-.footer-col ul li { margin-bottom:0.6rem; }
-.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
-.footer-col ul a:hover { color:white; }
-.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
-
-@media(max-width:768px) {
-  #navbar { padding:1.2rem 1.5rem; }
-  .nav-links, .nav-cta { display:none; }
-  .hamburger { display:flex; }
-  .footer-grid { grid-template-columns:1fr 1fr; }
-  .page-hero { padding:8rem 1.5rem 4rem; }
+/* SEKMELER */
+.tab-bar {
+  display:flex; flex-wrap:wrap;
+  border-bottom:2px solid rgba(0,0,0,0.08);
+  padding:0 3rem;
+  background:white;
+  position:sticky; top:72px; z-index:50;
 }
+.tab-btn {
+  padding:1.1rem 1.8rem;
+  font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;
+  border:none; background:none; color:var(--gray); cursor:pointer;
+  border-bottom:2px solid transparent; margin-bottom:-2px;
+  transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap;
+}
+.tab-btn:hover { color:var(--dark); }
+.tab-btn.active { color:var(--red); border-bottom-color:var(--red); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
-
+/* GENEL SEKME */
 .about-section { padding:5rem 3rem 8rem; max-width:1100px; margin:0 auto; }
 .about-intro { display:grid; grid-template-columns:1fr 1fr; gap:6rem; margin-bottom:7rem; align-items:center; }
 .about-intro-text h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3vw,2.8rem); font-weight:300; line-height:1.2; margin-bottom:1.5rem; }
@@ -95,8 +86,62 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 .team-role { font-size:0.8rem; color:var(--gray); font-weight:300; letter-spacing:0.05em; }
 .certs { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:2rem; }
 .cert-badge { padding:0.6rem 1.2rem; border:1px solid rgba(164,30,30,0.3); font-size:0.78rem; font-weight:500; letter-spacing:0.1em; color:var(--red); }
-@media(max-width:768px){ .about-intro,.vm-grid,.values-grid{ grid-template-columns:1fr; } .about-section{ padding:3rem 1.5rem 5rem; } }
 
+/* KURUMSAL KİMLİK SEKME */
+.identity-section { padding:5rem 3rem 8rem; max-width:1100px; margin:0 auto; }
+.identity-block { margin-bottom:5rem; }
+.identity-block h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:300; color:var(--dark); margin-bottom:0.5rem; }
+.identity-block .sub { font-size:0.85rem; color:var(--gray); font-weight:300; margin-bottom:2rem; line-height:1.7; }
+
+.logo-concept { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; }
+.logo-display { background:var(--light); padding:3rem; display:flex; align-items:center; justify-content:center; }
+.logo-points { list-style:none; }
+.logo-points li { font-size:0.87rem; color:var(--gray); font-weight:300; padding:0.6rem 0; border-bottom:1px solid rgba(0,0,0,0.06); display:flex; gap:0.75rem; line-height:1.6; }
+.logo-points li::before { content:"→"; color:var(--red); font-weight:500; flex-shrink:0; }
+
+.color-swatches { display:flex; gap:2rem; flex-wrap:wrap; }
+.swatch { display:flex; flex-direction:column; gap:0.75rem; }
+.swatch-box { width:130px; height:80px; border-radius:2px; }
+.swatch-name { font-size:0.82rem; font-weight:500; color:var(--dark); }
+.swatch-hex { font-size:0.75rem; color:var(--gray); letter-spacing:0.08em; font-family:monospace; }
+
+.font-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+.font-card { padding:2rem; border:1px solid rgba(0,0,0,0.08); }
+.font-sample-display { font-size:2rem; line-height:1.2; margin-bottom:1rem; }
+.font-tag { font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:0.25rem; }
+.font-use { font-size:0.82rem; color:var(--gray); font-weight:300; }
+
+.voice-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.voice-card { padding:1.5rem; background:var(--light); }
+.voice-card h4 { font-size:0.75rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--red); margin-bottom:0.75rem; }
+.voice-card p { font-size:0.85rem; color:var(--gray); line-height:1.7; font-weight:300; }
+
+.naming-table { width:100%; border-collapse:collapse; }
+.naming-table th { background:var(--dark); color:white; padding:0.75rem 1rem; text-align:left; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; }
+.naming-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(0,0,0,0.07); font-size:0.88rem; vertical-align:top; line-height:1.6; }
+.naming-table tr:nth-child(even) td { background:var(--light); }
+
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .page-hero { padding:8rem 1.5rem 4rem; }
+  .about-intro, .vm-grid, .values-grid, .logo-concept, .font-grid, .voice-grid { grid-template-columns:1fr; }
+  .about-section, .identity-section { padding:3rem 1.5rem 5rem; }
+  .tab-bar { padding:0 1rem; overflow-x:auto; }
+}
 </style>
 </head>
 <body>
@@ -106,10 +151,13 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     <img id="nav-svg" src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
   </a>
   <ul class="nav-links">
-    <li><a href="index.html"    data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a></li>
-    <li><a href="products.html" data-tr="Ürünler"   data-en="Products">Ürünler</a></li>
-    <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
-    <li><a href="contact.html"  data-tr="İletişim"  data-en="Contact">İletişim</a></li>
+    <li><a href="index.html"    data-tr="Ana Sayfa"     data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"       data-en="Products">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda"    data-en="About">Hakkımızda</a></li>
+    <li><a href="quality.html"  data-tr="Kalite"        data-en="Quality">Kalite</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"      data-en="Contact">İletişim</a></li>
+    <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+    
   </ul>
   <div class="nav-right">
     <button class="lang-switch" onclick="toggleLang()">
@@ -122,7 +170,6 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
   </div>
 </nav>
 
-
 <div class="page-hero">
   <div style="max-width:1100px;margin:0 auto;">
     <p class="section-label reveal" data-tr="Hakkımızda" data-en="About Us">Hakkımızda</p>
@@ -130,85 +177,227 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
   </div>
 </div>
 
-<div class="about-section">
+<!-- SEKME ÇUBUĞU -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('genel', this)" data-tr="Genel" data-en="General">Genel</button>
+  <button class="tab-btn" onclick="switchTab('kimlik', this)" data-tr="Kurumsal Kimlik" data-en="Corporate Identity">Kurumsal Kimlik</button>
+</div>
 
-  <div class="about-intro">
-    <div class="about-intro-text reveal">
-      <h2 data-tr="KHIDR kimdir?" data-en="Who is KHIDR?">KHIDR kimdir?</h2>
-      <p data-tr="KHIDR, acil kurtarma ekipmanları alanında uzmanlaşmış bir Türk mühendislik şirketidir. Kurulduğumuz günden bu yana tek bir hedefle çalışıyoruz: Sahada can kurtaran ekipmanlar üretmek." data-en="KHIDR is a Turkish engineering company specializing in emergency rescue equipment. Since our founding, we have worked toward a single goal: manufacturing life-saving equipment in the field.">KHIDR, acil kurtarma ekipmanları alanında uzmanlaşmış bir Türk mühendislik şirketidir. Kurulduğumuz günden bu yana tek bir hedefle çalışıyoruz: Sahada can kurtaran ekipmanlar üretmek.</p>
-      <p data-tr="Ürünlerimiz; AFAD, ambulans ekipleri, arama-kurtarma birimleri ve dağ kurtarma ekiplerinin güvenini kazanmıştır. Her sedye, gerçek saha koşullarında test edilerek üretilir." data-en="Our products have earned the trust of AFAD, ambulance teams, search and rescue units, and mountain rescue teams. Every stretcher is produced and tested under real field conditions.">Ürünlerimiz; AFAD, ambulans ekipleri, arama-kurtarma birimleri ve dağ kurtarma ekiplerinin güvenini kazanmıştır. Her sedye, gerçek saha koşullarında test edilerek üretilir.</p>
-      <div class="certs">
-        <span class="cert-badge">TSE</span>
-        <span class="cert-badge">ISO 9001</span>
-        <span class="cert-badge">CE</span>
-        <span class="cert-badge">EN 1865</span>
+<!-- ═══ GENEL ═══ -->
+<div id="tab-genel" class="tab-content active">
+  <div class="about-section">
+
+    <div class="about-intro">
+      <div class="about-intro-text reveal">
+        <h2 data-tr="KHIDR kimdir?" data-en="Who is KHIDR?">KHIDR kimdir?</h2>
+        <p data-tr="KHIDR, acil kurtarma ekipmanları alanında uzmanlaşmış bir Türk mühendislik şirketidir. Kurulduğumuz günden bu yana tek bir hedefle çalışıyoruz: Sahada can kurtaran ekipmanlar üretmek." data-en="KHIDR is a Turkish engineering company specializing in emergency rescue equipment. Since our founding, we have worked toward a single goal: manufacturing life-saving equipment in the field.">KHIDR, acil kurtarma ekipmanları alanında uzmanlaşmış bir Türk mühendislik şirketidir. Kurulduğumuz günden bu yana tek bir hedefle çalışıyoruz: Sahada can kurtaran ekipmanlar üretmek.</p>
+        <p data-tr="Ürünlerimiz; AFAD, ambulans ekipleri, arama-kurtarma birimleri ve dağ kurtarma ekiplerinin güvenini kazanmıştır. Her sedye, gerçek saha koşullarında test edilerek üretilir." data-en="Our products have earned the trust of AFAD, ambulance teams, search and rescue units, and mountain rescue teams. Every stretcher is produced and tested under real field conditions.">Ürünlerimiz; AFAD, ambulans ekipleri, arama-kurtarma birimleri ve dağ kurtarma ekiplerinin güvenini kazanmıştır. Her sedye, gerçek saha koşullarında test edilerek üretilir.</p>
+        <div class="certs">
+          <span class="cert-badge">TSE</span>
+          <span class="cert-badge">ISO 9001</span>
+          <span class="cert-badge">CE</span>
+          <span class="cert-badge">EN 1865</span>
+        </div>
+      </div>
+      <div class="about-intro-visual reveal"><span>K</span></div>
+    </div>
+
+    <div class="vm-grid">
+      <div class="vm-card reveal">
+        <h3><span data-tr="Vizyonumuz" data-en="Our Vision">Vizyonumuz</span></h3>
+        <p data-tr="Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak." data-en="To become Turkey's most trusted emergency rescue equipment manufacturer and bring our internationally standardized products to the global market. To stand beside every rescue team.">Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak.</p>
+      </div>
+      <div class="vm-card reveal">
+        <h3><span data-tr="Misyonumuz" data-en="Our Mission">Misyonumuz</span></h3>
+        <p data-tr="Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var." data-en="To maximize the quality and reliability of equipment used in emergency rescue operations. Every product we engineer exists to save a life.">Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var.</p>
       </div>
     </div>
-    <div class="about-intro-visual reveal">
-      <span>K</span>
-    </div>
-  </div>
 
-  <div class="vm-grid">
-    <div class="vm-card reveal">
-      <h3><span data-tr="Vizyonumuz" data-en="Our Vision">Vizyonumuz</span></h3>
-      <p data-tr="Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak." data-en="To become Turkey's most trusted emergency rescue equipment manufacturer and bring our internationally standardized products to the global market. To stand beside every rescue team.">Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak.</p>
+    <div style="margin-bottom:4rem">
+      <p class="section-label reveal" data-tr="Değerlerimiz" data-en="Our Values">Değerlerimiz</p>
     </div>
-    <div class="vm-card reveal">
-      <h3><span data-tr="Misyonumuz" data-en="Our Mission">Misyonumuz</span></h3>
-      <p data-tr="Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var." data-en="To maximize the quality and reliability of equipment used in emergency rescue operations. Every product we engineer exists to save a life.">Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var.</p>
+    <div class="values-grid">
+      <div class="value-item reveal">
+        <div class="value-num">01</div>
+        <div class="value-title" data-tr="Güvenilirlik" data-en="Reliability">Güvenilirlik</div>
+        <p class="value-desc" data-tr="Her ürün, en yüksek kalite standartlarında üretilir ve kapsamlı testlerden geçer." data-en="Every product is manufactured to the highest quality standards and undergoes comprehensive testing.">Her ürün, en yüksek kalite standartlarında üretilir ve kapsamlı testlerden geçer.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">02</div>
+        <div class="value-title" data-tr="İnovasyon" data-en="Innovation">İnovasyon</div>
+        <p class="value-desc" data-tr="Sürekli ar-ge ile saha ihtiyaçlarına yanıt veren yeni çözümler geliştiririz." data-en="Through continuous R&D, we develop new solutions that address field needs.">Sürekli ar-ge ile saha ihtiyaçlarına yanıt veren yeni çözümler geliştiririz.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">03</div>
+        <div class="value-title" data-tr="Sorumluluk" data-en="Responsibility">Sorumluluk</div>
+        <p class="value-desc" data-tr="Ürettiğimiz her ekipman bir hayat kurtarma sorumluluğu taşır. Bu bilinçle çalışırız." data-en="Every piece of equipment we produce carries the responsibility of saving a life. We work with this awareness.">Ürettiğimiz her ekipman bir hayat kurtarma sorumluluğu taşır. Bu bilinçle çalışırız.</p>
+      </div>
     </div>
-  </div>
 
-  <div style="margin-bottom:4rem">
-    <p class="section-label reveal" data-tr="Değerlerimiz" data-en="Our Values">Değerlerimiz</p>
-  </div>
-  <div class="values-grid">
-    <div class="value-item reveal">
-      <div class="value-num">01</div>
-      <div class="value-title" data-tr="Güvenilirlik" data-en="Reliability">Güvenilirlik</div>
-      <p class="value-desc" data-tr="Her ürün, en yüksek kalite standartlarında üretilir ve kapsamlı testlerden geçer." data-en="Every product is manufactured to the highest quality standards and undergoes comprehensive testing.">Her ürün, en yüksek kalite standartlarında üretilir ve kapsamlı testlerden geçer.</p>
-    </div>
-    <div class="value-item reveal">
-      <div class="value-num">02</div>
-      <div class="value-title" data-tr="İnovasyon" data-en="Innovation">İnovasyon</div>
-      <p class="value-desc" data-tr="Sürekli ar-ge ile saha ihtiyaçlarına yanıt veren yeni çözümler geliştiririz." data-en="Through continuous R&D, we develop new solutions that address field needs.">Sürekli ar-ge ile saha ihtiyaçlarına yanıt veren yeni çözümler geliştiririz.</p>
-    </div>
-    <div class="value-item reveal">
-      <div class="value-num">03</div>
-      <div class="value-title" data-tr="Sorumluluk" data-en="Responsibility">Sorumluluk</div>
-      <p class="value-desc" data-tr="Ürettiğimiz her ekipman bir hayat kurtarma sorumluluğu taşır. Bu bilinçle çalışırız." data-en="Every piece of equipment we produce carries the responsibility of saving a life. We work with this awareness.">Ürettiğimiz her ekipman bir hayat kurtarma sorumluluğu taşır. Bu bilinçle çalışırız.</p>
-    </div>
-  </div>
-
-  <div>
-    <p class="section-label reveal" data-tr="Ekibimiz" data-en="Our Team">Ekibimiz</p>
-    <h2 class="section-title reveal" style="margin-bottom:3rem" data-tr="Uzman kadromuzla hizmetinizdeyiz." data-en="At your service with our expert team.">Uzman kadromuzla hizmetinizdeyiz.</h2>
-    <div class="team-grid">
-      <div class="team-card reveal">
-        <div class="team-avatar">AY</div>
-        <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
-        <p class="team-role" data-tr="Genel Müdür" data-en="General Manager">Genel Müdür</p>
-      </div>
-      <div class="team-card reveal">
-        <div class="team-avatar">BY</div>
-        <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
-        <p class="team-role" data-tr="Baş Mühendis" data-en="Chief Engineer">Baş Mühendis</p>
-      </div>
-      <div class="team-card reveal">
-        <div class="team-avatar">CY</div>
-        <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
-        <p class="team-role" data-tr="Kalite Müdürü" data-en="Quality Manager">Kalite Müdürü</p>
-      </div>
-      <div class="team-card reveal">
-        <div class="team-avatar">DY</div>
-        <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
-        <p class="team-role" data-tr="Satış Müdürü" data-en="Sales Manager">Satış Müdürü</p>
+    <div>
+      <p class="section-label reveal" data-tr="Ekibimiz" data-en="Our Team">Ekibimiz</p>
+      <h2 class="section-title reveal" style="margin-bottom:3rem" data-tr="Uzman kadromuzla hizmetinizdeyiz." data-en="At your service with our expert team.">Uzman kadromuzla hizmetinizdeyiz.</h2>
+      <div class="team-grid">
+        <div class="team-card reveal">
+          <div class="team-avatar">AY</div>
+          <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
+          <p class="team-role" data-tr="Genel Müdür" data-en="General Manager">Genel Müdür</p>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-avatar">BY</div>
+          <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
+          <p class="team-role" data-tr="Baş Mühendis" data-en="Chief Engineer">Baş Mühendis</p>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-avatar">CY</div>
+          <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
+          <p class="team-role" data-tr="Kalite Müdürü" data-en="Quality Manager">Kalite Müdürü</p>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-avatar">DY</div>
+          <p class="team-name" data-tr="Ad Soyad" data-en="Name Surname">Ad Soyad</p>
+          <p class="team-role" data-tr="Satış Müdürü" data-en="Sales Manager">Satış Müdürü</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ═══ KURUMSAL KİMLİK ═══ -->
+<div id="tab-kimlik" class="tab-content">
+  <div class="identity-section">
+
+    <!-- Logo -->
+    <div class="identity-block">
+      <h2 data-tr="Logo & Marka" data-en="Logo & Brand">Logo & Marka</h2>
+      <p class="sub" data-tr="KHIDR logosu, şirketin özünü tek bir görselde ifade eder." data-en="The KHIDR logo expresses the company's essence in a single visual.">KHIDR logosu, şirketin özünü tek bir görselde ifade eder.</p>
+      <div class="logo-concept">
+        <div class="logo-display">
+          <img src="KHIDR_logosgv.svg" style="width:100%;max-width:280px;height:auto">
+        </div>
+        <div>
+          <p style="font-size:0.88rem;color:var(--gray);font-weight:300;line-height:1.8;margin-bottom:1.5rem" data-tr="H harfinin iki kolu bir emniyet kemeri tokasıyla birleşir. Bu tasarım; güç, güvenlik ve bütünleşmeyi tek bir sembolde ifade eder." data-en="The two arms of the letter H join together via a safety buckle, expressing strength, security and unity in a single symbol.">H harfinin iki kolu bir emniyet kemeri tokasıyla birleşir. Bu tasarım; güç, güvenlik ve bütünleşmeyi tek bir sembolde ifade eder.</p>
+          <ul class="logo-points">
+            <li data-tr="H'nin iki kolu → iki taraf, tek amaç" data-en="Two arms of H → two sides, one purpose">H'nin iki kolu → iki taraf, tek amaç</li>
+            <li data-tr="Emniyet kemeri tokası → güvenlik ve bağlılık" data-en="Safety buckle → security and commitment">Emniyet kemeri tokası → güvenlik ve bağlılık</li>
+            <li data-tr="Kırmızı yazı → güç, aciliyet, otorite" data-en="Red lettering → strength, urgency, authority">Kırmızı yazı → güç, aciliyet, otorite</li>
+            <li data-tr="Gri toka → metal, dayanıklılık, teknik güven" data-en="Grey buckle → metal, durability, technical trust">Gri toka → metal, dayanıklılık, teknik güven</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Renk Paleti -->
+    <div class="identity-block">
+      <h2 data-tr="Renk Paleti" data-en="Color Palette">Renk Paleti</h2>
+      <p class="sub" data-tr="Marka renkleri tüm iletişim materyallerinde tutarlı biçimde kullanılır." data-en="Brand colors are used consistently across all communication materials.">Marka renkleri tüm iletişim materyallerinde tutarlı biçimde kullanılır.</p>
+      <div class="color-swatches">
+        <div class="swatch">
+          <div class="swatch-box" style="background:#A41E1E;"></div>
+          <div class="swatch-name" data-tr="Ana Kırmızı" data-en="Primary Red">Ana Kırmızı</div>
+          <div class="swatch-hex">#A41E1E</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#888888;"></div>
+          <div class="swatch-name" data-tr="Toka Grisi" data-en="Buckle Grey">Toka Grisi</div>
+          <div class="swatch-hex">#888888</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#1a1a1a;"></div>
+          <div class="swatch-name" data-tr="Koyu" data-en="Dark">Koyu</div>
+          <div class="swatch-hex">#1A1A1A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#f7f5f2;border:1px solid rgba(0,0,0,0.08);"></div>
+          <div class="swatch-name" data-tr="Açık Zemin" data-en="Light Background">Açık Zemin</div>
+          <div class="swatch-hex">#F7F5F2</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:#ffffff;border:1px solid rgba(0,0,0,0.08);"></div>
+          <div class="swatch-name" data-tr="Beyaz" data-en="White">Beyaz</div>
+          <div class="swatch-hex">#FFFFFF</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipografi -->
+    <div class="identity-block">
+      <h2 data-tr="Tipografi" data-en="Typography">Tipografi</h2>
+      <p class="sub" data-tr="İki font ailesinin bir arada kullanımı hem zarafet hem de okunabilirlik sağlar." data-en="The combination of two font families provides both elegance and readability.">İki font ailesinin bir arada kullanımı hem zarafet hem de okunabilirlik sağlar.</p>
+      <div class="font-grid">
+        <div class="font-card">
+          <div class="font-sample-display" style="font-family:'Cormorant Garamond',serif;font-weight:300">KHIDR Acil Kurtarma</div>
+          <div class="font-tag" data-tr="Başlık Fontu" data-en="Display Font">Başlık Fontu</div>
+          <div style="font-size:0.9rem;font-weight:500;margin-bottom:0.25rem">Cormorant Garamond</div>
+          <div class="font-use" data-tr="Ana başlıklar, sayfa başlıkları, ürün isimleri" data-en="Main headings, page titles, product names">Ana başlıklar, sayfa başlıkları, ürün isimleri</div>
+        </div>
+        <div class="font-card">
+          <div class="font-sample-display" style="font-family:'DM Sans',sans-serif;font-weight:400;font-size:1.4rem">Güvenilir. Hızlı. Sertifikalı.</div>
+          <div class="font-tag" data-tr="Gövde Fontu" data-en="Body Font">Gövde Fontu</div>
+          <div style="font-size:0.9rem;font-weight:500;margin-bottom:0.25rem">DM Sans</div>
+          <div class="font-use" data-tr="Paragraflar, butonlar, menü linkleri, etiketler" data-en="Paragraphs, buttons, menu links, labels">Paragraflar, butonlar, menü linkleri, etiketler</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marka Sesi -->
+    <div class="identity-block">
+      <h2 data-tr="Marka Sesi" data-en="Brand Voice">Marka Sesi</h2>
+      <p class="sub" data-tr="KHIDR'ın iletişim tonu her platformda tutarlıdır." data-en="KHIDR's communication tone is consistent across all platforms.">KHIDR'ın iletişim tonu her platformda tutarlıdır.</p>
+      <div class="voice-grid">
+        <div class="voice-card">
+          <h4 data-tr="Güvenilir" data-en="Trustworthy">Güvenilir</h4>
+          <p data-tr="Teknik verilerle desteklenen, iddialı olmayan ama otoriter bir dil. Kanıtlanmış bilgi paylaşılır." data-en="An authoritative yet non-boastful language backed by technical data. Proven knowledge is shared.">Teknik verilerle desteklenen, iddialı olmayan ama otoriter bir dil. Kanıtlanmış bilgi paylaşılır.</p>
+        </div>
+        <div class="voice-card">
+          <h4 data-tr="Direkt" data-en="Direct">Direkt</h4>
+          <p data-tr="Gereksiz süsleme yok. Mesaj net, kısa ve anlaşılır. Her cümle bir amaca hizmet eder." data-en="No unnecessary ornamentation. The message is clear, concise and understandable. Every sentence serves a purpose.">Gereksiz süsleme yok. Mesaj net, kısa ve anlaşılır. Her cümle bir amaca hizmet eder.</p>
+        </div>
+        <div class="voice-card">
+          <h4 data-tr="İnsani" data-en="Human">İnsani</h4>
+          <p data-tr="Ekipman değil, hayat kurtarma anlatılır. Teknik bilgi, insani değerle dengelenir." data-en="Not equipment but life-saving is communicated. Technical knowledge is balanced with human values.">Ekipman değil, hayat kurtarma anlatılır. Teknik bilgi, insani değerle dengelenir.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ürün Adlandırma -->
+    <div class="identity-block">
+      <h2 data-tr="Ürün Adlandırma Sistemi" data-en="Product Naming System">Ürün Adlandırma Sistemi</h2>
+      <p class="sub" data-tr="Tüm ürünler KHIDR K-[Seri] formatını izler. Bu sistem netlik ve marka tutarlılığı sağlar." data-en="All products follow the KHIDR K-[Series] format, ensuring clarity and brand consistency.">Tüm ürünler KHIDR K-[Seri] formatını izler. Bu sistem netlik ve marka tutarlılığı sağlar.</p>
+      <table class="naming-table">
+        <thead>
+          <tr>
+            <th data-tr="Ürün Kodu" data-en="Product Code">Ürün Kodu</th>
+            <th data-tr="Seri" data-en="Series">Seri</th>
+            <th data-tr="Hedef Kullanım" data-en="Target Use">Hedef Kullanım</th>
+            <th data-tr="Öne Çıkan Özellik" data-en="Key Feature">Öne Çıkan Özellik</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>KHIDR K-1</strong></td>
+            <td data-tr="Standart" data-en="Standard">Standart</td>
+            <td data-tr="AFAD, ambulans operasyonları" data-en="AFAD, ambulance operations">AFAD, ambulans operasyonları</td>
+            <td data-tr="Katlanabilir, çok amaçlı" data-en="Foldable, multi-purpose">Katlanabilir, çok amaçlı</td>
+          </tr>
+          <tr>
+            <td><strong>KHIDR K-2</strong></td>
+            <td data-tr="Pro" data-en="Pro">Pro</td>
+            <td data-tr="Dağ ve arazi kurtarma" data-en="Mountain and terrain rescue">Dağ ve arazi kurtarma</td>
+            <td data-tr="Ultra hafif, kompozit yapı" data-en="Ultra-light, composite structure">Ultra hafif, kompozit yapı</td>
+          </tr>
+          <tr>
+            <td><strong>KHIDR K-3</strong></td>
+            <td data-tr="Elite" data-en="Elite">Elite</td>
+            <td data-tr="Hastane transferi, uzun mesafe" data-en="Hospital transfer, long distance">Hastane transferi, uzun mesafe</td>
+            <td data-tr="Modüler, yüksek kapasite" data-en="Modular, high capacity">Modüler, yüksek kapasite</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
 
 <footer>
   <div class="footer-grid">
@@ -243,16 +432,23 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-copy" data-tr="© 2025 KHIDR. Tüm hakları saklıdır." data-en="© 2025 KHIDR. All rights reserved.">© 2025 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="© 2026 KHIDR. Tüm hakları saklıdır." data-en="© 2026 KHIDR. All rights reserved.">© 2026 KHIDR. Tüm hakları saklıdır.</p>
     <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
   </div>
 </footer>
 
 <script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
 
-let currentLang = 'tr';
+let currentLang = localStorage.getItem('lang') || 'tr';
 function toggleLang() {
   currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  localStorage.setItem('lang', currentLang);
   document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
   document.querySelectorAll('[data-tr]').forEach(el => {
@@ -260,6 +456,7 @@ function toggleLang() {
     if (text) el.innerHTML = text;
   });
 }
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -274,6 +471,7 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 });
 
 document.querySelector('[href="about.html"]')?.classList.add('active');
+if (currentLang === 'en') toggleLang();
 </script>
 </body>
 </html>
