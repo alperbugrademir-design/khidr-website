@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalite Analizi — KHIDR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --red:#A41E1E; --red-light:#c42a2a;
+  --dark:#1a1a1a; --gray:#6b6b6b;
+  --light:#f7f5f2; --white:#ffffff;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--dark); overflow-x:hidden; }
+
+#navbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.4rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 1px 0 rgba(0,0,0,0.07);
+  backdrop-filter:blur(8px);
+}
+.nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
+.nav-links a { text-decoration:none; font-size:0.78rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--red); }
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.lang-switch { font-size:0.78rem; letter-spacing:0.1em; font-weight:500; cursor:pointer; color:var(--gray); background:none; border:none; text-transform:uppercase; }
+.lang-switch .active { color:var(--dark); font-weight:600; }
+.nav-cta { padding:0.55rem 1.4rem; background:var(--red); color:white; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--red-light); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+.hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
+
+.page-hero {
+  padding: 10rem 3rem 4rem;
+  background: var(--light);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.15; color:var(--dark); }
+
+/* SEKMELER */
+.tab-bar {
+  display:flex; gap:0; flex-wrap:wrap;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  padding: 0 3rem;
+  background: white;
+  position: sticky;
+  top: 72px;
+  z-index: 50;
+}
+.tab-btn {
+  padding: 1.1rem 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  background: none;
+  color: var(--gray);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--dark); }
+.tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+.tab-content { display:none; padding: 4rem 3rem; max-width: 1100px; margin: 0 auto; }
+.tab-content.active { display:block; }
+
+/* FISHBONE */
+.fishbone-container {
+  background: var(--light);
+  padding: 3rem;
+  border-radius: 2px;
+  overflow-x: auto;
+}
+.fishbone-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  color: var(--dark);
+}
+
+
+/* FMEA TABLOSU */
+.fmea-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+.fmea-sub {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+th {
+  background: var(--dark);
+  color: white;
+  padding: 0.8rem 0.6rem;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+td {
+  padding: 0.75rem 0.6rem;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  vertical-align: top;
+  line-height: 1.5;
+}
+tr:nth-child(even) td { background: var(--light); }
+.rpn-high { color: var(--red); font-weight: 600; }
+.rpn-mid { color: #c17d00; font-weight: 600; }
+.rpn-low { color: #2a7a2a; font-weight: 600; }
+.rpn-cell { text-align: center; font-weight: 700; font-size: 0.95rem; }
+
+/* HOQ */
+.hoq-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+.hoq-sub {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+.hoq-table { overflow-x:auto; }
+.hoq-table table { font-size: 0.78rem; }
+.hoq-table th { background: var(--red); font-size: 0.7rem; padding: 0.6rem 0.4rem; text-align:center; }
+.hoq-table td { padding: 0.6rem 0.4rem; text-align:center; border-bottom: 1px solid rgba(0,0,0,0.07); }
+.hoq-table td:first-child { text-align:left; font-weight:500; padding-left:0.8rem; }
+.hoq-table td:nth-child(2) { text-align:center; }
+.rel-strong { font-size:1.1rem; }
+.row-label { background:var(--light); font-weight:500; }
+
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .tab-bar { padding:0 1rem; overflow-x:auto; }
+  .tab-btn { padding:0.9rem 0.8rem; font-size:0.7rem; }
+  .tab-content { padding:2rem 1.5rem; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+
+<nav id="navbar">
+  <a href="index.html">
+   <img id="nav-svg" src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    data-tr="Ana Sayfa"    data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"      data-en="Products">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda"   data-en="About">Hakkımızda</a></li>
+    <li><a href="quality.html"  data-tr="Kalite"        data-en="Quality">Kalite</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"     data-en="Contact">İletişim</a></li>
+    <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+    
+  </ul>
+  <div class="nav-right">
+    <button class="lang-switch" onclick="toggleLang()">
+      <span id="lang-tr" class="active">TR</span> / <span id="lang-en">EN</span>
+    </button>
+    <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+  </div>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+
+<div class="page-hero">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="section-label" data-tr="KHIDR K-1 — Kalite Mühendisliği Analizi" data-en="KHIDR K-1 — Quality Engineering Analysis">KHIDR K-1 — Kalite Mühendisliği Analizi</p>
+    <h1 class="section-title" data-tr="Fishbone, FMEA &<br>House of Quality" data-en="Fishbone, FMEA &<br>House of Quality">Fishbone, FMEA &<br>House of Quality</h1>
+    <p style="margin-top:1rem;color:var(--gray);font-size:0.9rem;font-weight:300;max-width:600px" data-tr="KHIDR K-1 Çok Amaçlı Kurtarma Sedyesi için gerçekleştirilen kapsamlı kalite mühendisliği analizleri." data-en="Comprehensive quality engineering analyses conducted for the KHIDR K-1 Multi-Purpose Rescue Stretcher.">KHIDR K-1 Çok Amaçlı Kurtarma Sedyesi için gerçekleştirilen kapsamlı kalite mühendisliği analizleri.</p>
+  </div>
+</div>
+
+<!-- SEKME MENÜSÜ -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('fishbone')" data-tr="Fishbone" data-en="Fishbone">Fishbone</button>
+  <button class="tab-btn" onclick="switchTab('fmea-uretim')" data-tr="FMEA — Üretim" data-en="FMEA — Production">FMEA — Üretim</button>
+  <button class="tab-btn" onclick="switchTab('fmea-kullanim')" data-tr="FMEA — Kullanım" data-en="FMEA — Usage">FMEA — Kullanım</button>
+  <button class="tab-btn" onclick="switchTab('hoq1')" data-tr="HOQ 1" data-en="HOQ 1">HOQ 1</button>
+  <button class="tab-btn" onclick="switchTab('hoq2')" data-tr="HOQ 2" data-en="HOQ 2">HOQ 2</button>
+  <button class="tab-btn" onclick="switchTab('hoq3')" data-tr="HOQ 3" data-en="HOQ 3">HOQ 3</button>
+  <button class="tab-btn" onclick="switchTab('hoq4')" data-tr="HOQ 4" data-en="HOQ 4">HOQ 4</button>
+</div>
+
+<!-- ═══ FISHBONE ═══ -->
+<div id="tab-fishbone" class="tab-content active">
+  <h2 class="fishbone-title" data-tr="Neden-Sonuç Diyagramı — KHIDR K-1 Kalite Sorunları" data-en="Cause-Effect Diagram — KHIDR K-1 Quality Issues">Neden-Sonuç Diyagramı — KHIDR K-1 Kalite Sorunları</h2>
+  <p style="font-size:0.88rem;color:var(--gray);font-weight:300;margin-bottom:2rem" data-tr="Ana problem: Sahada yetersiz kullanım ve erişilebilirlik eksikliği" data-en="Main problem: Insufficient field usage and accessibility gap">Ana problem: Sahada yetersiz kullanım ve erişilebilirlik eksikliği</p>
+  <div class="fishbone-container">
+    <svg width="100%" viewBox="0 0 680 440" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- Problem kutusu -->
+      <rect x="548" y="218" width="122" height="64" rx="6" fill="#A41E1E"/>
+      <text x="609" y="240" text-anchor="middle" fill="white" font-family="DM Sans" font-size="11">Yetersiz</text>
+      <text x="609" y="255" text-anchor="middle" fill="white" font-family="DM Sans" font-size="11">erişim &amp;</text>
+      <text x="609" y="270" text-anchor="middle" fill="white" font-family="DM Sans" font-size="11">kullanım</text>
+
+      <!-- Ana omurga -->
+      <line x1="44" y1="250" x2="546" y2="250" stroke="#A32D2D" stroke-width="2.5" marker-end="url(#arr)"/>
+
+      <!-- Üst ana kemikler -->
+      <line x1="175" y1="250" x2="115" y2="122" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="315" y1="250" x2="255" y2="122" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="460" y1="250" x2="400" y2="122" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Alt ana kemikler -->
+      <line x1="190" y1="250" x2="130" y2="378" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="330" y1="250" x2="270" y2="378" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="465" y1="250" x2="405" y2="378" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Kategori etiketleri üst -->
+      <text x="115" y="106" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">İnsan</text>
+      <text x="255" y="106" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">Yöntem</text>
+      <text x="400" y="106" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">Malzeme</text>
+
+      <!-- Kategori etiketleri alt -->
+      <text x="130" y="400" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">Makine</text>
+      <text x="270" y="400" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">Çevre</text>
+      <text x="405" y="400" text-anchor="middle" fill="#A32D2D" font-family="DM Sans" font-size="13" font-weight="600">Ölçüm</text>
+
+      <!-- Alt kemikler: İnsan -->
+      <line x1="157" y1="211" x2="117" y2="211" stroke="#888" stroke-width="1"/>
+      <text x="113" y="207" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Eğitimsiz ekip</text>
+      <line x1="133" y1="160" x2="93" y2="160" stroke="#888" stroke-width="1"/>
+      <text x="89" y="156" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Az tatbikat</text>
+
+      <!-- Alt kemikler: Yöntem -->
+      <line x1="297" y1="211" x2="257" y2="211" stroke="#888" stroke-width="1"/>
+      <text x="253" y="207" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Talimat yok</text>
+      <line x1="273" y1="160" x2="233" y2="160" stroke="#888" stroke-width="1"/>
+      <text x="229" y="156" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Standart eksik</text>
+
+      <!-- Alt kemikler: Malzeme -->
+      <line x1="442" y1="211" x2="402" y2="211" stroke="#888" stroke-width="1"/>
+      <text x="398" y="207" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Yüksek maliyet</text>
+      <line x1="418" y1="160" x2="378" y2="160" stroke="#888" stroke-width="1"/>
+      <text x="374" y="156" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Tedarik sorunu</text>
+
+      <!-- Alt kemikler: Makine -->
+      <line x1="172" y1="289" x2="132" y2="289" stroke="#888" stroke-width="1"/>
+      <text x="128" y="301" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Karmaşık yapı</text>
+      <line x1="148" y1="340" x2="108" y2="340" stroke="#888" stroke-width="1"/>
+      <text x="104" y="352" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Kilit sorunu</text>
+
+      <!-- Alt kemikler: Çevre -->
+      <line x1="312" y1="289" x2="272" y2="289" stroke="#888" stroke-width="1"/>
+      <text x="268" y="301" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Yetersiz dağıtım</text>
+      <line x1="288" y1="340" x2="248" y2="340" stroke="#888" stroke-width="1"/>
+      <text x="244" y="352" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Coğrafi erişim</text>
+
+      <!-- Alt kemikler: Ölçüm -->
+      <line x1="447" y1="289" x2="407" y2="289" stroke="#888" stroke-width="1"/>
+      <text x="403" y="301" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Geri bildirim yok</text>
+      <line x1="423" y1="340" x2="383" y2="340" stroke="#888" stroke-width="1"/>
+      <text x="379" y="352" text-anchor="end" fill="#444" font-family="DM Sans" font-size="11">Kullanıcı verisi</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ FMEA ÜRETİM ═══ -->
+<div id="tab-fmea-uretim" class="tab-content">
+  <h2 class="fmea-title" data-tr="FMEA — Üretim Süreci" data-en="FMEA — Production Process">FMEA — Üretim Süreci</h2>
+  <p class="fmea-sub" data-tr="KHIDR K-1 üretim sürecinde olası hata modları, etkileri ve risk öncelik sayıları (RPN)" data-en="Potential failure modes, effects and Risk Priority Numbers (RPN) in KHIDR K-1 production process">KHIDR K-1 üretim sürecinde olası hata modları, etkileri ve risk öncelik sayıları (RPN)</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Süreç Adımı" data-en="Process Step">Süreç Adımı</th>
+          <th data-tr="Hata Modu" data-en="Failure Mode">Hata Modu</th>
+          <th data-tr="Hata Etkisi" data-en="Effect">Hata Etkisi</th>
+          <th data-tr="Hata Nedeni" data-en="Cause">Hata Nedeni</th>
+          <th data-tr="Şiddet (S)" data-en="Severity (S)">Şiddet (S)</th>
+          <th data-tr="Olasılık (O)" data-en="Occurrence (O)">Olasılık (O)</th>
+          <th data-tr="Tespit (T)" data-en="Detection (T)">Tespit (T)</th>
+          <th data-tr="RPN" data-en="RPN">RPN</th>
+          <th data-tr="Önlem" data-en="Action">Önlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Çerçeve kaynağı" data-en="Frame welding">Çerçeve kaynağı</td>
+          <td data-tr="Yetersiz kaynak penetrasyonu" data-en="Insufficient weld penetration">Yetersiz kaynak penetrasyonu</td>
+          <td data-tr="Yük altında çerçeve kırılması" data-en="Frame fracture under load">Yük altında çerçeve kırılması</td>
+          <td data-tr="Kaynak parametresi hatası" data-en="Welding parameter error">Kaynak parametresi hatası</td>
+          <td class="rpn-cell">9</td>
+          <td class="rpn-cell">4</td>
+          <td class="rpn-cell">3</td>
+          <td class="rpn-cell rpn-high">108</td>
+          <td data-tr="Kaynak sonrası ultrasonik test, parametre kontrolü" data-en="Post-weld ultrasonic test, parameter control">Kaynak sonrası ultrasonik test</td>
+        </tr>
+        <tr>
+          <td data-tr="Kilitleme mekanizması montajı" data-en="Locking mechanism assembly">Kilitleme mekanizması montajı</td>
+          <td data-tr="Yanlış hizalama" data-en="Misalignment">Yanlış hizalama</td>
+          <td data-tr="Kilitleme çalışmıyor, sedye açılıyor" data-en="Lock failure, stretcher opens">Kilitleme çalışmıyor</td>
+          <td data-tr="Montaj jig tolerans hatası" data-en="Assembly jig tolerance error">Montaj jig tolerans hatası</td>
+          <td class="rpn-cell">8</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell">4</td>
+          <td class="rpn-cell rpn-high">160</td>
+          <td data-tr="Jig kalibrasyonu, 100% fonksiyonel test" data-en="Jig calibration, 100% functional test">Jig kalibrasyonu, 100% test</td>
+        </tr>
+        <tr>
+          <td data-tr="Emniyet kemeri dikişi" data-en="Safety strap stitching">Emniyet kemeri dikişi</td>
+          <td data-tr="Dikiş kopması" data-en="Stitch failure">Dikiş kopması</td>
+          <td data-tr="Hasta güvenliğinin tehlikeye girmesi" data-en="Patient safety compromised">Hasta güvenliği tehlikede</td>
+          <td data-tr="İplik gerilimi ayarsız" data-en="Thread tension misset">İplik gerilimi ayarsız</td>
+          <td class="rpn-cell">9</td>
+          <td class="rpn-cell">3</td>
+          <td class="rpn-cell">2</td>
+          <td class="rpn-cell rpn-mid">54</td>
+          <td data-tr="Gerilim sensörü ile otomatik kontrol" data-en="Automatic control with tension sensor">Otomatik gerilim kontrolü</td>
+        </tr>
+        <tr>
+          <td data-tr="Yüzey kaplama" data-en="Surface coating">Yüzey kaplama</td>
+          <td data-tr="Yetersiz kaplama kalınlığı" data-en="Insufficient coating thickness">Yetersiz kaplama kalınlığı</td>
+          <td data-tr="Erken korozyon, görsel bozulma" data-en="Early corrosion, visual degradation">Erken korozyon</td>
+          <td data-tr="Boya tabancası basınç hatası" data-en="Spray gun pressure error">Boya tabancası basıncı</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell">4</td>
+          <td class="rpn-cell">3</td>
+          <td class="rpn-cell rpn-mid">60</td>
+          <td data-tr="Kuru film kalınlık ölçümü" data-en="Dry film thickness measurement">Kuru film kalınlık ölçümü</td>
+        </tr>
+        <tr>
+          <td data-tr="Nihai kalite kontrol" data-en="Final quality control">Nihai kalite kontrol</td>
+          <td data-tr="Yük testi yapılmamış ürün sevkiyatı" data-en="Shipment without load test">Yük testi yapılmamış sevkiyat</td>
+          <td data-tr="Sahada mekanik arıza" data-en="Field mechanical failure">Sahada mekanik arıza</td>
+          <td data-tr="Kontrol listesi eksikliği" data-en="Checklist deficiency">Kontrol listesi eksikliği</td>
+          <td class="rpn-cell">8</td>
+          <td class="rpn-cell">3</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell rpn-high">120</td>
+          <td data-tr="Zorunlu 200kg yük testi, dijital kontrol formu" data-en="Mandatory 200kg load test, digital checklist">200kg yük testi zorunlu</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;">
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-high">■</span> <span data-tr="Yüksek Risk (RPN ≥ 100)" data-en="High Risk (RPN ≥ 100)">Yüksek Risk (RPN ≥ 100)</span></span>
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-mid">■</span> <span data-tr="Orta Risk (50–99)" data-en="Medium Risk (50–99)">Orta Risk (50–99)</span></span>
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-low">■</span> <span data-tr="Düşük Risk (&lt;50)" data-en="Low Risk (&lt;50)">Düşük Risk (&lt;50)</span></span>
+  </div>
+</div>
+
+<!-- ═══ FMEA KULLANIM ═══ -->
+<div id="tab-fmea-kullanim" class="tab-content">
+  <h2 class="fmea-title" data-tr="FMEA — Kullanım Süreci" data-en="FMEA — Usage Process">FMEA — Kullanım Süreci</h2>
+  <p class="fmea-sub" data-tr="KHIDR K-1'in saha kullanımı sırasında olası hata modları ve risk değerlendirmesi" data-en="Potential failure modes and risk assessment during KHIDR K-1 field use">KHIDR K-1'in saha kullanımı sırasında olası hata modları ve risk değerlendirmesi</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Kullanım Adımı" data-en="Usage Step">Kullanım Adımı</th>
+          <th data-tr="Hata Modu" data-en="Failure Mode">Hata Modu</th>
+          <th data-tr="Hata Etkisi" data-en="Effect">Hata Etkisi</th>
+          <th data-tr="Hata Nedeni" data-en="Cause">Hata Nedeni</th>
+          <th data-tr="Şiddet (S)" data-en="Severity (S)">Şiddet (S)</th>
+          <th data-tr="Olasılık (O)" data-en="Occurrence (O)">Olasılık (O)</th>
+          <th data-tr="Tespit (T)" data-en="Detection (T)">Tespit (T)</th>
+          <th data-tr="RPN" data-en="RPN">RPN</th>
+          <th data-tr="Önlem" data-en="Action">Önlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Sedyeyi açma ve kurulum" data-en="Unfolding and setup">Sedyeyi açma ve kurulum</td>
+          <td data-tr="Yanlış kilitleme" data-en="Incorrect locking">Yanlış kilitleme</td>
+          <td data-tr="Taşıma sırasında sedye kapanıyor" data-en="Stretcher collapses during transport">Taşıma sırasında kapanma</td>
+          <td data-tr="Eğitim eksikliği, talimat yokluğu" data-en="Lack of training, no instructions">Eğitim eksikliği</td>
+          <td class="rpn-cell">9</td>
+          <td class="rpn-cell">6</td>
+          <td class="rpn-cell">7</td>
+          <td class="rpn-cell rpn-high">378</td>
+          <td data-tr="QR kodlu hızlı kurulum kılavuzu, sesli uyarı sistemi" data-en="QR quick-setup guide, audio warning system">QR kılavuz + sesli uyarı</td>
+        </tr>
+        <tr>
+          <td data-tr="Hastayı sedyeye alma" data-en="Loading patient">Hastayı sedyeye alma</td>
+          <td data-tr="Emniyet kemeri takılmıyor" data-en="Safety strap not fastened">Emniyet kemeri takılmıyor</td>
+          <td data-tr="Taşıma sırasında hasta kayması" data-en="Patient sliding during transport">Hasta kayması, düşme riski</td>
+          <td data-tr="Acele, karanlık ortam" data-en="Rush, dark environment">Acele, karanlık ortam</td>
+          <td class="rpn-cell">8</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell">6</td>
+          <td class="rpn-cell rpn-high">240</td>
+          <td data-tr="Renk kodlu toka sistemi, uyarı etiketi" data-en="Color-coded buckle system, warning label">Renk kodlu toka sistemi</td>
+        </tr>
+        <tr>
+          <td data-tr="Taşıma" data-en="Transport">Taşıma</td>
+          <td data-tr="Çerçeve tutamaklarından kayma" data-en="Slipping from frame handles">Tutamaklardan kayma</td>
+          <td data-tr="Sedye düşmesi, hasta yaralanması" data-en="Stretcher drop, patient injury">Sedye düşmesi</td>
+          <td data-tr="Islak/kaygan eldiven" data-en="Wet/slippery gloves">Islak/kaygan eldiven</td>
+          <td class="rpn-cell">9</td>
+          <td class="rpn-cell">4</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell rpn-high">180</td>
+          <td data-tr="Anti-slip tutamak kaplama, kayış eklenmesi" data-en="Anti-slip handle coating, strap addition">Anti-slip tutamak kaplama</td>
+        </tr>
+        <tr>
+          <td data-tr="Dezenfeksiyon" data-en="Disinfection">Dezenfeksiyon</td>
+          <td data-tr="Yetersiz temizlik" data-en="Insufficient cleaning">Yetersiz temizlik</td>
+          <td data-tr="Çapraz enfeksiyon riski" data-en="Cross-infection risk">Çapraz enfeksiyon riski</td>
+          <td data-tr="Temizlik protokolü bilinmiyor" data-en="Cleaning protocol unknown">Temizlik protokolü bilinmiyor</td>
+          <td class="rpn-cell">7</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell">6</td>
+          <td class="rpn-cell rpn-high">210</td>
+          <td data-tr="Temizlik protokolü etiketi, kolay temizlenebilir yüzey" data-en="Cleaning protocol label, easy-clean surface">Temizlik protokolü etiketi</td>
+        </tr>
+        <tr>
+          <td data-tr="Depolama" data-en="Storage">Depolama</td>
+          <td data-tr="Nem hasarı" data-en="Moisture damage">Nem hasarı</td>
+          <td data-tr="Mekanizma paslanması, erken yıpranma" data-en="Mechanism rusting, early wear">Mekanizma paslanması</td>
+          <td data-tr="Uygunsuz depolama koşulları" data-en="Improper storage conditions">Uygunsuz depolama koşulları</td>
+          <td class="rpn-cell">6</td>
+          <td class="rpn-cell">4</td>
+          <td class="rpn-cell">5</td>
+          <td class="rpn-cell rpn-mid">120</td>
+          <td data-tr="Depolama talimatı, nem önleyici kaplama" data-en="Storage instructions, moisture-resistant coating">Nem önleyici kaplama</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;">
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-high">■</span> <span data-tr="Yüksek Risk (RPN ≥ 100)" data-en="High Risk (RPN ≥ 100)">Yüksek Risk (RPN ≥ 100)</span></span>
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-mid">■</span> <span data-tr="Orta Risk (50–99)" data-en="Medium Risk (50–99)">Orta Risk (50–99)</span></span>
+    <span style="font-size:0.78rem;font-weight:500"><span class="rpn-low">■</span> <span data-tr="Düşük Risk (&lt;50)" data-en="Low Risk (&lt;50)">Düşük Risk (&lt;50)</span></span>
+  </div>
+</div>
+
+<!-- ═══ HOQ 1 ═══ -->
+<div id="tab-hoq1" class="tab-content">
+  <h2 class="hoq-title" data-tr="HOQ 1 — Müşteri İstekleri → Teknik Özellikler" data-en="HOQ 1 — Customer Requirements → Technical Specifications">HOQ 1 — Müşteri İstekleri → Teknik Özellikler</h2>
+  <p class="hoq-sub" data-tr="Anket sonuçlarına dayalı müşteri isteklerinin teknik özelliklere dönüştürülmesi (Acil kurtarma kuruluşu mensupları, n=30)" data-en="Conversion of customer requirements to technical specifications based on survey results (Emergency rescue personnel, n=30)">Anket sonuçlarına dayalı (Acil kurtarma kuruluşu mensupları, n=30)</p>
+  <div class="hoq-table">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Müşteri İsteği" data-en="Customer Requirement">Müşteri İsteği</th>
+          <th data-tr="Önem (1-5)" data-en="Importance (1-5)">Önem</th>
+          <th data-tr="Ağırlık (kg)" data-en="Weight (kg)">Ağırlık</th>
+          <th data-tr="Katlanma mekanizması" data-en="Folding mechanism">Katlanma</th>
+          <th data-tr="Yük kapasitesi" data-en="Load capacity">Yük kap.</th>
+          <th data-tr="Kullanım kılavuzu" data-en="User manual">Kılavuz</th>
+          <th data-tr="QR etiket sistemi" data-en="QR label system">QR etiket</th>
+          <th data-tr="Anti-slip yüzey" data-en="Anti-slip surface">Anti-slip</th>
+          <th data-tr="Toka tasarımı" data-en="Buckle design">Toka</th>
+          <th data-tr="Fiyat" data-en="Price">Fiyat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Kolay erişim / tedarik" data-en="Easy access / procurement">Kolay erişim / tedarik</td>
+          <td>5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Kullanım kolaylığı" data-en="Ease of use">Kullanım kolaylığı</td>
+          <td>5</td><td></td><td class="rel-strong">●●●</td><td></td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td></td><td class="rel-strong">●●●</td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Hafiflik" data-en="Lightweight">Hafiflik</td>
+          <td>4</td><td class="rel-strong">●●●</td><td>●</td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Dayanıklılık" data-en="Durability">Dayanıklılık</td>
+          <td>4</td><td></td><td>●</td><td class="rel-strong">●●●</td><td></td><td></td><td>●●</td><td>●●</td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Hasta güvenliği" data-en="Patient safety">Hasta güvenliği</td>
+          <td>5</td><td></td><td>●●</td><td class="rel-strong">●●●</td><td>●●</td><td>●●</td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Uygun fiyat" data-en="Affordable price">Uygun fiyat</td>
+          <td>3</td><td>●●</td><td></td><td></td><td></td><td></td><td></td><td></td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr>
+          <td data-tr="Hızlı kurulum" data-en="Quick setup">Hızlı kurulum</td>
+          <td>5</td><td>●</td><td class="rel-strong">●●●</td><td></td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td></td><td>●●</td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:0.78rem;color:var(--gray)" data-tr="●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki" data-en="●●● Strong &nbsp;|&nbsp; ●● Medium &nbsp;|&nbsp; ● Weak">●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki</p>
+</div>
+
+<!-- ═══ HOQ 2 ═══ -->
+<div id="tab-hoq2" class="tab-content">
+  <h2 class="hoq-title" data-tr="HOQ 2 — Teknik Özellikler → Bileşen Özellikleri" data-en="HOQ 2 — Technical Specs → Component Specifications">HOQ 2 — Teknik Özellikler → Bileşen Özellikleri</h2>
+  <p class="hoq-sub" data-tr="Teknik gereksinimlerin ürün bileşenlerine aktarılması" data-en="Translation of technical requirements into product components">Teknik gereksinimlerin ürün bileşenlerine aktarılması</p>
+  <div class="hoq-table">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Teknik Özellik" data-en="Technical Spec">Teknik Özellik</th>
+          <th data-tr="Önem" data-en="Importance">Önem</th>
+          <th data-tr="Ana çerçeve profili" data-en="Main frame profile">Ana çerçeve</th>
+          <th data-tr="Kilitleme pimi" data-en="Locking pin">Kilitleme pimi</th>
+          <th data-tr="Emniyet kemeri" data-en="Safety strap">Emniyet kemeri</th>
+          <th data-tr="Tutamak kaplama" data-en="Handle coating">Tutamak</th>
+          <th data-tr="QR plaka" data-en="QR plate">QR plaka</th>
+          <th data-tr="Yüzey kaplama" data-en="Surface coating">Yüzey kap.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Ağırlık ≤ 8 kg" data-en="Weight ≤ 8 kg">Ağırlık ≤ 8 kg</td>
+          <td>4</td><td class="rel-strong">●●●</td><td>●</td><td>●</td><td>●</td><td></td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Katlanma mekanizması" data-en="Folding mechanism">Katlanma mekanizması</td>
+          <td>5</td><td>●●</td><td class="rel-strong">●●●</td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Yük kapasitesi 200 kg" data-en="Load capacity 200 kg">Yük kapasitesi 200 kg</td>
+          <td>5</td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td>●●</td><td></td><td></td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Kullanım kılavuzu" data-en="User manual">Kullanım kılavuzu</td>
+          <td>5</td><td></td><td></td><td></td><td></td><td class="rel-strong">●●●</td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Anti-slip yüzey" data-en="Anti-slip surface">Anti-slip yüzey</td>
+          <td>4</td><td></td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Toka tasarımı" data-en="Buckle design">Toka tasarımı</td>
+          <td>5</td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:0.78rem;color:var(--gray)" data-tr="●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki" data-en="●●● Strong &nbsp;|&nbsp; ●● Medium &nbsp;|&nbsp; ● Weak">●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki</p>
+</div>
+
+<!-- ═══ HOQ 3 ═══ -->
+<div id="tab-hoq3" class="tab-content">
+  <h2 class="hoq-title" data-tr="HOQ 3 — Bileşen Özellikleri → Üretim Süreci Parametreleri" data-en="HOQ 3 — Component Specs → Production Process Parameters">HOQ 3 — Bileşen Özellikleri → Üretim Süreci Parametreleri</h2>
+  <p class="hoq-sub" data-tr="Bileşen gereksinimlerinin üretim süreç parametrelerine dönüştürülmesi" data-en="Translation of component requirements into production process parameters">Bileşen gereksinimlerinin üretim süreç parametrelerine dönüştürülmesi</p>
+  <div class="hoq-table">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Bileşen Özelliği" data-en="Component Spec">Bileşen Özelliği</th>
+          <th data-tr="Önem" data-en="Importance">Önem</th>
+          <th data-tr="Kaynak akımı" data-en="Welding current">Kaynak akımı</th>
+          <th data-tr="Bükme toleransı" data-en="Bending tolerance">Bükme tol.</th>
+          <th data-tr="Kaplama kalınlığı" data-en="Coating thickness">Kaplama</th>
+          <th data-tr="Dikiş sıklığı" data-en="Stitch density">Dikiş sıklığı</th>
+          <th data-tr="Montaj torku" data-en="Assembly torque">Montaj torku</th>
+          <th data-tr="Baskı kalitesi" data-en="Print quality">Baskı kalitesi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Ana çerçeve profili" data-en="Main frame profile">Ana çerçeve profili</td>
+          <td>5</td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td>●●</td><td></td><td>●</td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Kilitleme pimi" data-en="Locking pin">Kilitleme pimi</td>
+          <td>5</td><td>●</td><td>●●</td><td></td><td></td><td class="rel-strong">●●●</td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Emniyet kemeri" data-en="Safety strap">Emniyet kemeri</td>
+          <td>5</td><td></td><td></td><td></td><td class="rel-strong">●●●</td><td>●</td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Tutamak kaplama" data-en="Handle coating">Tutamak kaplama</td>
+          <td>4</td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="QR plaka" data-en="QR plate">QR plaka</td>
+          <td>5</td><td></td><td></td><td></td><td></td><td>●</td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Yüzey kaplama" data-en="Surface coating">Yüzey kaplama</td>
+          <td>4</td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:0.78rem;color:var(--gray)" data-tr="●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki" data-en="●●● Strong &nbsp;|&nbsp; ●● Medium &nbsp;|&nbsp; ● Weak">●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki</p>
+</div>
+
+<!-- ═══ HOQ 4 ═══ -->
+<div id="tab-hoq4" class="tab-content">
+  <h2 class="hoq-title" data-tr="HOQ 4 — Üretim Parametreleri → Kalite Kontrol Noktaları" data-en="HOQ 4 — Production Parameters → Quality Control Points">HOQ 4 — Üretim Parametreleri → Kalite Kontrol Noktaları</h2>
+  <p class="hoq-sub" data-tr="Üretim süreç parametrelerinin kalite kontrol faaliyetlerine dönüştürülmesi" data-en="Translation of production parameters into quality control activities">Üretim süreç parametrelerinin kalite kontrol faaliyetlerine dönüştürülmesi</p>
+  <div class="hoq-table">
+    <table>
+      <thead>
+        <tr>
+          <th data-tr="Üretim Parametresi" data-en="Production Parameter">Üretim Parametresi</th>
+          <th data-tr="Önem" data-en="Importance">Önem</th>
+          <th data-tr="Ultrasonik test" data-en="Ultrasonic test">Ultrasonik test</th>
+          <th data-tr="200kg yük testi" data-en="200kg load test">200kg yük testi</th>
+          <th data-tr="Kaplama ölçümü" data-en="Coating measurement">Kaplama ölçümü</th>
+          <th data-tr="Dikiş çekme testi" data-en="Stitch pull test">Dikiş testi</th>
+          <th data-tr="Tork doğrulama" data-en="Torque verification">Tork doğrulama</th>
+          <th data-tr="QR okutma testi" data-en="QR scan test">QR testi</th>
+          <th data-tr="Fonksiyonel test" data-en="Functional test">Fonksiyonel test</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-tr="Kaynak akımı" data-en="Welding current">Kaynak akımı</td>
+          <td>5</td><td class="rel-strong">●●●</td><td class="rel-strong">●●●</td><td></td><td></td><td></td><td></td><td>●●</td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Bükme toleransı" data-en="Bending tolerance">Bükme toleransı</td>
+          <td>5</td><td>●●</td><td class="rel-strong">●●●</td><td></td><td></td><td></td><td></td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr>
+          <td data-tr="Kaplama kalınlığı" data-en="Coating thickness">Kaplama kalınlığı</td>
+          <td>4</td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Dikiş sıklığı" data-en="Stitch density">Dikiş sıklığı</td>
+          <td>5</td><td></td><td>●</td><td></td><td class="rel-strong">●●●</td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td data-tr="Montaj torku" data-en="Assembly torque">Montaj torku</td>
+          <td>5</td><td></td><td>●●</td><td></td><td></td><td class="rel-strong">●●●</td><td></td><td class="rel-strong">●●●</td>
+        </tr>
+        <tr class="row-label">
+          <td data-tr="Baskı kalitesi" data-en="Print quality">Baskı kalitesi</td>
+          <td>4</td><td></td><td></td><td></td><td></td><td></td><td class="rel-strong">●●●</td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:0.78rem;color:var(--gray)" data-tr="●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki" data-en="●●● Strong &nbsp;|&nbsp; ●● Medium &nbsp;|&nbsp; ● Weak">●●● Güçlü ilişki &nbsp;|&nbsp; ●● Orta ilişki &nbsp;|&nbsp; ● Zayıf ilişki</p>
+</div>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="KHIDR_logosgv.svg" height="22" style="filter:brightness(0) invert(1);opacity:0.85;margin-bottom:1rem">
+      <p class="footer-tagline" data-tr="Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz." data-en="We design and manufacture life-saving equipment for critical moments.">Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Sayfalar" data-en="Pages">Sayfalar</h4>
+      <ul>
+        <li><a href="index.html"    data-tr="Ana Sayfa"      data-en="Home">Ana Sayfa</a></li>
+        <li><a href="products.html" data-tr="Ürünler"        data-en="Products">Ürünler</a></li>
+        <li><a href="about.html"    data-tr="Hakkımızda"     data-en="About">Hakkımızda</a></li>
+        <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+        <li><a href="contact.html"  data-tr="İletişim"       data-en="Contact">İletişim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
+      <ul>
+        <li><a href="products.html">KHIDR K-1</a></li>
+        <li><a href="products.html">KHIDR K-2</a></li>
+        <li><a href="products.html">KHIDR K-3</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></li>
+        <li><a href="tel:+905001234567">+90 500 123 45 67</a></li>
+        <li><a href="#">İstanbul, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-tr="© 2026 KHIDR. Tüm hakları saklıdır." data-en="© 2026 KHIDR. All rights reserved.">© 2026 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
+  </div>
+</footer>
+
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+let currentLang = localStorage.getItem('lang') || 'tr';
+function toggleLang() {
+  currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  localStorage.setItem('lang', currentLang);
+  document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + currentLang);
+    if (text) el.innerHTML = text;
+  });
+}
+document.querySelector('[href="analysis.html"]')?.classList.add('active');
+if (currentLang === 'en') toggleLang();
+</script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHIDR — Kalite & Sertifikasyon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --red:#A41E1E; --red-light:#c42a2a;
+  --dark:#1a1a1a; --gray:#6b6b6b;
+  --light:#f7f5f2; --white:#ffffff;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--dark); overflow-x:hidden; }
+ 
+#navbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.4rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 1px 0 rgba(0,0,0,0.07);
+  backdrop-filter:blur(8px);
+}
+.nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
+.nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--red); }
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.lang-switch { font-size:0.78rem; letter-spacing:0.1em; font-weight:500; cursor:pointer; color:var(--gray); background:none; border:none; text-transform:uppercase; }
+.lang-switch .active { color:var(--dark); font-weight:600; }
+.nav-cta { padding:0.55rem 1.4rem; background:var(--red); color:white; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--red-light); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
+ 
+.page-hero { padding:10rem 3rem 4rem; background:var(--light); border-bottom:1px solid rgba(0,0,0,0.06); }
+.section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.15; color:var(--dark); }
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+ 
+/* SEKMELER */
+.tab-bar {
+  display:flex; flex-wrap:wrap;
+  border-bottom:2px solid rgba(0,0,0,0.08);
+  padding:0 3rem;
+  background:white;
+  position:sticky; top:72px; z-index:50;
+}
+.tab-btn {
+  padding:1.1rem 1.8rem;
+  font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;
+  border:none; background:none; color:var(--gray); cursor:pointer;
+  border-bottom:2px solid transparent; margin-bottom:-2px;
+  transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap;
+}
+.tab-btn:hover { color:var(--dark); }
+.tab-btn.active { color:var(--red); border-bottom-color:var(--red); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+ 
+/* İÇERİK */
+.quality-section { padding:5rem 3rem 8rem; max-width:1100px; margin:0 auto; }
+ 
+/* SERTİFİKA KARTLARI */
+.cert-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:2rem; margin-bottom:5rem; }
+.cert-card {
+  border:1px solid rgba(0,0,0,0.08);
+  padding:2.5rem 2rem;
+  transition:box-shadow 0.2s, transform 0.2s;
+}
+.cert-card:hover { box-shadow:0 8px 32px rgba(0,0,0,0.08); transform:translateY(-2px); }
+.cert-badge-large {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:72px; height:72px;
+  border:2px solid var(--red);
+  font-size:1rem; font-weight:600; letter-spacing:0.06em;
+  color:var(--red); margin-bottom:1.5rem;
+}
+.cert-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:400; margin-bottom:0.5rem; }
+.cert-fullname { font-size:0.75rem; letter-spacing:0.05em; color:var(--red); text-transform:uppercase; font-weight:500; margin-bottom:1rem; }
+.cert-desc { font-size:0.85rem; color:var(--gray); line-height:1.7; font-weight:300; margin-bottom:1.5rem; }
+.cert-detail { display:flex; flex-direction:column; gap:0.4rem; }
+.cert-detail-row { display:flex; justify-content:space-between; font-size:0.78rem; padding:0.4rem 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+.cert-detail-row span:first-child { color:var(--gray); font-weight:300; }
+.cert-detail-row span:last-child { font-weight:500; color:var(--dark); }
+ 
+/* KALİTE SÜRECİ */
+.process-steps { display:flex; flex-direction:column; gap:0; margin-bottom:5rem; }
+.process-step { display:grid; grid-template-columns:80px 1fr; gap:2rem; padding:2rem 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+.step-num { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; color:rgba(164,30,30,0.15); line-height:1; padding-top:0.25rem; }
+.step-content h3 { font-size:0.95rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:0.5rem; }
+.step-content p { font-size:0.87rem; color:var(--gray); line-height:1.7; font-weight:300; }
+.step-tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.75rem; }
+.step-tag { padding:0.25rem 0.75rem; background:var(--light); font-size:0.72rem; font-weight:500; letter-spacing:0.08em; color:var(--dark); }
+ 
+/* TEST TABLOSU */
+.test-table { width:100%; border-collapse:collapse; margin-bottom:5rem; }
+.test-table th { background:var(--dark); color:white; padding:0.85rem 1rem; text-align:left; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; }
+.test-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(0,0,0,0.07); font-size:0.87rem; vertical-align:top; line-height:1.6; }
+.test-table tr:nth-child(even) td { background:var(--light); }
+.status-pass { color:#2a7a2a; font-weight:600; font-size:0.82rem; }
+.status-mandatory { color:var(--red); font-weight:600; font-size:0.82rem; }
+ 
+/* STANDARTLAR */
+.standards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; }
+.standard-card { padding:2rem; border-left:3px solid var(--red); background:var(--light); }
+.standard-code { font-size:1rem; font-weight:600; letter-spacing:0.05em; color:var(--red); margin-bottom:0.4rem; }
+.standard-name { font-size:0.88rem; font-weight:500; color:var(--dark); margin-bottom:0.5rem; }
+.standard-desc { font-size:0.83rem; color:var(--gray); line-height:1.6; font-weight:300; }
+ 
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+ 
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .page-hero { padding:8rem 1.5rem 4rem; }
+  .quality-section { padding:3rem 1.5rem 5rem; }
+  .tab-bar { padding:0 1rem; overflow-x:auto; }
+  .process-step { grid-template-columns:50px 1fr; gap:1rem; }
+  .standards-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+ 
+<nav id="navbar">
+  <a href="index.html">
+    <img id="nav-svg" src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    data-tr="Ana Sayfa"     data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"       data-en="Products">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda"    data-en="About">Hakkımızda</a></li>
+    <li><a href="quality.html"  data-tr="Kalite"        data-en="Quality">Kalite</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"      data-en="Contact">İletişim</a></li>
+    <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-switch" onclick="toggleLang()">
+      <span id="lang-tr" class="active">TR</span> / <span id="lang-en">EN</span>
+    </button>
+    <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+  </div>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+ 
+<div class="page-hero">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="section-label reveal" data-tr="Kalite & Sertifikasyon" data-en="Quality & Certification">Kalite & Sertifikasyon</p>
+    <h1 class="section-title reveal" data-tr="Her ürün arkasında<br>belgelenmiş bir güvence var." data-en="Behind every product<br>there is documented assurance.">Her ürün arkasında<br>belgelenmiş bir güvence var.</h1>
+    <p class="reveal" style="margin-top:1rem;color:var(--gray);font-size:0.95rem;font-weight:300;max-width:520px;line-height:1.7" data-tr="KHIDR ürünleri ulusal ve uluslararası kalite standartlarına uygun üretilir. Her sedye kapsamlı test süreçlerinden geçerek sahaya çıkar." data-en="KHIDR products are manufactured in compliance with national and international quality standards. Every stretcher undergoes comprehensive testing before field deployment.">KHIDR ürünleri ulusal ve uluslararası kalite standartlarına uygun üretilir. Her sedye kapsamlı test süreçlerinden geçerek sahaya çıkar.</p>
+  </div>
+</div>
+ 
+<!-- SEKME ÇUBUĞU -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('sertifikalar', this)" data-tr="Sertifikalar" data-en="Certificates">Sertifikalar</button>
+  <button class="tab-btn" onclick="switchTab('surec', this)" data-tr="Kalite Süreci" data-en="Quality Process">Kalite Süreci</button>
+  <button class="tab-btn" onclick="switchTab('testler', this)" data-tr="Test Prosedürleri" data-en="Test Procedures">Test Prosedürleri</button>
+  <button class="tab-btn" onclick="switchTab('standartlar', this)" data-tr="Standartlar" data-en="Standards">Standartlar</button>
+</div>
+ 
+<!-- ═══ SERTİFİKALAR ═══ -->
+<div id="tab-sertifikalar" class="tab-content active">
+  <div class="quality-section">
+    <div class="cert-grid">
+ 
+      <div class="cert-card reveal">
+        <div class="cert-badge-large">TSE</div>
+        <div class="cert-name" data-tr="Türk Standartları Enstitüsü" data-en="Turkish Standards Institute">Türk Standartları Enstitüsü</div>
+        <div class="cert-fullname">TSE — TS EN ISO Uygunluk</div>
+        <p class="cert-desc" data-tr="Türkiye'nin ulusal kalite ve uygunluk belgesi. KHIDR ürünlerinin TSE standartlarına uygunluğunu onaylar. Kamu kurumları ve AFAD tedariki için zorunlu belge." data-en="Turkey's national quality and conformity certificate. Confirms KHIDR products comply with TSE standards. Mandatory document for public institutions and AFAD procurement.">Türkiye'nin ulusal kalite ve uygunluk belgesi. KHIDR ürünlerinin TSE standartlarına uygunluğunu onaylar. Kamu kurumları ve AFAD tedariki için zorunlu belge.</p>
+        <div class="cert-detail">
+          <div class="cert-detail-row">
+            <span data-tr="Kapsam" data-en="Scope">Kapsam</span>
+            <span data-tr="Tüm K serisi ürünler" data-en="All K series products">Tüm K serisi ürünler</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Yenileme" data-en="Renewal">Yenileme</span>
+            <span data-tr="Yıllık denetim" data-en="Annual audit">Yıllık denetim</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Kurum" data-en="Body">Kurum</span>
+            <span>TSE</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="cert-card reveal">
+        <div class="cert-badge-large" style="font-size:0.82rem">ISO<br>9001</div>
+        <div class="cert-name">ISO 9001:2015</div>
+        <div class="cert-fullname">Kalite Yönetim Sistemi</div>
+        <p class="cert-desc" data-tr="Uluslararası kalite yönetim sistemi standardı. Üretim süreçlerinin, müşteri odaklılığın ve sürekli iyileştirmenin belgelenmiş kanıtıdır. Tüm operasyonlarımızı kapsar." data-en="International quality management system standard. It is documented evidence of production processes, customer focus and continuous improvement. Covers all our operations.">Uluslararası kalite yönetim sistemi standardı. Üretim süreçlerinin, müşteri odaklılığın ve sürekli iyileştirmenin belgelenmiş kanıtıdır. Tüm operasyonlarımızı kapsar.</p>
+        <div class="cert-detail">
+          <div class="cert-detail-row">
+            <span data-tr="Kapsam" data-en="Scope">Kapsam</span>
+            <span data-tr="Tasarım, üretim, satış" data-en="Design, production, sales">Tasarım, üretim, satış</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Yenileme" data-en="Renewal">Yenileme</span>
+            <span data-tr="3 yılda bir" data-en="Every 3 years">3 yılda bir</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Kurum" data-en="Body">Kurum</span>
+            <span data-tr="Akredite belgelendirme" data-en="Accredited certification">Akredite belgelendirme</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="cert-card reveal">
+        <div class="cert-badge-large">CE</div>
+        <div class="cert-name" data-tr="CE Uygunluk İşareti" data-en="CE Conformity Mark">CE Uygunluk İşareti</div>
+        <div class="cert-fullname">European Conformity</div>
+        <p class="cert-desc" data-tr="Avrupa Birliği pazar erişimi için zorunlu uygunluk işareti. Ürünlerin AB güvenlik, sağlık ve çevre direktiflerine uygun olduğunu belgeler. İhracat için kritik." data-en="Mandatory conformity mark for European Union market access. Documents that products comply with EU safety, health and environmental directives. Critical for exports.">Avrupa Birliği pazar erişimi için zorunlu uygunluk işareti. Ürünlerin AB güvenlik, sağlık ve çevre direktiflerine uygun olduğunu belgeler. İhracat için kritik.</p>
+        <div class="cert-detail">
+          <div class="cert-detail-row">
+            <span data-tr="Kapsam" data-en="Scope">Kapsam</span>
+            <span data-tr="AB pazarı ürünleri" data-en="EU market products">AB pazarı ürünleri</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Direktif" data-en="Directive">Direktif</span>
+            <span>MDD 93/42/EEC</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Geçerlilik" data-en="Validity">Geçerlilik</span>
+            <span data-tr="Sürekli (değişime bağlı)" data-en="Ongoing (subject to changes)">Sürekli</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="cert-card reveal">
+        <div class="cert-badge-large" style="font-size:0.78rem">EN<br>1865</div>
+        <div class="cert-name">EN 1865</div>
+        <div class="cert-fullname" data-tr="Hasta Taşıma Ekipmanları Standardı" data-en="Patient Handling Equipment Standard">Hasta Taşıma Ekipmanları Standardı</div>
+        <p class="cert-desc" data-tr="Avrupa'nın ambulans ve acil tıbbi hizmetlerde kullanılan hasta taşıma ekipmanlarına yönelik temel standardı. KHIDR sedyelerinin teknik performans gerekliliklerini karşıladığını onaylar." data-en="Europe's core standard for patient handling equipment used in ambulance and emergency medical services. Confirms KHIDR stretchers meet technical performance requirements.">Avrupa'nın ambulans ve acil tıbbi hizmetlerde kullanılan hasta taşıma ekipmanlarına yönelik temel standardı. KHIDR sedyelerinin teknik performans gerekliliklerini karşıladığını onaylar.</p>
+        <div class="cert-detail">
+          <div class="cert-detail-row">
+            <span data-tr="Kapsam" data-en="Scope">Kapsam</span>
+            <span data-tr="Tüm sedye modelleri" data-en="All stretcher models">Tüm sedye modelleri</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Test" data-en="Test">Test</span>
+            <span data-tr="Yük, dayanıklılık, ergonomi" data-en="Load, durability, ergonomics">Yük, dayanıklılık, ergonomi</span>
+          </div>
+          <div class="cert-detail-row">
+            <span data-tr="Statü" data-en="Status">Statü</span>
+            <span data-tr="Zorunlu (AB'de)" data-en="Mandatory (in EU)">Zorunlu (AB'de)</span>
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
+</div>
+ 
+<!-- ═══ KALİTE SÜRECİ ═══ -->
+<div id="tab-surec" class="tab-content">
+  <div class="quality-section">
+    <p style="font-size:0.88rem;color:var(--gray);font-weight:300;max-width:600px;line-height:1.8;margin-bottom:3rem" data-tr="KHIDR'ın kalite yönetim sistemi ISO 9001:2015 çerçevesinde oluşturulmuştur. Tasarımdan sevkiyata kadar her adım belgelenmiş prosedürlere tabidir." data-en="KHIDR's quality management system is built on the ISO 9001:2015 framework. Every step from design to shipment is subject to documented procedures.">KHIDR'ın kalite yönetim sistemi ISO 9001:2015 çerçevesinde oluşturulmuştur. Tasarımdan sevkiyata kadar her adım belgelenmiş prosedürlere tabidir.</p>
+ 
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3 data-tr="Tasarım & Ar-Ge" data-en="Design & R&D">Tasarım & Ar-Ge</h3>
+          <p data-tr="Müşteri ihtiyaçları ve saha verileri analiz edilerek ürün gereksinimleri belirlenir. Mühendislik ekibi, prototip geliştirme ve simülasyon testleri yürütür." data-en="Customer needs and field data are analyzed to determine product requirements. The engineering team conducts prototype development and simulation tests.">Müşteri ihtiyaçları ve saha verileri analiz edilerek ürün gereksinimleri belirlenir. Mühendislik ekibi, prototip geliştirme ve simülasyon testleri yürütür.</p>
+          <div class="step-tags">
+            <span class="step-tag" data-tr="Müşteri analizi" data-en="Customer analysis">Müşteri analizi</span>
+            <span class="step-tag" data-tr="Prototip" data-en="Prototype">Prototip</span>
+            <span class="step-tag" data-tr="Simülasyon" data-en="Simulation">Simülasyon</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="process-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3 data-tr="Hammadde & Tedarik Kontrolü" data-en="Raw Material & Supply Control">Hammadde & Tedarik Kontrolü</h3>
+          <p data-tr="Onaylı tedarikçilerden gelen tüm malzemeler giriş kalite kontrolüne tabi tutulur. Alüminyum profil, emniyet kemeri dokusu ve kilitleme mekanizması ayrı ayrı test edilir." data-en="All materials from approved suppliers are subject to incoming quality control. Aluminium profile, safety strap fabric and locking mechanism are tested separately.">Onaylı tedarikçilerden gelen tüm malzemeler giriş kalite kontrolüne tabi tutulur. Alüminyum profil, emniyet kemeri dokusu ve kilitleme mekanizması ayrı ayrı test edilir.</p>
+          <div class="step-tags">
+            <span class="step-tag" data-tr="Giriş kontrolü" data-en="Incoming control">Giriş kontrolü</span>
+            <span class="step-tag" data-tr="Onaylı tedarikçi" data-en="Approved supplier">Onaylı tedarikçi</span>
+            <span class="step-tag" data-tr="Malzeme sertifikası" data-en="Material certificate">Malzeme sertifikası</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="process-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3 data-tr="Üretim Süreç Kontrolü" data-en="Production Process Control">Üretim Süreç Kontrolü</h3>
+          <p data-tr="Kaynak parametreleri, bükme toleransları, dikiş sıklığı ve montaj torku her üretim partisinde ölçülür ve kayıt altına alınır. Kontrol noktaları FMEA analizine dayanır." data-en="Welding parameters, bending tolerances, stitch density and assembly torque are measured and recorded for each production batch. Control points are based on FMEA analysis.">Kaynak parametreleri, bükme toleransları, dikiş sıklığı ve montaj torku her üretim partisinde ölçülür ve kayıt altına alınır. Kontrol noktaları FMEA analizine dayanır.</p>
+          <div class="step-tags">
+            <span class="step-tag" data-tr="SPC" data-en="SPC">SPC</span>
+            <span class="step-tag" data-tr="Kontrol kartı" data-en="Control chart">Kontrol kartı</span>
+            <span class="step-tag" data-tr="FMEA tabanlı" data-en="FMEA based">FMEA tabanlı</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3 data-tr="Nihai Ürün Testi" data-en="Final Product Testing">Nihai Ürün Testi</h3>
+          <p data-tr="Her sedye 200 kg yük testi, kilitleme mekanizması fonksiyon testi, emniyet kemeri çekme testi ve QR okuma testinden geçer. Başarısız ürünler hattan çıkarılır." data-en="Every stretcher undergoes 200 kg load test, locking mechanism function test, safety strap pull test and QR reading test. Failed products are removed from the line.">Her sedye 200 kg yük testi, kilitleme mekanizması fonksiyon testi, emniyet kemeri çekme testi ve QR okuma testinden geçer. Başarısız ürünler hattan çıkarılır.</p>
+          <div class="step-tags">
+            <span class="step-tag">200 kg yük testi</span>
+            <span class="step-tag" data-tr="Fonksiyonel test" data-en="Functional test">Fonksiyonel test</span>
+            <span class="step-tag">%100 kontrol</span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="process-step reveal">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3 data-tr="Sevkiyat & İzlenebilirlik" data-en="Shipment & Traceability">Sevkiyat & İzlenebilirlik</h3>
+          <p data-tr="Her ürün benzersiz bir seri numarası ve QR kodu ile etiketlenir. Üretim tarihi, test sonuçları ve seri numarası dijital kayıt sisteminde saklanır. Sahada sorun çıkması durumunda tam izlenebilirlik sağlanır." data-en="Each product is labelled with a unique serial number and QR code. Production date, test results and serial number are stored in the digital record system. Full traceability is ensured in case of field issues.">Her ürün benzersiz bir seri numarası ve QR kodu ile etiketlenir. Üretim tarihi, test sonuçları ve seri numarası dijital kayıt sisteminde saklanır.</p>
+          <div class="step-tags">
+            <span class="step-tag" data-tr="Seri numarası" data-en="Serial number">Seri numarası</span>
+            <span class="step-tag">QR kod</span>
+            <span class="step-tag" data-tr="Dijital kayıt" data-en="Digital record">Dijital kayıt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ═══ TEST PROSEDÜRLERİ ═══ -->
+<div id="tab-testler" class="tab-content">
+  <div class="quality-section">
+    <p style="font-size:0.88rem;color:var(--gray);font-weight:300;max-width:600px;line-height:1.8;margin-bottom:3rem" data-tr="KHIDR K-1'e uygulanan tüm test prosedürleri aşağıda listelenmiştir. Tüm testler üretim partisi bazında %100 uygulanır." data-en="All test procedures applied to KHIDR K-1 are listed below. All tests are applied at 100% on a production batch basis.">KHIDR K-1'e uygulanan tüm test prosedürleri aşağıda listelenmiştir. Tüm testler üretim partisi bazında %100 uygulanır.</p>
+ 
+    <div style="overflow-x:auto;margin-bottom:5rem">
+      <table class="test-table">
+        <thead>
+          <tr>
+            <th data-tr="Test Adı" data-en="Test Name">Test Adı</th>
+            <th data-tr="Yöntem" data-en="Method">Yöntem</th>
+            <th data-tr="Kriter" data-en="Criterion">Kriter</th>
+            <th data-tr="Sıklık" data-en="Frequency">Sıklık</th>
+            <th data-tr="Statü" data-en="Status">Statü</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-tr="Statik Yük Testi" data-en="Static Load Test">Statik Yük Testi</td>
+            <td data-tr="200 kg yük, 5 dakika bekleme" data-en="200 kg load, 5 minute hold">200 kg yük, 5 dk bekleme</td>
+            <td data-tr="Kalıcı deformasyon yok" data-en="No permanent deformation">Kalıcı deformasyon yok</td>
+            <td data-tr="%100 / her ürün" data-en="100% / each product">%100 / her ürün</td>
+            <td class="status-mandatory" data-tr="Zorunlu" data-en="Mandatory">Zorunlu</td>
+          </tr>
+          <tr>
+            <td data-tr="Kilitleme Mekanizması Testi" data-en="Locking Mechanism Test">Kilitleme Mekanizması Testi</td>
+            <td data-tr="50 kez açma-kapama döngüsü" data-en="50 open-close cycles">50 kez açma-kapama döngüsü</td>
+            <td data-tr="Tam fonksiyon, sıkışma yok" data-en="Full function, no jamming">Tam fonksiyon, sıkışma yok</td>
+            <td data-tr="%100 / her ürün" data-en="100% / each product">%100 / her ürün</td>
+            <td class="status-mandatory" data-tr="Zorunlu" data-en="Mandatory">Zorunlu</td>
+          </tr>
+          <tr>
+            <td data-tr="Emniyet Kemeri Çekme Testi" data-en="Safety Strap Pull Test">Emniyet Kemeri Çekme Testi</td>
+            <td data-tr="150 kg çekme kuvveti" data-en="150 kg pull force">150 kg çekme kuvveti</td>
+            <td data-tr="Dikiş ve toka bütünlüğü" data-en="Stitch and buckle integrity">Dikiş ve toka bütünlüğü</td>
+            <td data-tr="%100 / her ürün" data-en="100% / each product">%100 / her ürün</td>
+            <td class="status-mandatory" data-tr="Zorunlu" data-en="Mandatory">Zorunlu</td>
+          </tr>
+          <tr>
+            <td data-tr="Ultrasonik Kaynak Testi" data-en="Ultrasonic Weld Test">Ultrasonik Kaynak Testi</td>
+            <td data-tr="Ultrasonik muayene (UT)" data-en="Ultrasonic inspection (UT)">Ultrasonik muayene (UT)</td>
+            <td data-tr="Penetrasyon ≥ %95" data-en="Penetration ≥ 95%">Penetrasyon ≥ %95</td>
+            <td data-tr="Her parti — 10% örnekleme" data-en="Each batch — 10% sampling">Her parti — %10 örnekleme</td>
+            <td class="status-pass" data-tr="Periyodik" data-en="Periodic">Periyodik</td>
+          </tr>
+          <tr>
+            <td data-tr="Kaplama Kalınlığı Ölçümü" data-en="Coating Thickness Measurement">Kaplama Kalınlığı Ölçümü</td>
+            <td data-tr="Kuru film kalınlık ölçer" data-en="Dry film thickness gauge">Kuru film kalınlık ölçer</td>
+            <td data-tr="80–120 μm" data-en="80–120 μm">80–120 μm</td>
+            <td data-tr="Her parti — 5 nokta" data-en="Each batch — 5 points">Her parti — 5 nokta</td>
+            <td class="status-pass" data-tr="Periyodik" data-en="Periodic">Periyodik</td>
+          </tr>
+          <tr>
+            <td data-tr="QR Kod Okuma Testi" data-en="QR Code Reading Test">QR Kod Okuma Testi</td>
+            <td data-tr="Standart QR okuyucu" data-en="Standard QR reader">Standart QR okuyucu</td>
+            <td data-tr="İlk okumada %100 başarı" data-en="100% success on first read">İlk okumada %100 başarı</td>
+            <td data-tr="%100 / her ürün" data-en="100% / each product">%100 / her ürün</td>
+            <td class="status-mandatory" data-tr="Zorunlu" data-en="Mandatory">Zorunlu</td>
+          </tr>
+          <tr>
+            <td data-tr="Montaj Torku Doğrulama" data-en="Assembly Torque Verification">Montaj Torku Doğrulama</td>
+            <td data-tr="Tork anahtarı ile ölçüm" data-en="Torque wrench measurement">Tork anahtarı ile ölçüm</td>
+            <td data-tr="±10% tolerans" data-en="±10% tolerance">±10% tolerans</td>
+            <td data-tr="%100 / her ürün" data-en="100% / each product">%100 / her ürün</td>
+            <td class="status-mandatory" data-tr="Zorunlu" data-en="Mandatory">Zorunlu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+ 
+<!-- ═══ STANDARTLAR ═══ -->
+<div id="tab-standartlar" class="tab-content">
+  <div class="quality-section">
+    <p style="font-size:0.88rem;color:var(--gray);font-weight:300;max-width:600px;line-height:1.8;margin-bottom:3rem" data-tr="KHIDR ürünleri aşağıdaki ulusal ve uluslararası standartlara uygun olarak tasarlanır ve üretilir." data-en="KHIDR products are designed and manufactured in accordance with the following national and international standards.">KHIDR ürünleri aşağıdaki ulusal ve uluslararası standartlara uygun olarak tasarlanır ve üretilir.</p>
+ 
+    <div class="standards-grid">
+      <div class="standard-card reveal">
+        <div class="standard-code">EN 1865-1</div>
+        <div class="standard-name" data-tr="Hasta Taşıma Ekipmanları — Genel Gereksinimler" data-en="Patient Handling Equipment — General Requirements">Hasta Taşıma Ekipmanları — Genel Gereksinimler</div>
+        <p class="standard-desc" data-tr="Ambulans ve acil tıbbi hizmetlerde kullanılan hasta taşıma ekipmanlarının mekanik dayanıklılık, ergonomi ve güvenlik gereksinimlerini tanımlar." data-en="Defines mechanical durability, ergonomics and safety requirements for patient handling equipment used in ambulance and emergency medical services.">Ambulans ve acil tıbbi hizmetlerde kullanılan hasta taşıma ekipmanlarının mekanik dayanıklılık, ergonomi ve güvenlik gereksinimlerini tanımlar.</p>
+      </div>
+      <div class="standard-card reveal">
+        <div class="standard-code">ISO 9001:2015</div>
+        <div class="standard-name" data-tr="Kalite Yönetim Sistemleri — Şartlar" data-en="Quality Management Systems — Requirements">Kalite Yönetim Sistemleri — Şartlar</div>
+        <p class="standard-desc" data-tr="Müşteri memnuniyetini artırmak için kalite yönetim sisteminin kurulması, uygulanması ve sürekli iyileştirilmesine yönelik gereksinimleri belirler." data-en="Specifies requirements for establishing, implementing and continually improving a quality management system to enhance customer satisfaction.">Müşteri memnuniyetini artırmak için kalite yönetim sisteminin kurulması, uygulanması ve sürekli iyileştirilmesine yönelik gereksinimleri belirler.</p>
+      </div>
+      <div class="standard-card reveal">
+        <div class="standard-code">TS EN ISO 9999</div>
+        <div class="standard-name" data-tr="Engelliler İçin Yardımcı Ürünler — Sınıflandırma" data-en="Assistive Products for Persons with Disability — Classification">Yardımcı Ürünler — Sınıflandırma</div>
+        <p class="standard-desc" data-tr="Tıbbi ve kurtarma ekipmanlarının sınıflandırılması için referans standart. KHIDR sedyelerinin ürün kategorisini belirler." data-en="Reference standard for the classification of medical and rescue equipment. Determines the product category of KHIDR stretchers.">Tıbbi ve kurtarma ekipmanlarının sınıflandırılması için referans standart. KHIDR sedyelerinin ürün kategorisini belirler.</p>
+      </div>
+      <div class="standard-card reveal">
+        <div class="standard-code">ISO 13485:2016</div>
+        <div class="standard-name" data-tr="Tıbbi Cihazlar — Kalite Yönetim Sistemi" data-en="Medical Devices — Quality Management System">Tıbbi Cihazlar — Kalite Yönetim Sistemi</div>
+        <p class="standard-desc" data-tr="Tıbbi cihaz sektörüne özgü kalite yönetim sistemi gereksinimleri. Risk yönetimi ve izlenebilirliği ön plana çıkarır." data-en="Quality management system requirements specific to the medical device sector. Emphasizes risk management and traceability.">Tıbbi cihaz sektörüne özgü kalite yönetim sistemi gereksinimleri. Risk yönetimi ve izlenebilirliği ön plana çıkarır.</p>
+      </div>
+      <div class="standard-card reveal">
+        <div class="standard-code">TS EN 1789</div>
+        <div class="standard-name" data-tr="Tıbbi Araçlar ve Ekipmanları — Kara Ambulansları" data-en="Medical Vehicles and their Equipment — Road Ambulances">Tıbbi Araçlar — Kara Ambulansları</div>
+        <p class="standard-desc" data-tr="Ambulans ekipmanlarının fiziksel ve performans gereksinimlerini tanımlar. K-1 ve K-2 sedyeleri bu standarda uygun olarak tasarlanmıştır." data-en="Defines physical and performance requirements for ambulance equipment. K-1 and K-2 stretchers are designed in accordance with this standard.">Ambulans ekipmanlarının fiziksel ve performans gereksinimlerini tanımlar. K-1 ve K-2 sedyeleri bu standarda uygun olarak tasarlanmıştır.</p>
+      </div>
+      <div class="standard-card reveal">
+        <div class="standard-code">AFAD Teknik Şartnamesi</div>
+        <div class="standard-name" data-tr="Arama Kurtarma Ekipmanları Teknik Şartnamesi" data-en="Search and Rescue Equipment Technical Specification">Arama Kurtarma Ekipmanları Teknik Şartnamesi</div>
+        <p class="standard-desc" data-tr="AFAD'ın arama-kurtarma operasyonlarında kullanılacak ekipmanlar için belirlediği ulusal teknik gereksinimler. Kamu alımlarında zorunlu referans." data-en="National technical requirements set by AFAD for equipment to be used in search and rescue operations. Mandatory reference in public procurement.">AFAD'ın arama-kurtarma operasyonlarında kullanılacak ekipmanlar için belirlediği ulusal teknik gereksinimler.</p>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="KHIDR_logosgv.svg" height="22" style="filter:brightness(0) invert(1);opacity:0.85;margin-bottom:1rem">
+      <p class="footer-tagline" data-tr="Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz." data-en="We design and manufacture life-saving equipment for critical moments.">Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Sayfalar" data-en="Pages">Sayfalar</h4>
+      <ul>
+        <li><a href="index.html"    data-tr="Ana Sayfa"  data-en="Home">Ana Sayfa</a></li>
+        <li><a href="products.html" data-tr="Ürünler"    data-en="Products">Ürünler</a></li>
+        <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
+        <li><a href="quality.html"  data-tr="Kalite"     data-en="Quality">Kalite</a></li>
+        <li><a href="contact.html"  data-tr="İletişim"   data-en="Contact">İletişim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
+      <ul>
+        <li><a href="products.html">KHIDR K-1</a></li>
+        <li><a href="products.html">KHIDR K-2</a></li>
+        <li><a href="products.html">KHIDR K-3</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></li>
+        <li><a href="tel:+905001234567">+90 500 123 45 67</a></li>
+        <li><a href="#">İstanbul, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-tr="© 2026 KHIDR. Tüm hakları saklıdır." data-en="© 2026 KHIDR. All rights reserved.">© 2026 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
+  </div>
+</footer>
+ 
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+ 
+let currentLang = localStorage.getItem('lang') || 'tr';
+function toggleLang() {
+  currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  localStorage.setItem('lang', currentLang);
+  document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + currentLang);
+    if (text) el.innerHTML = text;
+  });
+}
+ 
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.delay)||0);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach((el,i) => {
+  el.dataset.delay = i * 80;
+  observer.observe(el);
+});
+ 
+document.querySelector('[href="quality.html"]')?.classList.add('active');
+if (currentLang === 'en') toggleLang();
+</script>
+</body>
+</html>
