@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHIDR K-2 — Arazi & Dağ Kurtarma Sedyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --red:#A41E1E; --red-light:#c42a2a;
+  --dark:#1a1a1a; --gray:#6b6b6b;
+  --light:#f7f5f2; --white:#ffffff;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--dark); overflow-x:hidden; }
+
+#navbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.4rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 1px 0 rgba(0,0,0,0.07);
+  backdrop-filter:blur(8px);
+  transition:background 0.4s;
+}
+.nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
+.nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--red); }
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.lang-switch { font-size:0.78rem; letter-spacing:0.1em; font-weight:500; cursor:pointer; color:var(--gray); background:none; border:none; text-transform:uppercase; }
+.lang-switch .active { color:var(--dark); font-weight:600; }
+.nav-cta { padding:0.55rem 1.4rem; background:var(--red); color:white; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--red-light); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
+
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+.btn-primary { padding:0.85rem 2.2rem; background:var(--red); color:white; font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s,transform 0.2s; display:inline-block; }
+.btn-primary:hover { background:var(--red-light); transform:translateY(-1px); }
+.btn-outline { padding:0.85rem 2.2rem; border:1px solid var(--dark); color:var(--dark); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-block; }
+.btn-outline:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
+.section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
+
+/* ── HERO ── */
+.product-hero {
+  padding: 9rem 3rem 0;
+  background: var(--light);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  max-width:1200px;
+  margin:0 auto;
+  align-items:end;
+}
+.hero-text { padding-bottom:4rem; }
+.breadcrumb { font-size:0.75rem; letter-spacing:0.1em; color:var(--gray); margin-bottom:1.8rem; }
+.breadcrumb a { color:var(--gray); text-decoration:none; }
+.breadcrumb a:hover { color:var(--red); }
+.hero-badge { display:inline-block; background:var(--red); color:white; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.35rem 0.9rem; font-weight:500; margin-bottom:1.2rem; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,4.5vw,3.8rem); font-weight:300; line-height:1.1; color:var(--dark); margin-bottom:1rem; }
+.hero-subtitle { font-size:0.95rem; color:var(--gray); line-height:1.75; font-weight:300; max-width:420px; margin-bottom:2rem; }
+.hero-kpis { display:flex; gap:2.5rem; margin-bottom:2.5rem; flex-wrap:wrap; }
+.kpi { display:flex; flex-direction:column; gap:0.2rem; }
+.kpi-val { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400; color:var(--dark); line-height:1; }
+.kpi-label { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-weight:500; }
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+
+.hero-visual {
+  display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-end;
+  gap:1rem; padding-bottom:0;
+}
+.hero-img-wrap {
+  width:100%; aspect-ratio:3/2;
+  background:white;
+  border:1px solid rgba(0,0,0,0.07);
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero-placeholder {
+  font-family:'Cormorant Garamond',serif;
+  font-size:9rem; font-weight:300;
+  color:rgba(164,30,30,0.10);
+  user-select:none;
+}
+
+/* ── INTRO STRIP ── */
+.intro-strip {
+  background:var(--dark);
+  padding:3rem;
+  display:flex;
+  gap:0;
+  overflow:hidden;
+}
+.intro-strip-inner {
+  max-width:1100px; margin:0 auto; width:100%;
+  display:flex; gap:4rem; align-items:center; flex-wrap:wrap;
+}
+.intro-strip p {
+  font-size:1.05rem; font-weight:300; color:rgba(255,255,255,0.7);
+  line-height:1.8; max-width:680px; flex:1; min-width:280px;
+}
+.intro-strip-stats { display:flex; gap:3rem; flex-wrap:wrap; }
+.istat { text-align:center; }
+.istat-val { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:white; line-height:1; }
+.istat-lbl { font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-top:0.3rem; }
+
+/* ── SECTIONS ── */
+.content-section { padding:6rem 3rem; max-width:1100px; margin:0 auto; }
+.content-section.alt { background:var(--light); max-width:100%; padding:6rem 3rem; }
+.content-section.alt .inner { max-width:1100px; margin:0 auto; }
+.section-head { margin-bottom:3.5rem; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:300; line-height:1.2; color:var(--dark); }
+
+/* ── COMPONENTS ── */
+.components-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
+  gap:2px;
+}
+.component-card {
+  background:white;
+  border:1px solid rgba(0,0,0,0.07);
+  padding:2rem;
+  transition:border-color 0.25s, box-shadow 0.25s;
+  position:relative;
+}
+.component-card:hover {
+  border-color:var(--red);
+  box-shadow:0 4px 24px rgba(164,30,30,0.07);
+}
+.comp-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.5rem; font-weight:300;
+  color:rgba(164,30,30,0.1);
+  line-height:1;
+  margin-bottom:0.5rem;
+}
+.comp-title {
+  font-size:0.88rem; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem;
+}
+.comp-mat {
+  font-size:0.75rem; color:var(--red); font-weight:500;
+  letter-spacing:0.12em; text-transform:uppercase;
+  margin-bottom:0.75rem;
+}
+.comp-desc { font-size:0.87rem; color:var(--gray); line-height:1.7; font-weight:300; }
+
+/* ── PRODUCTION ── */
+.production-steps { display:flex; flex-direction:column; gap:0; }
+.prod-step {
+  display:grid;
+  grid-template-columns:60px 1fr;
+  gap:2rem;
+  padding:2.5rem 0;
+  border-bottom:1px solid rgba(0,0,0,0.07);
+  align-items:start;
+}
+.prod-step:last-child { border-bottom:none; }
+.step-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.8rem; font-weight:300;
+  color:var(--red);
+  opacity:0.35;
+  line-height:1;
+  padding-top:0.2rem;
+}
+.step-body {}
+.step-title {
+  font-size:0.9rem; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem;
+}
+.step-sub {
+  font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--red); font-weight:500; margin-bottom:0.6rem;
+}
+.step-desc { font-size:0.88rem; color:var(--gray); line-height:1.75; font-weight:300; }
+.step-tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.9rem; }
+.tag {
+  font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.25rem 0.65rem; border:1px solid rgba(0,0,0,0.12);
+  color:var(--gray); font-weight:500;
+}
+
+/* ── SPECS TABLE ── */
+.specs-layout {
+  display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start;
+}
+.specs-table { width:100%; border-collapse:collapse; }
+.specs-table tr { border-bottom:1px solid rgba(0,0,0,0.07); }
+.specs-table tr:last-child { border-bottom:none; }
+.specs-table td { padding:0.9rem 0; font-size:0.88rem; vertical-align:top; }
+.specs-table td:first-child { color:var(--gray); font-weight:400; width:45%; font-size:0.82rem; letter-spacing:0.05em; }
+.specs-table td:last-child { font-weight:500; color:var(--dark); }
+
+.cert-list { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-top:2rem; }
+.cert-item {
+  display:flex; align-items:flex-start; gap:0.75rem;
+  padding:0.9rem 1.2rem;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.cert-icon { color:var(--red); font-size:0.8rem; margin-top:0.1rem; flex-shrink:0; }
+.cert-body {}
+.cert-name { font-size:0.82rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); }
+.cert-detail { font-size:0.8rem; color:var(--gray); font-weight:300; margin-top:0.15rem; }
+
+/* ── KULLANIM ALANLARI ── */
+.use-cases { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; }
+.use-card {
+  padding:2rem 1.5rem;
+  background:var(--dark);
+  text-align:center;
+}
+.use-icon { font-size:1.8rem; margin-bottom:0.9rem; display:block; }
+.use-title { font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:white; margin-bottom:0.4rem; }
+.use-desc { font-size:0.8rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; }
+
+/* ── CTA BAND ── */
+.cta-band {
+  background:var(--red);
+  padding:5rem 3rem;
+  text-align:center;
+}
+
+/* ── FOOTER ── */
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  .product-hero { grid-template-columns:1fr; gap:2rem; padding-top:8rem; }
+  .hero-visual { display:none; }
+  .specs-layout { grid-template-columns:1fr; gap:3rem; }
+}
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .content-section { padding:4rem 1.5rem; }
+  .content-section.alt { padding:4rem 1.5rem; }
+  .intro-strip { padding:2.5rem 1.5rem; }
+  .product-hero { padding:8rem 1.5rem 0; }
+}
+
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html">
+    <img src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    data-tr="Ana Sayfa"      data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"        data-en="Products" class="active">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda"     data-en="About">Hakkımızda</a></li>
+    <li><a href="quality.html"  data-tr="Kalite"         data-en="Quality">Kalite</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"       data-en="Contact">İletişim</a></li>
+    <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-switch" onclick="toggleLang()">
+      <span id="lang-tr" class="active">TR</span> / <span id="lang-en">EN</span>
+    </button>
+    <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+
+<!-- ── HERO ── -->
+<div style="background:var(--light);border-bottom:1px solid rgba(0,0,0,0.06);">
+  <div class="product-hero">
+    <div class="hero-text">
+      <div class="breadcrumb reveal">
+        <a href="products.html" data-tr="Ürünler" data-en="Products">Ürünler</a>
+        &nbsp;/&nbsp;
+        <span>KHIDR K-2</span>
+      </div>
+      <div class="hero-badge reveal" data-tr="Pro Seri" data-en="Pro Series">Pro Seri</div>
+      <h1 class="hero-title reveal" data-tr="Arazi & Dağ<br>Kurtarma Sedyesi" data-en="Terrain & Mountain<br>Rescue Stretcher">Arazi & Dağ<br>Kurtarma Sedyesi</h1>
+      <p class="hero-subtitle reveal" data-tr="Dağ ve zorlu arazi koşulları için özel tasarlanmış, karbon fiber takviyeli kompozit kurtarma sedyesi. SAR ekiplerine özel ultra hafif yapısı ile uzun mesafe taşımada belirleyici fark yaratır." data-en="Carbon fibre reinforced composite rescue stretcher specially designed for mountain and difficult terrain conditions. Its ultra-light construction purpose-built for SAR teams makes the decisive difference in long-distance carries.">Dağ ve zorlu arazi koşulları için özel tasarlanmış, karbon fiber takviyeli kompozit kurtarma sedyesi. SAR ekiplerine özel ultra hafif yapısı ile uzun mesafe taşımada belirleyici fark yaratır.</p>
+      <div class="hero-kpis reveal">
+        <div class="kpi">
+          <span class="kpi-val">≤ 5 kg</span>
+          <span class="kpi-label" data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">180 kg</span>
+          <span class="kpi-label" data-tr="Yük Kapasitesi" data-en="Load Capacity">Yük Kapasitesi</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">CF/GF</span>
+          <span class="kpi-label" data-tr="Kompozit Yapı" data-en="Composite Build">Kompozit Yapı</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">−30 °C</span>
+          <span class="kpi-label" data-tr="Min. Çalışma Sıcaklığı" data-en="Min. Operating Temp.">Min. Çalışma Sıcaklığı</span>
+        </div>
+      </div>
+      <div class="hero-actions reveal">
+        <a href="contact.html" class="btn-primary" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+        <a href="#specs" class="btn-outline" data-tr="Teknik Detaylar" data-en="Technical Details">Teknik Detaylar</a>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-img-wrap"></div>
+      <div class="hero-img-wrap">
+        <span class="hero-placeholder">K-2</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── INTRO STRIP ── -->
+<div class="intro-strip">
+  <div class="intro-strip-inner">
+    <p class="reveal" data-tr="KHIDR K-2, ağır yük taşımak yerine uzun mesafe yürüyüş yapmak zorunda kalan SAR ekiplerinin gerçek ihtiyacından doğdu. Karbon fiber ve cam fiber hibrit kompozit gövdesi, alüminyum çerçeveli rakiplerine kıyasla %35 daha hafif olmasını sağlarken kırılma yükünde herhangi bir taviz verilmez. Modüler boyuna parçalara ayrılabilme özelliği sayesinde dağ geçitlerinde ve helikopter tahliyelerinde üstün manevra kabiliyeti sunar." data-en="KHIDR K-2 was born from the real need of SAR teams who must walk long distances rather than carry heavy loads. Its carbon fibre and glass fibre hybrid composite body makes it 35% lighter than aluminium-framed competitors with no compromise on break load. Its ability to split into modular longitudinal sections offers superior manoeuvrability in mountain passes and helicopter evacuations.">KHIDR K-2, ağır yük taşımak yerine uzun mesafe yürüyüş yapmak zorunda kalan SAR ekiplerinin gerçek ihtiyacından doğdu. Karbon fiber ve cam fiber hibrit kompozit gövdesi, alüminyum çerçeveli rakiplerine kıyasla %35 daha hafif olmasını sağlarken kırılma yükünde herhangi bir taviz verilmez. Modüler boyuna parçalara ayrılabilme özelliği sayesinde dağ geçitlerinde ve helikopter tahliyelerinde üstün manevra kabiliyeti sunar.</p>
+    <div class="intro-strip-stats reveal">
+      <div class="istat">
+        <div class="istat-val">6</div>
+        <div class="istat-lbl" data-tr="Ana Bileşen" data-en="Core Components">Ana Bileşen</div>
+      </div>
+      <div class="istat">
+        <div class="istat-val">6</div>
+        <div class="istat-lbl" data-tr="Üretim Aşaması" data-en="Production Stages">Üretim Aşaması</div>
+      </div>
+      <div class="istat">
+        <div class="istat-val">%35</div>
+        <div class="istat-lbl" data-tr="Ağırlık Avantajı" data-en="Weight Advantage">Ağırlık Avantajı</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── BİLEŞENLER ── -->
+<div class="content-section">
+  <div class="section-head reveal">
+    <p class="section-label" data-tr="Anatomisi" data-en="Anatomy">Anatomisi</p>
+    <h2 class="section-title" data-tr="Sedye Bileşenleri" data-en="Stretcher Components">Sedye Bileşenleri</h2>
+  </div>
+
+  <div class="components-grid">
+
+    <div class="component-card reveal">
+      <div class="comp-num">01</div>
+      <div class="comp-title" data-tr="Kompozit Ana Gövde" data-en="Composite Main Body">Kompozit Ana Gövde</div>
+      <div class="comp-mat" data-tr="Karbon Fiber / Cam Fiber Hibrit Laminat" data-en="Carbon Fibre / Glass Fibre Hybrid Laminate">Karbon Fiber / Cam Fiber Hibrit Laminat</div>
+      <p class="comp-desc" data-tr="Dış katmanlar yüksek özgül rijitlik için 0°/90° dokuma karbon fiber (300 g/m²), iç çekirdek darbe emilimi için düzlemsel dokuma cam fiber (200 g/m²). Vakum enfüzyon ile birleştirilen bu hibrit yapı, saf karbon fibere göre daha yüksek darbe tokluğu sunarken ağırlık tasarrufunu korur. Toplam laminat kalınlığı: 3,5 mm." data-en="Outer layers are 0°/90° woven carbon fibre (300 g/m²) for high specific stiffness; inner core is plain weave glass fibre (200 g/m²) for impact absorption. This hybrid structure joined by vacuum infusion delivers higher impact toughness than pure carbon fibre while retaining weight savings. Total laminate thickness: 3.5 mm.">Dış katmanlar yüksek özgül rijitlik için 0°/90° dokuma karbon fiber (300 g/m²), iç çekirdek darbe emilimi için düzlemsel dokuma cam fiber (200 g/m²). Vakum enfüzyon ile birleştirilen bu hibrit yapı, saf karbon fibere göre daha yüksek darbe tokluğu sunarken ağırlık tasarrufunu korur. Toplam laminat kalınlığı: 3,5 mm.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">02</div>
+      <div class="comp-title" data-tr="Modüler Bölünme Sistemi" data-en="Modular Split System">Modüler Bölünme Sistemi</div>
+      <div class="comp-mat" data-tr="Titanyum Perno + HDPE Kızak Flanşı" data-en="Titanium Bolt + HDPE Slide Flange">Titanyum Perno + HDPE Kızak Flanşı</div>
+      <p class="comp-desc" data-tr="Sedye, gövdenin merkezinden iki eşit boyuna parçaya ayrılabilir. HDPE kızak flanşları hassas hizalamayı sağlarken Grade 5 titanyum pernolar (Ti-6Al-4V) ± 1200 N'a varan kayma yüküne dayanır. Ayrışma ve birleştirme işlemi aletsizdir; iki elle ≤ 20 saniye sürer. Parçalar sırt çantasına sığacak şekilde 975 mm'ye indirgenir." data-en="The stretcher can be split into two equal longitudinal sections from the centre of the body. HDPE slide flanges provide precise alignment while Grade 5 titanium bolts (Ti-6Al-4V) withstand shear loads up to ±1200 N. Splitting and joining is tool-free; takes ≤ 20 seconds with two hands. Sections reduce to 975 mm to fit in a backpack.">Sedye, gövdenin merkezinden iki eşit boyuna parçaya ayrılabilir. HDPE kızak flanşları hassas hizalamayı sağlarken Grade 5 titanyum pernolar (Ti-6Al-4V) ± 1200 N'a varan kayma yüküne dayanır. Ayrışma ve birleştirme işlemi aletsizdir; iki elle ≤ 20 saniye sürer. Parçalar sırt çantasına sığacak şekilde 975 mm'ye indirgenir.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">03</div>
+      <div class="comp-title" data-tr="Taşıma & Askı Sistemi" data-en="Carry & Harness System">Taşıma & Askı Sistemi</div>
+      <div class="comp-mat" data-tr="Dyneema SK75 + Alüminyum Karabina" data-en="Dyneema SK75 + Aluminium Carabiner">Dyneema SK75 + Alüminyum Karabina</div>
+      <p class="comp-desc" data-tr="Gövdeye entegre altı adet D-halka, hem el sapı hem de helikopter/makaraya bağlantı noktası olarak işlev görür. D-halkalardan geçen Dyneema SK75 şerit saplar (kırılma yükü ≥ 2200 kg), yerden taşımada yükü eşit dağıtır. Opsiyonel tek kişi sırt taşıma paketi gövdeye klip ile bağlanır." data-en="Six integrated D-rings on the body function as both hand grips and helicopter/pulley attachment points. Dyneema SK75 strap handles (break load ≥ 2200 kg) threaded through D-rings distribute load evenly during ground carries. Optional single-person back-carry pack clips onto the body.">Gövdeye entegre altı adet D-halka, hem el sapı hem de helikopter/makaraya bağlantı noktası olarak işlev görür. D-halkalardan geçen Dyneema SK75 şerit saplar (kırılma yükü ≥ 2200 kg), yerden taşımada yükü eşit dağıtır. Opsiyonel tek kişi sırt taşıma paketi gövdeye klip ile bağlanır.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">04</div>
+      <div class="comp-title" data-tr="Hasta Güvence Sistemi" data-en="Patient Retention System">Hasta Güvence Sistemi</div>
+      <div class="comp-mat" data-tr="5 Noktalı Poliester Kablo Sistemi" data-en="5-Point Polyester Lashing System">5 Noktalı Poliester Kablo Sistemi</div>
+      <p class="comp-desc" data-tr="Dağ kurtarmaya özgü beş noktalı sarma sistemi: göğüs, bel, kalça, diz ve ayak bilekleri. Eğimli yüzeylerde ve ters kurtarmalarda hastanın kaymasını önlemek için ek çapraz sarma kemerleri içerir. Tüm tokalar eldiven ile de kullanılabilecek büyüklükte cam tokalıdır; çalışma yükü kemer başına 500 kg." data-en="Five-point lashing system specific to mountain rescue: chest, waist, hip, knee and ankle. Includes additional cross-lashing straps to prevent patient sliding on inclined surfaces and inverted rescues. All buckles are large cam buckles usable with gloves; working load 500 kg per strap.">Dağ kurtarmaya özgü beş noktalı sarma sistemi: göğüs, bel, kalça, diz ve ayak bilekleri. Eğimli yüzeylerde ve ters kurtarmalarda hastanın kaymasını önlemek için ek çapraz sarma kemerleri içerir. Tüm tokalar eldiven ile de kullanılabilecek büyüklükte cam tokalıdır; çalışma yükü kemer başına 500 kg.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">05</div>
+      <div class="comp-title" data-tr="Baş & Omurga Sabitleme" data-en="Head & Spine Immobilisation">Baş & Omurga Sabitleme</div>
+      <div class="comp-mat" data-tr="Yarı-Rijit EVA + Örgü Alüminyum Tel" data-en="Semi-Rigid EVA + Braided Aluminium Wire">Yarı-Rijit EVA + Örgü Alüminyum Tel</div>
+      <p class="comp-desc" data-tr="Alüminyum tel iskeletli EVA köpük baş sabitleme bloğu; darbede enerji emer ancak omurga eksenini korur. Yan düğmeleme sistemi ile gövdeye entegre olur. Servikal kolar ile birlikte kullanım için tasarlanmış açık baş tepsisi profili, hastanın nörolojik durumunun takibine izin verir." data-en="Aluminium wire-skeleton EVA foam head immobilisation block; absorbs energy in impacts while maintaining spinal axis. Integrates with body via lateral button system. Open head tray profile designed for use with cervical collar permits monitoring of patient's neurological status.">Alüminyum tel iskeletli EVA köpük baş sabitleme bloğu; darbede enerji emer ancak omurga eksenini korur. Yan düğmeleme sistemi ile gövdeye entegre olur. Servikal kolar ile birlikte kullanım için tasarlanmış açık baş tepsisi profili, hastanın nörolojik durumunun takibine izin verir.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">06</div>
+      <div class="comp-title" data-tr="Yüzey & İzolasyon Katmanı" data-en="Surface & Insulation Layer">Yüzey & İzolasyon Katmanı</div>
+      <div class="comp-mat" data-tr="Ripstop Naylon + Thinsulate™ 200 g/m²" data-en="Ripstop Nylon + Thinsulate™ 200 g/m²">Ripstop Naylon + Thinsulate™ 200 g/m²</div>
+      <p class="comp-desc" data-tr="Dış yüzey 210D ripstop naylon (DWR kaplı, su direnci: 3000 mm sütun); altında 3M Thinsulate™ 200 g/m² termal yalıtım katmanı. Kompozit gövdeden soğuk aktarımını keser, −30 °C koşullarında hipotermi riskini azaltır. Çıkarılabilir ve makine yıkanabiilir (40 °C)." data-en="Outer surface is 210D ripstop nylon (DWR coated, water resistance: 3000 mm column); below is 3M Thinsulate™ 200 g/m² thermal insulation layer. Cuts cold transfer from composite body, reducing hypothermia risk in −30 °C conditions. Removable and machine washable (40 °C).">Dış yüzey 210D ripstop naylon (DWR kaplı, su direnci: 3000 mm sütun); altında 3M Thinsulate™ 200 g/m² termal yalıtım katmanı. Kompozit gövdeden soğuk aktarımını keser, −30 °C koşullarında hipotermi riskini azaltır. Çıkarılabilir ve makine yıkanabilir (40 °C).</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── ÜRETİM YÖNTEMİ ── -->
+<div class="content-section alt">
+  <div class="inner">
+    <div class="section-head reveal">
+      <p class="section-label" data-tr="Nasıl Yapıyoruz?" data-en="How We Make It">Nasıl Yapıyoruz?</p>
+      <h2 class="section-title" data-tr="Üretim Yöntemi" data-en="Production Method">Üretim Yöntemi</h2>
+    </div>
+
+    <div class="production-steps">
+
+      <div class="prod-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Preform Hazırlama" data-en="Preform Preparation">Preform Hazırlama</div>
+          <div class="step-title" data-tr="Kumaş Kesim & Yığma" data-en="Fabric Cutting & Layup">Kumaş Kesim & Yığma</div>
+          <p class="step-desc" data-tr="Karbon fiber ve cam fiber kumaşlar CNC kumaş kesim masasında ±0,5 mm toleransla netle belirlenen açılara (0°, ±45°, 90°) kesilerek sınıflandırılır. Fiber oryantasyonları FEA (Sonlu Elemanlar Analizi) optimizasyonuna göre belirlenmiştir; kritik yük yollarında karbon, çevresel darbeye açık yüzeylerde cam fiber ön planlıdır. Katlar laminasyon planına göre elle yığılır ve konum markajları ile hizalanır." data-en="Carbon fibre and glass fibre fabrics are cut on a CNC fabric cutting table at net-defined angles (0°, ±45°, 90°) to ±0.5 mm tolerance and sorted. Fibre orientations are determined by FEA (Finite Element Analysis) optimisation; carbon fibre is planned for critical load paths, glass fibre for impact-exposed surfaces. Layers are hand-laid according to the lamination plan and aligned with position markings.">Karbon fiber ve cam fiber kumaşlar CNC kumaş kesim masasında ±0,5 mm toleransla netle belirlenen açılara (0°, ±45°, 90°) kesilerek sınıflandırılır. Fiber oryantasyonları FEA (Sonlu Elemanlar Analizi) optimizasyonuna göre belirlenmiştir; kritik yük yollarında karbon, çevresel darbeye açık yüzeylerde cam fiber ön planlıdır. Katlar laminasyon planına göre elle yığılır ve konum markajları ile hizalanır.</p>
+          <div class="step-tags">
+            <span class="tag">CNC Kumaş Kesim</span>
+            <span class="tag">FEA Optimizasyonu</span>
+            <span class="tag">CF 300 g/m² + GF 200 g/m²</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Reçine Emprenye" data-en="Resin Infusion">Reçine Emprenye</div>
+          <div class="step-title" data-tr="Vakum Enfüzyon (VARTM)" data-en="Vacuum Infusion (VARTM)">Vakum Enfüzyon (VARTM)</div>
+          <p class="step-desc" data-tr="Yığılan preform, çift taraflı kalıba yerleştirilir ve vakum torbası ile mühürlenir. −0,95 bar basınçta vakum sağlandıktan sonra düşük viskoziteli epoksi reçine (Hexion EPIKOTE™ 135 / EPIKURE™ 137) sistemin içine çekilir. Bu yöntem %55–60 fiber hacim fraksiyonu elde etmeyi ve iç boşluğu (void content) <%1 düzeyde tutmayı sağlar. Oda sıcaklığında 8 saat ön kürün ardından 80 °C fırında 4 saatlik post-kür uygulanır." data-en="The stacked preform is placed in a double-sided mould and sealed with a vacuum bag. After vacuum is achieved at −0.95 bar, low-viscosity epoxy resin (Hexion EPIKOTE™ 135 / EPIKURE™ 137) is drawn into the system. This method achieves 55–60% fibre volume fraction and keeps internal voids (void content) at <1%. Following 8 hours of ambient-temperature pre-cure, post-cure at 80 °C for 4 hours is applied.">Yığılan preform, çift taraflı kalıba yerleştirilir ve vakum torbası ile mühürlenir. −0,95 bar basınçta vakum sağlandıktan sonra düşük viskoziteli epoksi reçine (Hexion EPIKOTE™ 135 / EPIKURE™ 137) sistemin içine çekilir. Bu yöntem %55–60 fiber hacim fraksiyonu elde etmeyi ve iç boşluğu (void content) <%1 düzeyde tutmayı sağlar. Oda sıcaklığında 8 saat ön kürün ardından 80 °C fırında 4 saatlik post-kür uygulanır.</p>
+          <div class="step-tags">
+            <span class="tag">VARTM</span>
+            <span class="tag">%55–60 Vf</span>
+            <span class="tag">Void &lt;1%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Kalite Taraması" data-en="Quality Scanning">Kalite Taraması</div>
+          <div class="step-title" data-tr="Ultrasonik NDT Muayenesi" data-en="Ultrasonic NDT Inspection">Ultrasonik NDT Muayenesi</div>
+          <p class="step-desc" data-tr="Kürlenen her panel, C-tarama ultrasonik muayene sisteminden geçirilir. İçsel boşluk, delaminasyon veya reçine zayıflığı tespit edilen bölgeler reddedilir veya tamir yama prosedürüne alınır. Bu adım, IATA kompozit onarım standartları baz alınarak geliştirilmiş iç prosedürümüze uygun yürütülür. Geçen panellerin tarama haritaları ürün seri numarasıyla birlikte arşivlenir." data-en="Each cured panel passes through a C-scan ultrasonic inspection system. Regions showing internal voids, delamination or resin weakness are rejected or taken into repair patch procedures. This step is conducted in accordance with our internal procedure developed based on IATA composite repair standards. Scan maps of passing panels are archived with the product serial number.">Kürlenen her panel, C-tarama ultrasonik muayene sisteminden geçirilir. İçsel boşluk, delaminasyon veya reçine zayıflığı tespit edilen bölgeler reddedilir veya tamir yama prosedürüne alınır. Bu adım, IATA kompozit onarım standartları baz alınarak geliştirilmiş iç prosedürümüze uygun yürütülür. Geçen panellerin tarama haritaları ürün seri numarasıyla birlikte arşivlenir.</p>
+          <div class="step-tags">
+            <span class="tag">C-Tarama UT</span>
+            <span class="tag">NDT Muayene</span>
+            <span class="tag">Arşivleme</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Hassas İşleme" data-en="Precision Machining">Hassas İşleme</div>
+          <div class="step-title" data-tr="CNC Trimming & Delme" data-en="CNC Trimming & Drilling">CNC Trimming & Delme</div>
+          <p class="step-desc" data-tr="Kürlenen panel, elmas kaplı frezeyle 3 eksenli CNC freze merkezinde nihai konturuna trimlenür; kenar yüzey pürüzlülüğü Ra ≤ 1,6 µm olarak hedeflenir. D-halka pres bağlantı delikleri ve modüler bölünme flanş kanalları aynı tezgahta işlenerek geometrik sapma ±0,1 mm'nin altında kalır. İşleme sonrası tüm deliklerin kenar kesitleri sızdırmazlık reçinesiyle kapatılır." data-en="The cured panel is trimmed to its final contour on a 3-axis CNC milling centre using a diamond-coated cutter; target edge surface roughness Ra ≤ 1.6 µm. D-ring press-fit holes and modular split flange channels are machined on the same machine keeping geometric deviation below ±0.1 mm. After machining, all hole edge sections are sealed with sealant resin.">Kürlenen panel, elmas kaplı frezeyle 3 eksenli CNC freze merkezinde nihai konturuna trimlenir; kenar yüzey pürüzlülüğü Ra ≤ 1,6 µm olarak hedeflenir. D-halka pres bağlantı delikleri ve modüler bölünme flanş kanalları aynı tezgahta işlenerek geometrik sapma ±0,1 mm'nin altında kalır. İşleme sonrası tüm deliklerin kenar kesitleri sızdırmazlık reçinesiyle kapatılır.</p>
+          <div class="step-tags">
+            <span class="tag">Elmas Kaplı Freze</span>
+            <span class="tag">Ra ≤ 1.6 µm</span>
+            <span class="tag">±0.1 mm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Yüzey İşlemi" data-en="Surface Finishing">Yüzey İşlemi</div>
+          <div class="step-title" data-tr="Gelcoat & UV Koruma" data-en="Gelcoat & UV Protection">Gelcoat & UV Koruma</div>
+          <p class="step-desc" data-tr="Yüzey, hafif zımpara ve aseton silme ile temizlendikten sonra iki kat poliüretan gelcoat uygulanır (toplam kuru film 120–150 µm). Gelcoat formülasyonu UV absorber ve HALS (Hindered Amine Light Stabiliser) katkılarını içerir; 3000 saat QUV maruziyeti sonrasında parlaklık kaybı ≤ %20. Pürüzlü doku son katta bilinçli korunur: yüzey tutuculuğu ıslak koşullarda elin kaymasını önler." data-en="After surface preparation with light sanding and acetone wipe, two coats of polyurethane gelcoat are applied (total dry film 120–150 µm). Gelcoat formulation includes UV absorber and HALS (Hindered Amine Light Stabiliser) additives; gloss loss after 3000 hours QUV exposure ≤ 20%. Textured finish is intentionally retained in the final coat: surface grip prevents hand slippage in wet conditions.">Yüzey, hafif zımpara ve aseton silme ile temizlendikten sonra iki kat poliüretan gelcoat uygulanır (toplam kuru film 120–150 µm). Gelcoat formülasyonu UV absorber ve HALS katkılarını içerir; 3000 saat QUV maruziyeti sonrasında parlaklık kaybı ≤ %20. Pürüzlü doku son katta bilinçli korunur: yüzey tutuculuğu ıslak koşullarda elin kaymasını önler.</p>
+          <div class="step-tags">
+            <span class="tag">PU Gelcoat 120–150 µm</span>
+            <span class="tag">HALS UV Koruma</span>
+            <span class="tag">3000 h QUV</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Kalite Güvence" data-en="Quality Assurance">Kalite Güvence</div>
+          <div class="step-title" data-tr="Final Test & Sertifikasyon" data-en="Final Testing & Certification">Final Test & Sertifikasyon</div>
+          <p class="step-desc" data-tr="Her K-2 dört aşamalı teste tabi tutulur: (1) Statik yük — 450 kg 5 dakika (2,5× nominal); (2) Dinamik nokta yükü — 80 kg tekil yük, 500 N çekiç darbesi; (3) Modüler bağlantı kayma — ±1200 N eksenel yük, 200 döngü; (4) Termal döngü — −30 °C / +60 °C, 50 döngü. Ultrasonik NDT ve boyutsal kontrol her 50 birimde bir tekrarlanır. Seri numarası, üretim tarihi ve test sonucu QR kodu gövdeye lazer gravür ile işlenir." data-en="Each K-2 undergoes four-stage testing: (1) Static load — 450 kg for 5 minutes (2.5× nominal); (2) Dynamic point load — 80 kg single load, 500 N hammer impact; (3) Modular joint shear — ±1200 N axial load, 200 cycles; (4) Thermal cycling — −30 °C / +60 °C, 50 cycles. Ultrasonic NDT and dimensional inspection are repeated every 50 units. Serial number, production date and test result QR code are laser engraved onto the body.">Her K-2 dört aşamalı teste tabi tutulur: (1) Statik yük — 450 kg 5 dakika (2,5× nominal); (2) Dinamik nokta yükü — 80 kg tekil yük, 500 N çekiç darbesi; (3) Modüler bağlantı kayma — ±1200 N eksenel yük, 200 döngü; (4) Termal döngü — −30 °C / +60 °C, 50 döngü. Ultrasonik NDT ve boyutsal kontrol her 50 birimde bir tekrarlanır. Seri numarası, üretim tarihi ve test sonucu QR kodu gövdeye lazer gravür ile işlenir.</p>
+          <div class="step-tags">
+            <span class="tag">450 kg Statik</span>
+            <span class="tag">Termal Döngü ±50</span>
+            <span class="tag">Lazer Gravür QR</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ── TEKNİK ÖZELLİKLER ── -->
+<div id="specs" class="content-section">
+  <div class="section-head reveal">
+    <p class="section-label" data-tr="Veriler" data-en="Data">Veriler</p>
+    <h2 class="section-title" data-tr="Teknik Özellikler" data-en="Technical Specifications">Teknik Özellikler</h2>
+  </div>
+
+  <div class="specs-layout">
+    <div class="reveal">
+      <table class="specs-table">
+        <tr>
+          <td data-tr="Ürün Adı" data-en="Product Name">Ürün Adı</td>
+          <td data-tr="KHIDR K-2 Arazi & Dağ Kurtarma Sedyesi" data-en="KHIDR K-2 Terrain & Mountain Rescue Stretcher">KHIDR K-2 Arazi & Dağ Kurtarma Sedyesi</td>
+        </tr>
+        <tr>
+          <td data-tr="Seri" data-en="Series">Seri</td>
+          <td data-tr="Pro" data-en="Pro">Pro</td>
+        </tr>
+        <tr>
+          <td data-tr="Dış Boyutlar (Tam)" data-en="Outer Dimensions (Full)">Dış Boyutlar (Tam)</td>
+          <td>1950 × 520 × 65 mm</td>
+        </tr>
+        <tr>
+          <td data-tr="Bölünmüş Parça Boyutu" data-en="Split Section Dimension">Bölünmüş Parça Boyutu</td>
+          <td>975 × 520 × 65 mm</td>
+        </tr>
+        <tr>
+          <td data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</td>
+          <td>≤ 5,0 kg</td>
+        </tr>
+        <tr>
+          <td data-tr="Max. Yük Kapasitesi" data-en="Max. Load Capacity">Max. Yük Kapasitesi</td>
+          <td>180 kg</td>
+        </tr>
+        <tr>
+          <td data-tr="Test Yükü (Statik)" data-en="Test Load (Static)">Test Yükü (Statik)</td>
+          <td>450 kg / 5 dak.</td>
+        </tr>
+        <tr>
+          <td data-tr="Gövde Malzemesi" data-en="Body Material">Gövde Malzemesi</td>
+          <td data-tr="CF/GF Hibrit Kompozit, Epoksi" data-en="CF/GF Hybrid Composite, Epoxy">CF/GF Hibrit Kompozit, Epoksi</td>
+        </tr>
+        <tr>
+          <td data-tr="Laminat Kalınlığı" data-en="Laminate Thickness">Laminat Kalınlığı</td>
+          <td>3,5 mm</td>
+        </tr>
+        <tr>
+          <td data-tr="Yüzey Kaplaması" data-en="Surface Coating">Yüzey Kaplaması</td>
+          <td data-tr="PU Gelcoat + HALS UV" data-en="PU Gelcoat + HALS UV">PU Gelcoat + HALS UV</td>
+        </tr>
+        <tr>
+          <td data-tr="Isı Yalıtım Katmanı" data-en="Thermal Insulation Layer">Isı Yalıtım Katmanı</td>
+          <td data-tr="3M Thinsulate™ 200 g/m²" data-en="3M Thinsulate™ 200 g/m²">3M Thinsulate™ 200 g/m²</td>
+        </tr>
+        <tr>
+          <td data-tr="Kemer Sayısı" data-en="Strap Count">Kemer Sayısı</td>
+          <td data-tr="5 noktalı dağ sarma sistemi" data-en="5-point mountain lashing system">5 noktalı dağ sarma sistemi</td>
+        </tr>
+        <tr>
+          <td data-tr="Çalışma Sıcaklığı" data-en="Operating Temperature">Çalışma Sıcaklığı</td>
+          <td>−30 °C … +60 °C</td>
+        </tr>
+        <tr>
+          <td data-tr="Renk" data-en="Colour">Renk</td>
+          <td data-tr="Uluslararası Turuncu (opsiyonel)" data-en="International Orange (optional)">Uluslararası Turuncu (opsiyonel)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="reveal">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--dark);margin-bottom:1.5rem;line-height:1.5" data-tr="Sertifikalar & Uyumluluk" data-en="Certifications & Compliance">Sertifikalar & Uyumluluk</p>
+      <ul class="cert-list">
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">CE İşaretleme</div>
+            <p class="cert-detail" data-tr="Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi." data-en="Medical device directive compliant, EU market entry certificate.">Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">ISO 9001:2015</div>
+            <p class="cert-detail" data-tr="Kalite yönetim sistemi sertifikasyonu; tüm üretim süreçleri kapsamında." data-en="Quality management system certification; covering all production processes.">Kalite yönetim sistemi sertifikasyonu; tüm üretim süreçleri kapsamında.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">EN 13204</div>
+            <p class="cert-detail" data-tr="Arama ve kurtarma operasyonları için çift amaçlı motorlu araçlara yönelik ekipman standardı." data-en="Equipment standard for double-purpose motor vehicles for search and rescue operations.">Arama ve kurtarma operasyonları için çift amaçlı motorlu araçlara yönelik ekipman standardı.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">UIAA 107 Uyumlu</div>
+            <p class="cert-detail" data-tr="Dağcılık ve arama-kurtarmaya yönelik ekipman bağlantı noktaları UIAA 107 kanca standardına uyumlu test edilmiştir." data-en="Equipment attachment points for mountaineering and search and rescue tested in compliance with UIAA 107 connector standard.">Dağcılık ve arama-kurtarmaya yönelik ekipman bağlantı noktaları UIAA 107 kanca standardına uyumlu test edilmiştir.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">AFAD Uygunluk</div>
+            <p class="cert-detail" data-tr="Türkiye Afet ve Acil Durum Yönetimi Başkanlığı dağ ve arazi kurtarma ekipman listesinde onaylı." data-en="Approved on Turkey's Disaster and Emergency Management Authority mountain and terrain rescue equipment list.">Türkiye Afet ve Acil Durum Yönetimi Başkanlığı dağ ve arazi kurtarma ekipman listesinde onaylı.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── KULLANIM ALANLARI ── -->
+<div class="content-section alt">
+  <div class="inner">
+    <div class="section-head reveal">
+      <p class="section-label" data-tr="Nerede Kullanılır?" data-en="Where Is It Used?">Nerede Kullanılır?</p>
+      <h2 class="section-title" data-tr="Kullanım Alanları" data-en="Use Cases">Kullanım Alanları</h2>
+    </div>
+    <div class="use-cases">
+      <div class="use-card reveal">
+        <span class="use-icon">🏔️</span>
+        <div class="use-title" data-tr="Dağ Kurtarma" data-en="Mountain Rescue">Dağ Kurtarma</div>
+        <p class="use-desc" data-tr="Dar geçitler ve kayalık yüzeylerde split-panel ile üstün manevra." data-en="Superior manoeuvrability via split-panel in narrow passes and rocky surfaces.">Dar geçitler ve kayalık yüzeylerde split-panel ile üstün manevra.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🚁</span>
+        <div class="use-title" data-tr="Helikopter Tahliyesi" data-en="Helicopter Evacuation">Helikopter Tahliyesi</div>
+        <p class="use-desc" data-tr="Entegre D-halkaları ile doğrudan hoist veya uzun hat bağlantısı." data-en="Direct hoist or long-line connection via integrated D-rings.">Entegre D-halkaları ile doğrudan hoist veya uzun hat bağlantısı.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">❄️</span>
+        <div class="use-title" data-tr="Kış & Çığ Operasyonları" data-en="Winter & Avalanche Ops">Kış & Çığ Operasyonları</div>
+        <p class="use-desc" data-tr="−30 °C dayanımlı malzeme ve Thinsulate™ yalıtım ile hipotermi koruması." data-en="Hypothermia protection with −30 °C resistant materials and Thinsulate™ insulation.">−30 °C dayanımlı malzeme ve Thinsulate™ yalıtım ile hipotermi koruması.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🌊</span>
+        <div class="use-title" data-tr="Su & Taşkın Kurtarma" data-en="Water & Flood Rescue">Su & Taşkın Kurtarma</div>
+        <p class="use-desc" data-tr="DWR yüzey ve su geçirmeyen ripstop ile ıslak ortam uyumlu." data-en="Wet environment compatible with DWR surface and waterproof ripstop.">DWR yüzey ve su geçirmeyen ripstop ile ıslak ortam uyumlu.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🌋</span>
+        <div class="use-title" data-tr="Afet Sahaları" data-en="Disaster Sites">Afet Sahaları</div>
+        <p class="use-desc" data-tr="Deprem enkazı ve zorlu arazi koşullarında uzun mesafe taşıma." data-en="Long-distance transport in earthquake debris and difficult terrain conditions.">Deprem enkazı ve zorlu arazi koşullarında uzun mesafe taşıma.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── CTA ── -->
+<div class="cta-band">
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;color:white;margin-bottom:1rem" data-tr="K-2 hakkında teklif almak ister misiniz?" data-en="Would you like a quote for the K-2?">K-2 hakkında teklif almak ister misiniz?</h2>
+  <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;font-weight:300;margin-bottom:2rem" data-tr="Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz." data-en="We answer your technical questions and develop custom solutions for your needs.">Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="contact.html" style="padding:0.85rem 2.5rem;background:white;color:var(--red);font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+    <a href="products.html" style="padding:0.85rem 2.5rem;border:1px solid rgba(255,255,255,0.5);color:white;font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Tüm Ürünler" data-en="All Products">Tüm Ürünler</a>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="KHIDR_logosgv.svg" height="22" style="filter:brightness(0) invert(1);opacity:0.85;margin-bottom:1rem">
+      <p class="footer-tagline" data-tr="Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz." data-en="We design and manufacture life-saving equipment for critical moments.">Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Sayfalar" data-en="Pages">Sayfalar</h4>
+      <ul>
+        <li><a href="index.html"    data-tr="Ana Sayfa"  data-en="Home">Ana Sayfa</a></li>
+        <li><a href="products.html" data-tr="Ürünler"    data-en="Products">Ürünler</a></li>
+        <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
+        <li><a href="contact.html"  data-tr="İletişim"   data-en="Contact">İletişim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
+      <ul>
+        <li><a href="k1.html">KHIDR K-1</a></li>
+        <li><a href="k2.html">KHIDR K-2</a></li>
+        <li><a href="products.html">KHIDR K-3</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></li>
+        <li><a href="tel:+905001234567">+90 500 123 45 67</a></li>
+        <li><a href="#">İstanbul, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-tr="© 2026 KHIDR. Tüm hakları saklıdır." data-en="© 2026 KHIDR. All rights reserved.">© 2026 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
+  </div>
+</footer>
+
+<script>
+let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
+function toggleLang() {
+  currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
+  document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + currentLang);
+    if (text) el.innerHTML = text;
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.delay) || 0);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.dataset.delay = i * 60;
+  observer.observe(el);
+});
+
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+}
+</script>
+</body>
+</html>

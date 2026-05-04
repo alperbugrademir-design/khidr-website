@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHIDR K-3 — Modüler Taşıma Sedyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --red:#A41E1E; --red-light:#c42a2a;
+  --dark:#1a1a1a; --gray:#6b6b6b;
+  --light:#f7f5f2; --white:#ffffff;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--dark); overflow-x:hidden; }
+
+#navbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.4rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 1px 0 rgba(0,0,0,0.07);
+  backdrop-filter:blur(8px);
+}
+.nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
+.nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--red); }
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.lang-switch { font-size:0.78rem; letter-spacing:0.1em; font-weight:500; cursor:pointer; color:var(--gray); background:none; border:none; text-transform:uppercase; }
+.lang-switch .active { color:var(--dark); font-weight:600; }
+.nav-cta { padding:0.55rem 1.4rem; background:var(--red); color:white; font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+.nav-cta:hover { background:var(--red-light); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { display:block; width:24px; height:1.5px; background:var(--dark); }
+
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+.btn-primary { padding:0.85rem 2.2rem; background:var(--red); color:white; font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s,transform 0.2s; display:inline-block; }
+.btn-primary:hover { background:var(--red-light); transform:translateY(-1px); }
+.btn-outline { padding:0.85rem 2.2rem; border:1px solid var(--dark); color:var(--dark); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-block; }
+.btn-outline:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
+.section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
+
+/* ── HERO ── */
+.product-hero {
+  padding:9rem 3rem 0;
+  background:var(--light);
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  max-width:1200px;
+  margin:0 auto;
+  align-items:end;
+}
+.hero-text { padding-bottom:4rem; }
+.breadcrumb { font-size:0.75rem; letter-spacing:0.1em; color:var(--gray); margin-bottom:1.8rem; }
+.breadcrumb a { color:var(--gray); text-decoration:none; }
+.breadcrumb a:hover { color:var(--red); }
+.hero-badge { display:inline-block; background:var(--red); color:white; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.35rem 0.9rem; font-weight:500; margin-bottom:1.2rem; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,4.5vw,3.8rem); font-weight:300; line-height:1.1; color:var(--dark); margin-bottom:1rem; }
+.hero-subtitle { font-size:0.95rem; color:var(--gray); line-height:1.75; font-weight:300; max-width:420px; margin-bottom:2rem; }
+.hero-kpis { display:flex; gap:2.5rem; margin-bottom:2.5rem; flex-wrap:wrap; }
+.kpi { display:flex; flex-direction:column; gap:0.2rem; }
+.kpi-val { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400; color:var(--dark); line-height:1; }
+.kpi-label { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-weight:500; }
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+
+.hero-visual { display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-end; gap:1rem; }
+.hero-img-wrap {
+  width:100%; aspect-ratio:3/2;
+  background:white;
+  border:1px solid rgba(0,0,0,0.07);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.hero-placeholder { font-family:'Cormorant Garamond',serif; font-size:9rem; font-weight:300; color:rgba(164,30,30,0.10); user-select:none; }
+
+/* ── INTRO STRIP ── */
+.intro-strip { background:var(--dark); padding:3rem; }
+.intro-strip-inner {
+  max-width:1100px; margin:0 auto; width:100%;
+  display:flex; gap:4rem; align-items:center; flex-wrap:wrap;
+}
+.intro-strip p { font-size:1.05rem; font-weight:300; color:rgba(255,255,255,0.7); line-height:1.8; max-width:680px; flex:1; min-width:280px; }
+.intro-strip-stats { display:flex; gap:3rem; flex-wrap:wrap; }
+.istat { text-align:center; }
+.istat-val { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:white; line-height:1; }
+.istat-lbl { font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-top:0.3rem; }
+
+/* ── SECTIONS ── */
+.content-section { padding:6rem 3rem; max-width:1100px; margin:0 auto; }
+.content-section.alt { background:var(--light); max-width:100%; padding:6rem 3rem; }
+.content-section.alt .inner { max-width:1100px; margin:0 auto; }
+.section-head { margin-bottom:3.5rem; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:300; line-height:1.2; color:var(--dark); }
+
+/* ── COMPONENTS ── */
+.components-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2px; }
+.component-card {
+  background:white; border:1px solid rgba(0,0,0,0.07); padding:2rem;
+  transition:border-color 0.25s, box-shadow 0.25s;
+}
+.component-card:hover { border-color:var(--red); box-shadow:0 4px 24px rgba(164,30,30,0.07); }
+.comp-num { font-family:'Cormorant Garamond',serif; font-size:3.5rem; font-weight:300; color:rgba(164,30,30,0.1); line-height:1; margin-bottom:0.5rem; }
+.comp-title { font-size:0.88rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem; }
+.comp-mat { font-size:0.75rem; color:var(--red); font-weight:500; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+.comp-desc { font-size:0.87rem; color:var(--gray); line-height:1.7; font-weight:300; }
+
+/* ── PRODUCTION ── */
+.production-steps { display:flex; flex-direction:column; gap:0; }
+.prod-step { display:grid; grid-template-columns:60px 1fr; gap:2rem; padding:2.5rem 0; border-bottom:1px solid rgba(0,0,0,0.07); align-items:start; }
+.prod-step:last-child { border-bottom:none; }
+.step-num { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:300; color:var(--red); opacity:0.35; line-height:1; padding-top:0.2rem; }
+.step-sub { font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:0.6rem; }
+.step-title { font-size:0.9rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem; }
+.step-desc { font-size:0.88rem; color:var(--gray); line-height:1.75; font-weight:300; }
+.step-tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.9rem; }
+.tag { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.25rem 0.65rem; border:1px solid rgba(0,0,0,0.12); color:var(--gray); font-weight:500; }
+
+/* ── SPECS TABLE ── */
+.specs-layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+.specs-table { width:100%; border-collapse:collapse; }
+.specs-table tr { border-bottom:1px solid rgba(0,0,0,0.07); }
+.specs-table tr:last-child { border-bottom:none; }
+.specs-table td { padding:0.9rem 0; font-size:0.88rem; vertical-align:top; }
+.specs-table td:first-child { color:var(--gray); font-weight:400; width:45%; font-size:0.82rem; letter-spacing:0.05em; }
+.specs-table td:last-child { font-weight:500; color:var(--dark); }
+
+.cert-list { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-top:2rem; }
+.cert-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.9rem 1.2rem; border:1px solid rgba(0,0,0,0.08); }
+.cert-icon { color:var(--red); font-size:0.8rem; margin-top:0.1rem; flex-shrink:0; }
+.cert-name { font-size:0.82rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); }
+.cert-detail { font-size:0.8rem; color:var(--gray); font-weight:300; margin-top:0.15rem; }
+
+/* ── KULLANIM ALANLARI ── */
+.use-cases { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; }
+.use-card { padding:2rem 1.5rem; background:var(--dark); text-align:center; }
+.use-icon { font-size:1.8rem; margin-bottom:0.9rem; display:block; }
+.use-title { font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:white; margin-bottom:0.4rem; }
+.use-desc { font-size:0.8rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; }
+
+/* ── CTA ── */
+.cta-band { background:var(--red); padding:5rem 3rem; text-align:center; }
+
+/* ── FOOTER ── */
+footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; max-width:220px; }
+.footer-col h4 { font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1.2rem; font-weight:500; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:0.6rem; }
+.footer-col ul a { text-decoration:none; font-size:0.85rem; color:rgba(255,255,255,0.65); font-weight:300; transition:color 0.2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); font-weight:300; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  .product-hero { grid-template-columns:1fr; gap:2rem; padding-top:8rem; }
+  .hero-visual { display:none; }
+  .specs-layout { grid-template-columns:1fr; gap:3rem; }
+}
+@media(max-width:768px) {
+  #navbar { padding:1.2rem 1.5rem; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .content-section { padding:4rem 1.5rem; }
+  .content-section.alt { padding:4rem 1.5rem; }
+  .intro-strip { padding:2.5rem 1.5rem; }
+  .product-hero { padding:8rem 1.5rem 0; }
+}
+
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html">
+    <img src="KHIDR_logosgv.svg" height="26" style="opacity:1;transition:opacity 0.4s">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    data-tr="Ana Sayfa"      data-en="Home">Ana Sayfa</a></li>
+    <li><a href="products.html" data-tr="Ürünler"        data-en="Products" class="active">Ürünler</a></li>
+    <li><a href="about.html"    data-tr="Hakkımızda"     data-en="About">Hakkımızda</a></li>
+    <li><a href="quality.html"  data-tr="Kalite"         data-en="Quality">Kalite</a></li>
+    <li><a href="contact.html"  data-tr="İletişim"       data-en="Contact">İletişim</a></li>
+    <li><a href="analysis.html" data-tr="Kalite Analizi" data-en="Quality Analysis">Kalite Analizi</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-switch" onclick="toggleLang()">
+      <span id="lang-tr" class="active">TR</span> / <span id="lang-en">EN</span>
+    </button>
+    <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+
+<!-- ── HERO ── -->
+<div style="background:var(--light);border-bottom:1px solid rgba(0,0,0,0.06);">
+  <div class="product-hero">
+    <div class="hero-text">
+      <div class="breadcrumb reveal">
+        <a href="products.html" data-tr="Ürünler" data-en="Products">Ürünler</a>
+        &nbsp;/&nbsp;
+        <span>KHIDR K-3</span>
+      </div>
+      <div class="hero-badge reveal" data-tr="Elite Seri" data-en="Elite Series">Elite Seri</div>
+      <h1 class="hero-title reveal" data-tr="Modüler<br>Taşıma Sedyesi" data-en="Modular<br>Transport Stretcher">Modüler<br>Taşıma Sedyesi</h1>
+      <p class="hero-subtitle reveal" data-tr="Hastane transferi ve uzun mesafe taşıma için tasarlanmış yüksek kapasiteli modüler sedye. Çelik & polimer hibrit yapısı, ağır hasta taşımada kalıcı konfor ve klinik güvenlik standardını bir arada sunar." data-en="High-capacity modular stretcher designed for hospital transfer and long-distance transport. Steel & polymer hybrid construction delivers lasting comfort and clinical safety standards together for bariatric patient transport.">Hastane transferi ve uzun mesafe taşıma için tasarlanmış yüksek kapasiteli modüler sedye. Çelik & polimer hibrit yapısı, ağır hasta taşımada kalıcı konfor ve klinik güvenlik standardını bir arada sunar.</p>
+      <div class="hero-kpis reveal">
+        <div class="kpi">
+          <span class="kpi-val">≤ 12 kg</span>
+          <span class="kpi-label" data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">250 kg</span>
+          <span class="kpi-label" data-tr="Yük Kapasitesi" data-en="Load Capacity">Yük Kapasitesi</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">S235</span>
+          <span class="kpi-label" data-tr="Çelik Sınıfı" data-en="Steel Grade">Çelik Sınıfı</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-val">4 Bölüm</span>
+          <span class="kpi-label" data-tr="Modüler Parça" data-en="Modular Sections">Modüler Parça</span>
+        </div>
+      </div>
+      <div class="hero-actions reveal">
+        <a href="contact.html" class="btn-primary" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+        <a href="#specs" class="btn-outline" data-tr="Teknik Detaylar" data-en="Technical Details">Teknik Detaylar</a>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-img-wrap"></div>
+      <div class="hero-img-wrap">
+        <img src="k3-photo.png" alt="KHIDR K-3" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── INTRO STRIP ── -->
+<div class="intro-strip">
+  <div class="intro-strip-inner">
+    <p class="reveal" data-tr="KHIDR K-3, klinik ortamların titiz gereksinimlerini saha taşımacılığının sertliğiyle buluşturmak üzere tasarlandı. S235 yapısal çelik ana iskelet, modüler polimer bölüm plakalarıyla birleşerek hem 250 kg'lık yük kapasitesini hem de hastanın birden fazla pozisyonda desteklenmesini mümkün kılar. Paslanmaz çelik ray ve kızak sistemi, tüm bölümlerin araç standına veya ambulans sedye kilidine kilitlenerek güvenli transferini sağlar." data-en="KHIDR K-3 was designed to bridge the exacting requirements of clinical environments with the rigour of field transport. The S235 structural steel main skeleton, combined with modular polymer section plates, enables both 250 kg load capacity and patient support in multiple positions. The stainless steel rail and slide system ensures all sections lock securely to vehicle stands or ambulance stretcher locks for safe transfer.">KHIDR K-3, klinik ortamların titiz gereksinimlerini saha taşımacılığının sertliğiyle buluşturmak üzere tasarlandı. S235 yapısal çelik ana iskelet, modüler polimer bölüm plakalarıyla birleşerek hem 250 kg'lık yük kapasitesini hem de hastanın birden fazla pozisyonda desteklenmesini mümkün kılar. Paslanmaz çelik ray ve kızak sistemi, tüm bölümlerin araç standına veya ambulans sedye kilidine kilitlenerek güvenli transferini sağlar.</p>
+    <div class="intro-strip-stats reveal">
+      <div class="istat">
+        <div class="istat-val">8</div>
+        <div class="istat-lbl" data-tr="Ana Bileşen" data-en="Core Components">Ana Bileşen</div>
+      </div>
+      <div class="istat">
+        <div class="istat-val">5</div>
+        <div class="istat-lbl" data-tr="Üretim Aşaması" data-en="Production Stages">Üretim Aşaması</div>
+      </div>
+      <div class="istat">
+        <div class="istat-val">250 kg</div>
+        <div class="istat-lbl" data-tr="Yük Kapasitesi" data-en="Load Capacity">Yük Kapasitesi</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── BİLEŞENLER ── -->
+<div class="content-section">
+  <div class="section-head reveal">
+    <p class="section-label" data-tr="Anatomisi" data-en="Anatomy">Anatomisi</p>
+    <h2 class="section-title" data-tr="Sedye Bileşenleri" data-en="Stretcher Components">Sedye Bileşenleri</h2>
+  </div>
+
+  <div class="components-grid">
+
+    <div class="component-card reveal">
+      <div class="comp-num">01</div>
+      <div class="comp-title" data-tr="Ana Çelik İskelet" data-en="Main Steel Frame">Ana Çelik İskelet</div>
+      <div class="comp-mat" data-tr="S235JR Yapısal Çelik Profil" data-en="S235JR Structural Steel Profile">S235JR Yapısal Çelik Profil</div>
+      <p class="comp-desc" data-tr="EN 10025-2 normuna uygun S235JR soğuk hadde kare profil (40×40×2 mm) ana boyuna kirişler ve 30×30×2 mm enine traverslerden oluşan taşıyıcı çerçeve. Minimum akma dayanımı 235 MPa, minimum çekme dayanımı 360 MPa. Köşe ve T-birleşimleri MIG kaynak ile birleştirilmiş; kaynak bölgeleri penetrant muayene (PT) ile kontrol edilmiştir." data-en="Load-bearing frame consisting of EN 10025-2 S235JR cold-rolled square profile (40×40×2 mm) main longitudinal beams and 30×30×2 mm transverse members. Minimum yield strength 235 MPa, minimum tensile strength 360 MPa. Corner and T-joints joined by MIG welding; weld zones inspected by penetrant testing (PT).">EN 10025-2 normuna uygun S235JR soğuk hadde kare profil (40×40×2 mm) ana boyuna kirişler ve 30×30×2 mm enine traverslerden oluşan taşıyıcı çerçeve. Minimum akma dayanımı 235 MPa, minimum çekme dayanımı 360 MPa. Köşe ve T-birleşimleri MIG kaynak ile birleştirilmiş; kaynak bölgeleri penetrant muayene (PT) ile kontrol edilmiştir.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">02</div>
+      <div class="comp-title" data-tr="Modüler Bölüm Plakaları" data-en="Modular Section Plates">Modüler Bölüm Plakaları</div>
+      <div class="comp-mat" data-tr="HDPE 500 Polietilen (4 Bölüm)" data-en="HDPE 500 Polyethylene (4 Sections)">HDPE 500 Polietilen (4 Bölüm)</div>
+      <p class="comp-desc" data-tr="Baş, üst gövde, alt gövde ve bacak olmak üzere dört ayrı yüzey bölümü; 8 mm kalınlıkta yüksek yoğunluklu polietilen (HDPE 500) plakadan imal edilmiştir. Her bölüm ana çelik kirişlerin üzerinde koşan paslanmaz çelik ray kanallarına kızaklanır. Bu sistem, klinik gereksinime göre bölümlerin bağımsız eğilmesine (Trendelenburg, Fowler) ve hatta çıkarılmasına imkân tanır." data-en="Four separate surface sections — head, upper body, lower body and leg — manufactured from 8 mm high-density polyethylene (HDPE 500) plate. Each section slides into stainless steel rail channels running on the main steel beams. This system allows sections to tilt independently (Trendelenburg, Fowler) or even be removed according to clinical requirements.">Baş, üst gövde, alt gövde ve bacak olmak üzere dört ayrı yüzey bölümü; 8 mm kalınlıkta yüksek yoğunluklu polietilen (HDPE 500) plakadan imal edilmiştir. Her bölüm ana çelik kirişlerin üzerinde koşan paslanmaz çelik ray kanallarına kızaklanır. Bu sistem, klinik gereksinime göre bölümlerin bağımsız eğilmesine (Trendelenburg, Fowler) ve hatta çıkarılmasına imkân tanır.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">03</div>
+      <div class="comp-title" data-tr="Ray & Kilitleme Sistemi" data-en="Rail & Locking System">Ray & Kilitleme Sistemi</div>
+      <div class="comp-mat" data-tr="AISI 316L Paslanmaz Çelik Ray" data-en="AISI 316L Stainless Steel Rail">AISI 316L Paslanmaz Çelik Ray</div>
+      <p class="comp-desc" data-tr="AISI 316L paslanmaz çelikten çekilen boyuna T-ray profilleri, çelik iskelet üzerine M5 kontr-somunlu vidalarla sabitlenir. Bölüm plakalarının her iki yanındaki kızak flanşları raya geçerek 10 farklı açı pozisyonuna kilitlenebilen çelik pim-yay mekanizmasına oturur. Kilit kuvveti plaka başına ≥ 800 N olarak tasarlanmıştır; istem dışı açılmayı önlemek için çift güvenlik mandalı bulunur." data-en="Longitudinal T-rail profiles drawn from AISI 316L stainless steel are fixed to the steel frame with M5 counter-nut screws. Slide flanges on both sides of section plates engage the rail and seat on a steel pin-spring mechanism lockable to 10 different angle positions. Lock force is designed at ≥ 800 N per plate; a double safety latch prevents unintended release.">AISI 316L paslanmaz çelikten çekilen boyuna T-ray profilleri, çelik iskelet üzerine M5 kontr-somunlu vidalarla sabitlenir. Bölüm plakalarının her iki yanındaki kızak flanşları raya geçerek 10 farklı açı pozisyonuna kilitlenebilen çelik pim-yay mekanizmasına oturur. Kilit kuvveti plaka başına ≥ 800 N olarak tasarlanmıştır; istem dışı açılmayı önlemek için çift güvenlik mandalı bulunur.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">04</div>
+      <div class="comp-title" data-tr="Yüksek Konfor Yüzey Döşemesi" data-en="High-Comfort Surface Padding">Yüksek Konfor Yüzey Döşemesi</div>
+      <div class="comp-mat" data-tr="Visco-Elastik Köpük + PU Deri Örtü" data-en="Visco-Elastic Foam + PU Leather Cover">Visco-Elastik Köpük + PU Deri Örtü</div>
+      <p class="comp-desc" data-tr="Her modüler bölüm plakasının üzerine 40 mm kalınlıkta visco-elastik köpük ped oturur; yoğunluk 55 kg/m³, sertlik ILD40. Ped yüzeyi hastane sınıfı PU deri örtü ile kaplanmıştır: antimikrobiyal, hidrolik sıvılara karşı dayanıklı, EN 13795'e uygun bariyer kapasitesi. Örtü fermuarla sökülebilir ve 60 °C'de otoklavlanabilir." data-en="A 40 mm thick visco-elastic foam pad sits on each modular section plate; density 55 kg/m³, hardness ILD40. Pad surface is covered with hospital-grade PU leather: antimicrobial, resistant to hydraulic fluids, barrier capacity compliant with EN 13795. Cover is zip-removable and autoclavable at 60 °C.">Her modüler bölüm plakasının üzerine 40 mm kalınlıkta visco-elastik köpük ped oturur; yoğunluk 55 kg/m³, sertlik ILD40. Ped yüzeyi hastane sınıfı PU deri örtü ile kaplanmıştır: antimikrobiyal, hidrolik sıvılara karşı dayanıklı, EN 13795'e uygun bariyer kapasitesi. Örtü fermuarla sökülebilir ve 60 °C'de otoklavlanabilir.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">05</div>
+      <div class="comp-title" data-tr="Hasta Güvence Kemerleri" data-en="Patient Safety Straps">Hasta Güvence Kemerleri</div>
+      <div class="comp-mat" data-tr="50 mm Poliester + Otomatik Kilit Toka" data-en="50 mm Polyester + Auto-Lock Buckle">50 mm Poliester + Otomatik Kilit Toka</div>
+      <p class="comp-desc" data-tr="Dört adet 50 mm eninde poliester kemer (göğüs, bel, uyluk, bacak); kırılma yükü ≥ 2500 kg. Otomatik kilitli plastik tokaları tek elle kilitleme ve serbest bırakma imkânı sunar, ancak iki eş zamanlı hareket olmadan açılmaz — hasta hareketi veya titreşim kaynaklı kazara açılma riski ortadan kalkar. Kemerin iskelet üzerindeki D-halkalara bağlandığı noktalarda paslanmaz çelik D-halka kaynak arması (strap lug) mevcuttur." data-en="Four 50 mm wide polyester straps (chest, waist, thigh, leg); break load ≥ 2500 kg. Auto-locking plastic buckles allow single-hand locking and release but cannot open without two simultaneous movements — eliminating accidental release risk from patient movement or vibration. Stainless steel D-ring welded lugs are present at points where straps attach to D-rings on the frame.">Dört adet 50 mm eninde poliester kemer (göğüs, bel, uyluk, bacak); kırılma yükü ≥ 2500 kg. Otomatik kilitli plastik tokaları tek elle kilitleme ve serbest bırakma imkânı sunar, ancak iki eş zamanlı hareket olmadan açılmaz — hasta hareketi veya titreşim kaynaklı kazara açılma riski ortadan kalkar. Kemerin iskelet üzerindeki D-halkalara bağlandığı noktalarda paslanmaz çelik D-halka kaynak arması (strap lug) mevcuttur.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">06</div>
+      <div class="comp-title" data-tr="Taşıma Sapları & Tekerlekli Stand" data-en="Handles & Wheeled Stand">Taşıma Sapları & Tekerlekli Stand</div>
+      <div class="comp-mat" data-tr="Paslanmaz Sap + Alüminyum Stand + PU Tekerlek" data-en="Stainless Handle + Aluminium Stand + PU Wheel">Paslanmaz Sap + Alüminyum Stand + PU Tekerlek</div>
+      <p class="comp-desc" data-tr="İskeletin dört köşesine kaynaklı AISI 304 paslanmaz çelik boru saplar (çap 25 mm); yüzey kaplamasız sap tercih edildiğinde ısıl sprey ile doku tutturucu kaplama uygulanır. Opsiyonel alüminyum katlanır stand iki ön tekerlek (PU, Ø 75 mm, frenli) ve iki arka sabit ayak üzerine oturur; sedyenin zemin yüksekliğini 70–95 cm arasında ayarlar." data-en="AISI 304 stainless steel tube handles (dia. 25 mm) welded to four corners of the frame; when bare handle is preferred, thermal spray grip coating is applied. Optional aluminium folding stand sits on two front wheels (PU, Ø 75 mm, with brake) and two rear fixed feet; adjusts ground clearance of stretcher between 70–95 cm.">İskeletin dört köşesine kaynaklı AISI 304 paslanmaz çelik boru saplar (çap 25 mm); yüzey kaplamasız sap tercih edildiğinde ısıl sprey ile doku tutturucu kaplama uygulanır. Opsiyonel alüminyum katlanır stand iki ön tekerlek (PU, Ø 75 mm, frenli) ve iki arka sabit ayak üzerine oturur; sedyenin zemin yüksekliğini 70–95 cm arasında ayarlar.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">07</div>
+      <div class="comp-title" data-tr="IV Direk Montaj Noktaları" data-en="IV Pole Mount Points">IV Direk Montaj Noktaları</div>
+      <div class="comp-mat" data-tr="AISI 304 Paslanmaz Soket" data-en="AISI 304 Stainless Socket">AISI 304 Paslanmaz Soket</div>
+      <p class="comp-desc" data-tr="İskeletin her iki üst köşesinde standart 22 mm iç çaplı paslanmaz soket; serum askısı, kardiyak monitör direği veya oksijen tüpü braketini kolayca kabul eder. Soketler, M6 kilitleme vidasıyla aksesuar titreşim kaynaklı gevşemeye karşı sabitlemeye olanak tanır. Bu özellik, K-3'ü transferde klinik ekipmanlı kullanım için uygun kılar." data-en="Standard 22 mm inner diameter stainless sockets at both upper corners of the frame; easily accept IV pole, cardiac monitor pole or oxygen cylinder bracket. Sockets allow accessory to be secured against vibration-induced loosening with M6 locking screw. This feature makes K-3 suitable for use with clinical equipment during transfer.">İskeletin her iki üst köşesinde standart 22 mm iç çaplı paslanmaz soket; serum askısı, kardiyak monitör direği veya oksijen tüpü braketini kolayca kabul eder. Soketler, M6 kilitleme vidasıyla aksesuar titreşim kaynaklı gevşemeye karşı sabitlemeye olanak tanır. Bu özellik, K-3'ü transferde klinik ekipmanlı kullanım için uygun kılar.</p>
+    </div>
+
+    <div class="component-card reveal">
+      <div class="comp-num">08</div>
+      <div class="comp-title" data-tr="Yüzey Koruma Kaplaması" data-en="Surface Protection Coating">Yüzey Koruma Kaplaması</div>
+      <div class="comp-mat" data-tr="Epoksi Astar + Poliüretan Toz Boya" data-en="Epoxy Primer + Polyurethane Powder Coat">Epoksi Astar + Poliüretan Toz Boya</div>
+      <p class="comp-desc" data-tr="Çelik iskelet kumlama (Sa 2,5) ile yüzey hazırlığının ardından iki kat epoksi astar (toplam 40 µm) ve tek kat poliüretan toz boya (60 µm) uygulanır. Toplam kuru film kalınlığı: 100 µm. Gıda ile temassız sağlık ekipmanı standardına göre seçilmiş renk (RAL 7035 açık gri). ISO 9227 tuz sprey testi: ≥ 600 saat." data-en="After surface preparation of the steel frame by sandblasting (Sa 2.5), two coats of epoxy primer (total 40 µm) and one coat of polyurethane powder coat (60 µm) are applied. Total dry film thickness: 100 µm. Colour selected to non-food-contact healthcare equipment standard (RAL 7035 light grey). ISO 9227 salt spray test: ≥ 600 hours.">Çelik iskelet kumlama (Sa 2,5) ile yüzey hazırlığının ardından iki kat epoksi astar (toplam 40 µm) ve tek kat poliüretan toz boya (60 µm) uygulanır. Toplam kuru film kalınlığı: 100 µm. Gıda ile temassız sağlık ekipmanı standardına göre seçilmiş renk (RAL 7035 açık gri). ISO 9227 tuz sprey testi: ≥ 600 saat.</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── ÜRETİM YÖNTEMİ ── -->
+<div class="content-section alt">
+  <div class="inner">
+    <div class="section-head reveal">
+      <p class="section-label" data-tr="Nasıl Yapıyoruz?" data-en="How We Make It">Nasıl Yapıyoruz?</p>
+      <h2 class="section-title" data-tr="Üretim Yöntemi" data-en="Production Method">Üretim Yöntemi</h2>
+    </div>
+
+    <div class="production-steps">
+
+      <div class="prod-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="İskelet Üretimi" data-en="Frame Fabrication">İskelet Üretimi</div>
+          <div class="step-title" data-tr="Çelik Profil Kesim & MIG Kaynak" data-en="Steel Profile Cutting & MIG Welding">Çelik Profil Kesim & MIG Kaynak</div>
+          <p class="step-desc" data-tr="S235JR soğuk hadde kare profiller CNC orbital bant testere ile ±0,2 mm toleranslı boyutlara kesilir. Birleşim noktaları 3 eksenli kaynak jigine sabitlenmiş halde MAG (metal aktif gaz) kaynakla birleştirilir; dolgu teli ER70S-6, koruyucu gaz Ar/%18 CO₂ karışımıdır. Tüm kaynak dikişleri EN ISO 5817 kalite sınıfı B (en yüksek) gereksinimlerine göre görsel muayeneden, kritik birleşimler penetrant test (PT) muayenesinden geçirilir. Kaynaklı iskelet oda sıcaklığında doğal soğutma sonrası boyutsal kontrole alınır." data-en="S235JR cold-rolled square profiles are cut to ±0.2 mm tolerances on a CNC orbital band saw. Joints are welded by MAG (metal active gas) welding fixed to a 3-axis welding jig; filler wire ER70S-6, shielding gas Ar/18% CO₂ mix. All weld seams pass visual inspection per EN ISO 5817 quality class B (highest), critical joints pass penetrant test (PT) inspection. Welded frame undergoes dimensional inspection after natural cooling at room temperature.">S235JR soğuk hadde kare profiller CNC orbital bant testere ile ±0,2 mm toleranslı boyutlara kesilir. Birleşim noktaları 3 eksenli kaynak jigine sabitlenmiş halde MAG (metal aktif gaz) kaynakla birleştirilir; dolgu teli ER70S-6, koruyucu gaz Ar/%18 CO₂ karışımıdır. Tüm kaynak dikişleri EN ISO 5817 kalite sınıfı B (en yüksek) gereksinimlerine göre görsel muayeneden, kritik birleşimler penetrant test (PT) muayenesinden geçirilir. Kaynaklı iskelet oda sıcaklığında doğal soğutma sonrası boyutsal kontrole alınır.</p>
+          <div class="step-tags">
+            <span class="tag">MAG Kaynak</span>
+            <span class="tag">ER70S-6</span>
+            <span class="tag">EN ISO 5817 Sınıf B</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Polimer İşleme" data-en="Polymer Machining">Polimer İşleme</div>
+          <div class="step-title" data-tr="HDPE Plaka CNC Frezeleme" data-en="HDPE Plate CNC Milling">HDPE Plaka CNC Frezeleme</div>
+          <p class="step-desc" data-tr="HDPE 500 hammadde plakalar (2000×1000×8 mm) CNC freze merkezinde kontur kesimiyle dört modüler bölüm plakasına dönüştürülür. Kızak flanş profilleri, kemer D-halka delikleri ve pozisyon mandal yuvası aynı tezgahta işlenir; geometrik sapma ±0,1 mm. Frezeleme sonrası kenar yüzeyleri el ile zımparalanır (P180) ve daha sonra uygulanacak astara adhezyon sağlamak amacıyla hafif UV ozon aktivasyonundan geçirilir." data-en="HDPE 500 raw material plates (2000×1000×8 mm) are converted into four modular section plates by contour cutting on a CNC milling centre. Slide flange profiles, strap D-ring holes and position detent socket are machined on the same machine; geometric deviation ±0.1 mm. After milling, edge surfaces are hand-sanded (P180) and passed through light UV ozone activation to ensure adhesion for subsequent primer application.">HDPE 500 hammadde plakalar (2000×1000×8 mm) CNC freze merkezinde kontur kesimiyle dört modüler bölüm plakasına dönüştürülür. Kızak flanş profilleri, kemer D-halka delikleri ve pozisyon mandal yuvası aynı tezgahta işlenir; geometrik sapma ±0,1 mm. Frezeleme sonrası kenar yüzeyleri el ile zımparalanır (P180) ve daha sonra uygulanacak astara adhezyon sağlamak amacıyla hafif UV ozon aktivasyonundan geçirilir.</p>
+          <div class="step-tags">
+            <span class="tag">HDPE 500</span>
+            <span class="tag">CNC 3-Eksen</span>
+            <span class="tag">UV Ozon Aktivasyon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Yüzey Koruma" data-en="Surface Protection">Yüzey Koruma</div>
+          <div class="step-title" data-tr="Kumlama, Epoksi Astar & Toz Boya" data-en="Sandblasting, Epoxy Primer & Powder Coat">Kumlama, Epoksi Astar & Toz Boya</div>
+          <p class="step-desc" data-tr="Çelik iskelet Sa 2,5 yüzey temizliğine (ISO 8501-1) ulaşana dek çelik grit ile kumlanır; yüzey pürüzlülüğü Rz 40–70 µm. Ardından iki kat çift bileşenli epoksi astar (toplam kuru film 40 µm) hava spreyi ile uygulanır ve 40 °C'de 30 dakika ön kür yapılır. Son kat elektrostatik tabancayla RAL 7035 poliüretan toz boya (60 µm); 180 °C fırın kürü 20 dakika. HDPE plakalar için özel UV-dayanımlı akrilik kaplama uygulanır. ISO 9227 tuz sprey: ≥ 600 saat." data-en="The steel frame is sandblasted with steel grit to Sa 2.5 surface cleanliness (ISO 8501-1); surface roughness Rz 40–70 µm. Two coats of two-component epoxy primer (total dry film 40 µm) are then applied by air spray with 30-minute pre-cure at 40 °C. Final coat of RAL 7035 polyurethane powder coat (60 µm) by electrostatic gun; oven cure at 180 °C for 20 minutes. A UV-resistant acrylic coating is applied for HDPE plates. ISO 9227 salt spray: ≥ 600 hours.">Çelik iskelet Sa 2,5 yüzey temizliğine (ISO 8501-1) ulaşana dek çelik grit ile kumlanır; yüzey pürüzlülüğü Rz 40–70 µm. Ardından iki kat çift bileşenli epoksi astar (toplam kuru film 40 µm) hava spreyi ile uygulanır ve 40 °C'de 30 dakika ön kür yapılır. Son kat elektrostatik tabancayla RAL 7035 poliüretan toz boya (60 µm); 180 °C fırın kürü 20 dakika. HDPE plakalar için özel UV-dayanımlı akrilik kaplama uygulanır. ISO 9227 tuz sprey: ≥ 600 saat.</p>
+          <div class="step-tags">
+            <span class="tag">Sa 2.5 Kumlama</span>
+            <span class="tag">Epoksi Astar 40 µm</span>
+            <span class="tag">PU Toz Boya 60 µm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Final Montaj" data-en="Final Assembly">Final Montaj</div>
+          <div class="step-title" data-tr="Modüler Sistem Entegrasyonu" data-en="Modular System Integration">Modüler Sistem Entegrasyonu</div>
+          <p class="step-desc" data-tr="Boyalı iskelet, paslanmaz T-raylar (M5×12 torx vida, tork 4,5 Nm) ile teçhiz edilir. HDPE bölüm plakaları ray kanallarına geçirilir; mandal mekanizması 10 pozisyonu da kilitleyecek şekilde hassas ayarlıdır. Visco köpük pedler çift taraflı bant ve mekanik kenar klipler kombinasyonuyla bölüm plakalarına tutturulur. PU deri örtüler fermuarlanır ve çekme kuvveti (≥ 40 N) testi yapılır. Kemer lug noktaları dinamometre ile kuvvet testi (her nokta için ≥ 2500 N tork yükü) uygulanır." data-en="The painted frame is fitted with stainless T-rails (M5×12 torx screw, torque 4.5 Nm). HDPE section plates are inserted into rail channels; detent mechanism is precisely adjusted to lock all 10 positions. Visco foam pads are attached to section plates with a combination of double-sided tape and mechanical edge clips. PU leather covers are zipped and pull force test (≥ 40 N) is applied. Strap lug points are force tested with a dynamometer (≥ 2500 N torsional load for each point).">Boyalı iskelet, paslanmaz T-raylar (M5×12 torx vida, tork 4,5 Nm) ile teçhiz edilir. HDPE bölüm plakaları ray kanallarına geçirilir; mandal mekanizması 10 pozisyonu da kilitleyecek şekilde hassas ayarlıdır. Visco köpük pedler çift taraflı bant ve mekanik kenar klipler kombinasyonuyla bölüm plakalarına tutturulur. PU deri örtüler fermuarlanır ve çekme kuvveti (≥ 40 N) testi yapılır. Kemer lug noktaları dinamometre ile kuvvet testi (her nokta için ≥ 2500 N tork yükü) uygulanır.</p>
+          <div class="step-tags">
+            <span class="tag">Tork Kontrolü</span>
+            <span class="tag">10-Pozisyon Mandal</span>
+            <span class="tag">Dinamometre Testi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-step reveal">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-sub" data-tr="Kalite Güvence" data-en="Quality Assurance">Kalite Güvence</div>
+          <div class="step-title" data-tr="Final Test & Sertifikasyon" data-en="Final Testing & Certification">Final Test & Sertifikasyon</div>
+          <p class="step-desc" data-tr="Her K-3 dört aşamalı teste tabi tutulur: (1) Statik yük — 625 kg 5 dakika (2,5× nominal); (2) Bölüm plakası eğim dayanımı — her bölüm 10 pozisyonda 200 N yandan yük; (3) Titreşim dayanıklılığı — 5–150 Hz tarama, 0,5 g ivme, 2 saat; (4) Kimyasal direnç — dezenfektan sıvıları ve %70 etanol ile 100 silme döngüsü. Boyutsal kontrol CMM ile, kaplama kalınlığı kuru film ölçer ile doğrulanır. Seri numarası ve üretim tarihi iskelet üzerine lazer gravür ile işlenir." data-en="Each K-3 undergoes four-stage testing: (1) Static load — 625 kg for 5 minutes (2.5× nominal); (2) Section plate tilt resistance — 200 N lateral load on each section in 10 positions; (3) Vibration durability — 5–150 Hz sweep, 0.5 g acceleration, 2 hours; (4) Chemical resistance — 100 wipe cycles with disinfectant fluids and 70% ethanol. Dimensional inspection verified by CMM, coating thickness by dry film gauge. Serial number and production date are laser engraved onto the frame.">Her K-3 dört aşamalı teste tabi tutulur: (1) Statik yük — 625 kg 5 dakika (2,5× nominal); (2) Bölüm plakası eğim dayanımı — her bölüm 10 pozisyonda 200 N yandan yük; (3) Titreşim dayanıklılığı — 5–150 Hz tarama, 0,5 g ivme, 2 saat; (4) Kimyasal direnç — dezenfektan sıvıları ve %70 etanol ile 100 silme döngüsü. Boyutsal kontrol CMM ile, kaplama kalınlığı kuru film ölçer ile doğrulanır. Seri numarası ve üretim tarihi iskelet üzerine lazer gravür ile işlenir.</p>
+          <div class="step-tags">
+            <span class="tag">625 kg Statik</span>
+            <span class="tag">Titreşim 2 Saat</span>
+            <span class="tag">Kimyasal Direnç 100×</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ── TEKNİK ÖZELLİKLER ── -->
+<div id="specs" class="content-section">
+  <div class="section-head reveal">
+    <p class="section-label" data-tr="Veriler" data-en="Data">Veriler</p>
+    <h2 class="section-title" data-tr="Teknik Özellikler" data-en="Technical Specifications">Teknik Özellikler</h2>
+  </div>
+
+  <div class="specs-layout">
+    <div class="reveal">
+      <table class="specs-table">
+        <tr>
+          <td data-tr="Ürün Adı" data-en="Product Name">Ürün Adı</td>
+          <td data-tr="KHIDR K-3 Modüler Taşıma Sedyesi" data-en="KHIDR K-3 Modular Transport Stretcher">KHIDR K-3 Modüler Taşıma Sedyesi</td>
+        </tr>
+        <tr>
+          <td data-tr="Seri" data-en="Series">Seri</td>
+          <td data-tr="Elite" data-en="Elite">Elite</td>
+        </tr>
+        <tr>
+          <td data-tr="Dış Boyutlar" data-en="Outer Dimensions">Dış Boyutlar</td>
+          <td>1950 × 560 × 120 mm</td>
+        </tr>
+        <tr>
+          <td data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</td>
+          <td>≤ 12,0 kg</td>
+        </tr>
+        <tr>
+          <td data-tr="Max. Yük Kapasitesi" data-en="Max. Load Capacity">Max. Yük Kapasitesi</td>
+          <td>250 kg</td>
+        </tr>
+        <tr>
+          <td data-tr="Test Yükü (Statik)" data-en="Test Load (Static)">Test Yükü (Statik)</td>
+          <td>625 kg / 5 dak.</td>
+        </tr>
+        <tr>
+          <td data-tr="Çerçeve Malzemesi" data-en="Frame Material">Çerçeve Malzemesi</td>
+          <td>S235JR Yapısal Çelik</td>
+        </tr>
+        <tr>
+          <td data-tr="Bölüm Plakası Malzemesi" data-en="Section Plate Material">Bölüm Plakası Malzemesi</td>
+          <td>HDPE 500, 8 mm</td>
+        </tr>
+        <tr>
+          <td data-tr="Modüler Bölüm Sayısı" data-en="Modular Section Count">Modüler Bölüm Sayısı</td>
+          <td data-tr="4 (baş / üst gövde / alt gövde / bacak)" data-en="4 (head / upper body / lower body / leg)">4 (baş / üst gövde / alt gövde / bacak)</td>
+        </tr>
+        <tr>
+          <td data-tr="Pozisyon Sayısı" data-en="Position Count">Pozisyon Sayısı</td>
+          <td data-tr="10 kilitlenebilir açı / bölüm" data-en="10 lockable angles / section">10 kilitlenebilir açı / bölüm</td>
+        </tr>
+        <tr>
+          <td data-tr="Döşeme" data-en="Padding">Döşeme</td>
+          <td data-tr="Visco-Elastik Köpük 40 mm, ILD40" data-en="Visco-Elastic Foam 40 mm, ILD40">Visco-Elastik Köpük 40 mm, ILD40</td>
+        </tr>
+        <tr>
+          <td data-tr="Örtü Malzemesi" data-en="Cover Material">Örtü Malzemesi</td>
+          <td data-tr="Hastane sınıfı PU deri, otoklavlanabilir" data-en="Hospital-grade PU leather, autoclavable">Hastane sınıfı PU deri, otoklavlanabilir</td>
+        </tr>
+        <tr>
+          <td data-tr="Kemer Sayısı" data-en="Strap Count">Kemer Sayısı</td>
+          <td data-tr="4 adet otomatik kilitli" data-en="4 auto-locking">4 adet otomatik kilitli</td>
+        </tr>
+        <tr>
+          <td data-tr="Yüzey Kaplaması" data-en="Surface Coating">Yüzey Kaplaması</td>
+          <td data-tr="Epoksi Astar + PU Toz Boya RAL 7035" data-en="Epoxy Primer + PU Powder Coat RAL 7035">Epoksi Astar + PU Toz Boya RAL 7035</td>
+        </tr>
+        <tr>
+          <td data-tr="Çalışma Sıcaklığı" data-en="Operating Temperature">Çalışma Sıcaklığı</td>
+          <td>−10 °C … +60 °C</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="reveal">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--dark);margin-bottom:1.5rem;line-height:1.5" data-tr="Sertifikalar & Uyumluluk" data-en="Certifications & Compliance">Sertifikalar & Uyumluluk</p>
+      <ul class="cert-list">
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">CE İşaretleme</div>
+            <p class="cert-detail" data-tr="Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi." data-en="Medical device directive compliant, EU market entry certificate.">Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">ISO 9001:2015</div>
+            <p class="cert-detail" data-tr="Kalite yönetim sistemi sertifikasyonu; tüm üretim süreçleri kapsamında." data-en="Quality management system certification; covering all production processes.">Kalite yönetim sistemi sertifikasyonu; tüm üretim süreçleri kapsamında.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">TSE EN 1865-3</div>
+            <p class="cert-detail" data-tr="Modüler kurtarma yüzeyleri de dahil olmak üzere hasta taşıma ekipmanı standardı." data-en="Patient handling equipment standard including modular rescue surfaces.">Modüler kurtarma yüzeyleri de dahil olmak üzere hasta taşıma ekipmanı standardı.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">EN 13795</div>
+            <p class="cert-detail" data-tr="Yüzey örtüsünün cerrahi bariyer performansı ve antimikrobiyal uygunluk belgesi." data-en="Surface cover surgical barrier performance and antimicrobial compliance certificate.">Yüzey örtüsünün cerrahi bariyer performansı ve antimikrobiyal uygunluk belgesi.</p>
+          </div>
+        </li>
+        <li class="cert-item">
+          <span class="cert-icon">✦</span>
+          <div class="cert-body">
+            <div class="cert-name">EN 1789 Ambulans Uyumu</div>
+            <p class="cert-detail" data-tr="Avrupa ambulans sedye standartlarıyla uyumlu boyut ve kilitleme arayüzü." data-en="Dimension and locking interface compliant with European ambulance stretcher standards.">Avrupa ambulans sedye standartlarıyla uyumlu boyut ve kilitleme arayüzü.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── KULLANIM ALANLARI ── -->
+<div class="content-section alt">
+  <div class="inner">
+    <div class="section-head reveal">
+      <p class="section-label" data-tr="Nerede Kullanılır?" data-en="Where Is It Used?">Nerede Kullanılır?</p>
+      <h2 class="section-title" data-tr="Kullanım Alanları" data-en="Use Cases">Kullanım Alanları</h2>
+    </div>
+    <div class="use-cases">
+      <div class="use-card reveal">
+        <span class="use-icon">🏥</span>
+        <div class="use-title" data-tr="Hastane İçi Transfer" data-en="In-Hospital Transfer">Hastane İçi Transfer</div>
+        <p class="use-desc" data-tr="Modüler bölümlerin klinik pozisyona ayarlanmasıyla görüntüleme ve müdahale koridorları." data-en="Imaging and procedure corridors with modular sections adjusted to clinical position.">Modüler bölümlerin klinik pozisyona ayarlanmasıyla görüntüleme ve müdahale koridorları.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🚑</span>
+        <div class="use-title" data-tr="Ambulans Transferi" data-en="Ambulance Transfer">Ambulans Transferi</div>
+        <p class="use-desc" data-tr="EN 1789 uyumlu kilitleme arayüzüyle ambulans standına güvenli bağlantı." data-en="Secure connection to ambulance stand with EN 1789 compliant locking interface.">EN 1789 uyumlu kilitleme arayüzüyle ambulans standına güvenli bağlantı.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🩻</span>
+        <div class="use-title" data-tr="Radyoloji & MR" data-en="Radiology & MRI">Radyoloji & MR</div>
+        <p class="use-desc" data-tr="Opsiyonel MR-uyumlu paslanmaz/polimer versiyonuyla görüntüleme odası girişi." data-en="Imaging room access with optional MRI-compatible stainless/polymer version.">Opsiyonel MR-uyumlu paslanmaz/polimer versiyonuyla görüntüleme odası girişi.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">💪</span>
+        <div class="use-title" data-tr="Bariatrik Taşıma" data-en="Bariatric Transport">Bariatrik Taşıma</div>
+        <p class="use-desc" data-tr="250 kg kapasitesi ve geniş yüzey ile ağır hasta taşıma protokollerine uyum." data-en="Compliance with bariatric patient transport protocols with 250 kg capacity and wide surface.">250 kg kapasitesi ve geniş yüzey ile ağır hasta taşıma protokollerine uyum.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🏟️</span>
+        <div class="use-title" data-tr="Sahada Uzun Süreli Bakım" data-en="Extended Field Care">Sahada Uzun Süreli Bakım</div>
+        <p class="use-desc" data-tr="IV direk soketi ve konfor döşemesiyle uzun süreli hasta stabilizasyonu." data-en="Long-term patient stabilisation with IV pole socket and comfort padding.">IV direk soketi ve konfor döşemesiyle uzun süreli hasta stabilizasyonu.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── CTA ── -->
+<div class="cta-band">
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;color:white;margin-bottom:1rem" data-tr="K-3 hakkında teklif almak ister misiniz?" data-en="Would you like a quote for the K-3?">K-3 hakkında teklif almak ister misiniz?</h2>
+  <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;font-weight:300;margin-bottom:2rem" data-tr="Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz." data-en="We answer your technical questions and develop custom solutions for your needs.">Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="contact.html" style="padding:0.85rem 2.5rem;background:white;color:var(--red);font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+    <a href="products.html" style="padding:0.85rem 2.5rem;border:1px solid rgba(255,255,255,0.5);color:white;font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Tüm Ürünler" data-en="All Products">Tüm Ürünler</a>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="KHIDR_logosgv.svg" height="22" style="filter:brightness(0) invert(1);opacity:0.85;margin-bottom:1rem">
+      <p class="footer-tagline" data-tr="Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz." data-en="We design and manufacture life-saving equipment for critical moments.">Kritik anlarda hayat kurtaran ekipmanlar tasarlıyor ve üretiyoruz.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Sayfalar" data-en="Pages">Sayfalar</h4>
+      <ul>
+        <li><a href="index.html"    data-tr="Ana Sayfa"  data-en="Home">Ana Sayfa</a></li>
+        <li><a href="products.html" data-tr="Ürünler"    data-en="Products">Ürünler</a></li>
+        <li><a href="about.html"    data-tr="Hakkımızda" data-en="About">Hakkımızda</a></li>
+        <li><a href="contact.html"  data-tr="İletişim"   data-en="Contact">İletişim</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
+      <ul>
+        <li><a href="k1.html">KHIDR K-1</a></li>
+        <li><a href="k2.html">KHIDR K-2</a></li>
+        <li><a href="k3.html">KHIDR K-3</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@khidr.com.tr">info@khidr.com.tr</a></li>
+        <li><a href="tel:+905001234567">+90 500 123 45 67</a></li>
+        <li><a href="#">İstanbul, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" data-tr="© 2026 KHIDR. Tüm hakları saklıdır." data-en="© 2026 KHIDR. All rights reserved.">© 2026 KHIDR. Tüm hakları saklıdır.</p>
+    <p class="footer-copy" data-tr="Türkiye'de üretilmiştir." data-en="Made in Türkiye.">Türkiye'de üretilmiştir.</p>
+  </div>
+</footer>
+
+<script>
+let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
+function toggleLang() {
+  currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
+  document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    const text = el.getAttribute('data-' + currentLang);
+    if (text) el.innerHTML = text;
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.delay) || 0);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.dataset.delay = i * 60;
+  observer.observe(el);
+});
+
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+}
+</script>
+</body>
+</html>

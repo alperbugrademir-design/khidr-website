@@ -144,15 +144,15 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     <div class="product-card reveal">
       <div class="product-img">
         <span class="product-badge" data-tr="Standart Seri" data-en="Standard Series">Standart Seri</span>
-        <span class="product-placeholder">K-1</span>
+        <img src="k1-photo.png" alt="KHIDR K-1" style="width:100%;height:100%;object-fit:cover;">
       </div>
       <p class="product-tag">KHIDR K-1</p>
-      <h2 class="product-name" data-tr="Çok Amaçlı Kurtarma Sedyesi" data-en="Multi-Purpose Rescue Stretcher">Çok Amaçlı Kurtarma Sedyesi</h2>
-      <p class="product-desc" data-tr="AFAD ve ambulans operasyonları için idealdir. Katlanabilir yapısı ile kolay taşıma ve depolama imkânı sunar. Hızlı kurulum mekanizması ile sahada zaman kaybetmezsiniz." data-en="Ideal for AFAD and ambulance operations. Foldable design for easy transport and storage. Quick-release mechanism saves time in the field.">AFAD ve ambulans operasyonları için idealdir. Katlanabilir yapısı ile kolay taşıma ve depolama imkânı sunar. Hızlı kurulum mekanizması ile sahada zaman kaybetmezsiniz.</p>
+      <h2 class="product-name" data-tr="Rulo Tip Dar Alan Kurtarma Sedyesi" data-en="Roll-Type Confined Space Rescue Stretcher">Rulo Tip Dar Alan Kurtarma Sedyesi</h2>
+      <p class="product-desc" data-tr="Dar alanlar, yüksek açı tahliyeleri ve zorlu endüstriyel sahalar için tasarlanmış esnek HDPE gövdeli kurtarma sistemi. Rulo yapılıp sırt çantasına sığar; hasta içine yatırılınca rijit koruma kalkanına dönüşür." data-en="Flexible HDPE-body rescue system for confined spaces, high-angle evacuations and demanding industrial sites. Rolls into a backpack; transforms into a rigid protective shell when patient is loaded.">Dar alanlar, yüksek açı tahliyeleri ve zorlu endüstriyel sahalar için tasarlanmış esnek MDPE gövdeli kurtarma sistemi. Rulo yapılıp sırt çantasına sığar; hasta içine yatırılınca rijit koruma kalkanına dönüşür.</p>
       <div class="product-specs">
-        <div class="spec"><span class="spec-label" data-tr="Ağırlık" data-en="Weight">Ağırlık</span><span class="spec-val">≤ 8 kg</span></div>
-        <div class="spec"><span class="spec-label" data-tr="Kapasite" data-en="Capacity">Kapasite</span><span class="spec-val">200 kg</span></div>
-        <div class="spec"><span class="spec-label" data-tr="Malzeme" data-en="Material">Malzeme</span><span class="spec-val" data-tr="Alüminyum" data-en="Aluminium">Alüminyum</span></div>
+        <div class="spec"><span class="spec-label" data-tr="Ağırlık" data-en="Weight">Ağırlık</span><span class="spec-val">~8,1 kg</span></div>
+        <div class="spec"><span class="spec-label" data-tr="Kopma Yükü" data-en="Break Load">Kopma Yükü</span><span class="spec-val">≥ 450 kg</span></div>
+        <div class="spec"><span class="spec-label" data-tr="Malzeme" data-en="Material">Malzeme</span><span class="spec-val">HDPE</span></div>
       </div>
       <a href="k1.html" class="product-link" data-tr="İncele →" data-en="View →">İncele →</a>
     </div>
@@ -170,13 +170,13 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
         <div class="spec"><span class="spec-label" data-tr="Kapasite" data-en="Capacity">Kapasite</span><span class="spec-val">180 kg</span></div>
         <div class="spec"><span class="spec-label" data-tr="Malzeme" data-en="Material">Malzeme</span><span class="spec-val" data-tr="Kompozit" data-en="Composite">Kompozit</span></div>
       </div>
-      <a href="contact.html" class="product-link" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+      <a href="k2.html" class="product-link" data-tr="İncele →" data-en="View →">İncele →</a>
     </div>
 
     <div class="product-card reveal">
       <div class="product-img">
         <span class="product-badge" data-tr="Elite Seri" data-en="Elite Series">Elite Seri</span>
-        <span class="product-placeholder">K-3</span>
+        <img src="k3-photo.png" alt="KHIDR K-3" style="width:100%;height:100%;object-fit:cover;">
       </div>
       <p class="product-tag">KHIDR K-3</p>
       <h2 class="product-name" data-tr="Modüler Taşıma Sedyesi" data-en="Modular Transport Stretcher">Modüler Taşıma Sedyesi</h2>
@@ -186,7 +186,7 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
         <div class="spec"><span class="spec-label" data-tr="Kapasite" data-en="Capacity">Kapasite</span><span class="spec-val">250 kg</span></div>
         <div class="spec"><span class="spec-label" data-tr="Malzeme" data-en="Material">Malzeme</span><span class="spec-val" data-tr="Çelik & Polimer" data-en="Steel & Polymer">Çelik & Polimer</span></div>
       </div>
-      <a href="contact.html" class="product-link" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+      <a href="k3.html" class="product-link" data-tr="İncele →" data-en="View →">İncele →</a>
     </div>
   </div>
 </div>
@@ -238,9 +238,17 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 
 <script>
 
-let currentLang = 'tr';
+let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
 function toggleLang() {
   currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
   document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
   document.querySelectorAll('[data-tr]').forEach(el => {

@@ -682,7 +682,7 @@ M986.250000 233.750004 C991.859863 236.127567 997.310974 237.951725 1001.682495 
     <div class="products-grid">
       <div class="product-card">
         <div class="product-img">
-          <span class="product-placeholder">K-1</span>
+          <img src="k1-photo.png" alt="KHIDR K-1" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="product-info">
           <p class="product-tag" data-tr="Standart Seri" data-en="Standard Series">Standart Seri</p>
@@ -704,7 +704,7 @@ M986.250000 233.750004 C991.859863 236.127567 997.310974 237.951725 1001.682495 
       </div>
       <div class="product-card">
         <div class="product-img">
-          <span class="product-placeholder">K-3</span>
+          <img src="k3-photo.png" alt="KHIDR K-3" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="product-info">
           <p class="product-tag" data-tr="Elite Seri" data-en="Elite Series">Elite Seri</p>
@@ -808,9 +808,17 @@ M986.250000 233.750004 C991.859863 236.127567 997.310974 237.951725 1001.682495 
   });
 
   // ── DİL DEĞİŞTİRİCİ
-  let currentLang = 'tr';
+  let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
   function toggleLang() {
     currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
     document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
     document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
     document.querySelectorAll('[data-tr]').forEach(el => {

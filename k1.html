@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KHIDR K-1 — Çok Amaçlı Kurtarma Sedyesi</title>
+<title>KHIDR K-1 — Rulo Tip Dar Alan Kurtarma Sedyesi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -24,7 +24,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
   background:rgba(255,255,255,0.96);
   box-shadow:0 1px 0 rgba(0,0,0,0.07);
   backdrop-filter:blur(8px);
-  transition:background 0.4s;
 }
 .nav-links { display:flex; align-items:center; gap:1.4rem; list-style:none; }
 .nav-links a { text-decoration:none; font-size:0.82rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--dark); transition:color 0.2s; }
@@ -44,13 +43,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
 .btn-primary:hover { background:var(--red-light); transform:translateY(-1px); }
 .btn-outline { padding:0.85rem 2.2rem; border:1px solid var(--dark); color:var(--dark); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-block; }
 .btn-outline:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
+.btn-manual { padding:0.85rem 2.2rem; border:1px solid rgba(0,0,0,0.18); color:var(--gray); font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:0.4rem; }
+.btn-manual:hover { border-color:var(--red); color:var(--red); transform:translateY(-1px); }
 .section-label { font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:1rem; }
 
 /* ── HERO ── */
 .product-hero {
-  padding: 9rem 3rem 0;
-  background: var(--light);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding:9rem 3rem 0;
+  background:var(--light);
+  border-bottom:1px solid rgba(0,0,0,0.06);
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:4rem;
@@ -71,41 +72,23 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
 .kpi-label { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-weight:500; }
 .hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
 
-.hero-visual {
-  display:flex; align-items:flex-end; justify-content:center;
-  padding-bottom:0;
-}
+.hero-visual { display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-end; gap:1rem; }
 .hero-img-wrap {
   width:100%; aspect-ratio:3/2;
   background:white;
   border:1px solid rgba(0,0,0,0.07);
   display:flex; align-items:center; justify-content:center;
-  position:relative;
   overflow:hidden;
 }
-.hero-placeholder {
-  font-family:'Cormorant Garamond',serif;
-  font-size:9rem; font-weight:300;
-  color:rgba(164,30,30,0.10);
-  user-select:none;
-}
+.hero-placeholder { font-family:'Cormorant Garamond',serif; font-size:9rem; font-weight:300; color:rgba(164,30,30,0.10); user-select:none; }
 
 /* ── INTRO STRIP ── */
-.intro-strip {
-  background:var(--dark);
-  padding:3rem;
-  display:flex;
-  gap:0;
-  overflow:hidden;
-}
+.intro-strip { background:var(--dark); padding:3rem; }
 .intro-strip-inner {
   max-width:1100px; margin:0 auto; width:100%;
   display:flex; gap:4rem; align-items:center; flex-wrap:wrap;
 }
-.intro-strip p {
-  font-size:1.05rem; font-weight:300; color:rgba(255,255,255,0.7);
-  line-height:1.8; max-width:680px; flex:1; min-width:280px;
-}
+.intro-strip p { font-size:1.05rem; font-weight:300; color:rgba(255,255,255,0.7); line-height:1.8; max-width:680px; flex:1; min-width:280px; }
 .intro-strip-stats { display:flex; gap:3rem; flex-wrap:wrap; }
 .istat { text-align:center; }
 .istat-val { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:white; line-height:1; }
@@ -119,80 +102,30 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
 .section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:300; line-height:1.2; color:var(--dark); }
 
 /* ── COMPONENTS ── */
-.components-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
-  gap:2px;
-}
+.components-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2px; }
 .component-card {
-  background:white;
-  border:1px solid rgba(0,0,0,0.07);
-  padding:2rem;
+  background:white; border:1px solid rgba(0,0,0,0.07); padding:2rem;
   transition:border-color 0.25s, box-shadow 0.25s;
-  position:relative;
 }
-.component-card:hover {
-  border-color:var(--red);
-  box-shadow:0 4px 24px rgba(164,30,30,0.07);
-}
-.comp-num {
-  font-family:'Cormorant Garamond',serif;
-  font-size:3.5rem; font-weight:300;
-  color:rgba(164,30,30,0.1);
-  line-height:1;
-  margin-bottom:0.5rem;
-}
-.comp-title {
-  font-size:0.88rem; font-weight:500; letter-spacing:0.06em;
-  text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem;
-}
-.comp-mat {
-  font-size:0.75rem; color:var(--red); font-weight:500;
-  letter-spacing:0.12em; text-transform:uppercase;
-  margin-bottom:0.75rem;
-}
+.component-card:hover { border-color:var(--red); box-shadow:0 4px 24px rgba(164,30,30,0.07); }
+.comp-num { font-family:'Cormorant Garamond',serif; font-size:3.5rem; font-weight:300; color:rgba(164,30,30,0.1); line-height:1; margin-bottom:0.5rem; }
+.comp-title { font-size:0.88rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem; }
+.comp-mat { font-size:0.75rem; color:var(--red); font-weight:500; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
 .comp-desc { font-size:0.87rem; color:var(--gray); line-height:1.7; font-weight:300; }
 
 /* ── PRODUCTION ── */
 .production-steps { display:flex; flex-direction:column; gap:0; }
-.prod-step {
-  display:grid;
-  grid-template-columns:60px 1fr;
-  gap:2rem;
-  padding:2.5rem 0;
-  border-bottom:1px solid rgba(0,0,0,0.07);
-  align-items:start;
-}
+.prod-step { display:grid; grid-template-columns:60px 1fr; gap:2rem; padding:2.5rem 0; border-bottom:1px solid rgba(0,0,0,0.07); align-items:start; }
 .prod-step:last-child { border-bottom:none; }
-.step-num {
-  font-family:'Cormorant Garamond',serif;
-  font-size:2.8rem; font-weight:300;
-  color:var(--red);
-  opacity:0.35;
-  line-height:1;
-  padding-top:0.2rem;
-}
-.step-body {}
-.step-title {
-  font-size:0.9rem; font-weight:500; letter-spacing:0.06em;
-  text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem;
-}
-.step-sub {
-  font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase;
-  color:var(--red); font-weight:500; margin-bottom:0.6rem;
-}
+.step-num { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:300; color:var(--red); opacity:0.35; line-height:1; padding-top:0.2rem; }
+.step-sub { font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--red); font-weight:500; margin-bottom:0.6rem; }
+.step-title { font-size:0.9rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); margin-bottom:0.5rem; }
 .step-desc { font-size:0.88rem; color:var(--gray); line-height:1.75; font-weight:300; }
 .step-tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.9rem; }
-.tag {
-  font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase;
-  padding:0.25rem 0.65rem; border:1px solid rgba(0,0,0,0.12);
-  color:var(--gray); font-weight:500;
-}
+.tag { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.25rem 0.65rem; border:1px solid rgba(0,0,0,0.12); color:var(--gray); font-weight:500; }
 
 /* ── SPECS TABLE ── */
-.specs-layout {
-  display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start;
-}
+.specs-layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
 .specs-table { width:100%; border-collapse:collapse; }
 .specs-table tr { border-bottom:1px solid rgba(0,0,0,0.07); }
 .specs-table tr:last-child { border-bottom:none; }
@@ -201,33 +134,20 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--da
 .specs-table td:last-child { font-weight:500; color:var(--dark); }
 
 .cert-list { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-top:2rem; }
-.cert-item {
-  display:flex; align-items:flex-start; gap:0.75rem;
-  padding:0.9rem 1.2rem;
-  border:1px solid rgba(0,0,0,0.08);
-}
+.cert-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.9rem 1.2rem; border:1px solid rgba(0,0,0,0.08); }
 .cert-icon { color:var(--red); font-size:0.8rem; margin-top:0.1rem; flex-shrink:0; }
-.cert-body {}
 .cert-name { font-size:0.82rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); }
 .cert-detail { font-size:0.8rem; color:var(--gray); font-weight:300; margin-top:0.15rem; }
 
 /* ── KULLANIM ALANLARI ── */
 .use-cases { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; }
-.use-card {
-  padding:2rem 1.5rem;
-  background:var(--dark);
-  text-align:center;
-}
+.use-card { padding:2rem 1.5rem; background:var(--dark); text-align:center; }
 .use-icon { font-size:1.8rem; margin-bottom:0.9rem; display:block; }
 .use-title { font-size:0.82rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:white; margin-bottom:0.4rem; }
 .use-desc { font-size:0.8rem; color:rgba(255,255,255,0.45); font-weight:300; line-height:1.6; }
 
-/* ── CTA BAND ── */
-.cta-band {
-  background:var(--red);
-  padding:5rem 3rem;
-  text-align:center;
-}
+/* ── CTA ── */
+.cta-band { background:var(--red); padding:5rem 3rem; text-align:center; }
 
 /* ── FOOTER ── */
 footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
@@ -296,34 +216,38 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
         <span>KHIDR K-1</span>
       </div>
       <div class="hero-badge reveal" data-tr="Standart Seri" data-en="Standard Series">Standart Seri</div>
-      <h1 class="hero-title reveal" data-tr="Çok Amaçlı<br>Kurtarma Sedyesi" data-en="Multi-Purpose<br>Rescue Stretcher">Çok Amaçlı<br>Kurtarma Sedyesi</h1>
-      <p class="hero-subtitle reveal" data-tr="AFAD ve ambulans operasyonları için tasarlanmış, katlanabilir alüminyum kurtarma sedyesi. Hızlı kurulum ve güvenilir yapısıyla sahada fark yaratır." data-en="Foldable aluminium rescue stretcher designed for AFAD and ambulance operations. Quick setup and reliable construction make the difference in the field.">AFAD ve ambulans operasyonları için tasarlanmış, katlanabilir alüminyum kurtarma sedyesi. Hızlı kurulum ve güvenilir yapısıyla sahada fark yaratır.</p>
+      <h1 class="hero-title reveal" data-tr="Rulo Tip<br>Dar Alan Kurtarma Sedyesi" data-en="Roll-Type<br>Confined Space Rescue Stretcher">Rulo Tip<br>Dar Alan Kurtarma Sedyesi</h1>
+      <p class="hero-subtitle reveal" data-tr="Dar alanlar, yüksek açı tahliyeleri ve zorlu endüstriyel sahalar için tasarlanmış esnek gövdeli kurtarma sistemi. Rulo yapılıp sırt çantasına sığarken, hasta içine yatırılıp kolonlar gerdirildiğinde rijit bir koruma kalkanına dönüşür." data-en="Flexible-body rescue system designed for confined spaces, high-angle evacuations and demanding industrial sites. Rolls up to fit in a backpack, yet transforms into a rigid protective shell when patient is loaded and straps are tensioned.">Dar alanlar, yüksek açı tahliyeleri ve zorlu endüstriyel sahalar için tasarlanmış esnek gövdeli kurtarma sistemi. Rulo yapılıp sırt çantasına sığarken, hasta içine yatırılıp kolonlar gerdirildiğinde rijit bir koruma kalkanına dönüşür.</p>
       <div class="hero-kpis reveal">
         <div class="kpi">
-          <span class="kpi-val">≤ 8 kg</span>
-          <span class="kpi-label" data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</span>
+          <span class="kpi-val">~8.1 kg</span>
+          <span class="kpi-label" data-tr="Tam Kit Ağırlığı" data-en="Full Kit Weight">Tam Kit Ağırlığı</span>
         </div>
         <div class="kpi">
-          <span class="kpi-val">200 kg</span>
-          <span class="kpi-label" data-tr="Yük Kapasitesi" data-en="Load Capacity">Yük Kapasitesi</span>
+          <span class="kpi-val">450 kg</span>
+          <span class="kpi-label" data-tr="Min. Kopma Yükü" data-en="Min. Break Load">Min. Kopma Yükü</span>
         </div>
         <div class="kpi">
-          <span class="kpi-val">6061</span>
-          <span class="kpi-label" data-tr="Al Alaşım" data-en="Al Alloy">Al Alaşım</span>
+          <span class="kpi-val">MDPE</span>
+          <span class="kpi-label" data-tr="Gövde Malzemesi" data-en="Body Material">Gövde Malzemesi</span>
         </div>
         <div class="kpi">
-          <span class="kpi-val">&lt; 15 sn</span>
-          <span class="kpi-label" data-tr="Kurulum Süresi" data-en="Setup Time">Kurulum Süresi</span>
+          <span class="kpi-val">−40 °C</span>
+          <span class="kpi-label" data-tr="Min. Çalışma Sıcaklığı" data-en="Min. Operating Temp.">Min. Çalışma Sıcaklığı</span>
         </div>
       </div>
       <div class="hero-actions reveal">
         <a href="contact.html" class="btn-primary" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
         <a href="#specs" class="btn-outline" data-tr="Teknik Detaylar" data-en="Technical Details">Teknik Detaylar</a>
+        <a href="k1-kullanim-kilavuzu.pdf" class="btn-manual" target="_blank" data-tr="↓ Kullanım Kılavuzu" data-en="↓ User Manual">↓ Kullanım Kılavuzu</a>
       </div>
     </div>
     <div class="hero-visual reveal">
       <div class="hero-img-wrap">
-        <span class="hero-placeholder">K-1</span>
+        <img src="k1-photo2.jpg" alt="KHIDR K-1" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div class="hero-img-wrap">
+        <img src="k1-photo.png" alt="KHIDR K-1" style="width:100%;height:100%;object-fit:cover;">
       </div>
     </div>
   </div>
@@ -333,19 +257,19 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 <!-- ── INTRO STRIP ── -->
 <div class="intro-strip">
   <div class="intro-strip-inner">
-    <p class="reveal" data-tr="KHIDR K-1, Türkiye'nin zorlu saha koşulları göz önünde bulundurularak tasarlanmış profesyonel bir kurtarma sedyesidir. Uçak kalitesi alüminyum alaşımıyla üretilen çerçevesi, yüksek yük kapasitesini minimum ağırlıkla birleştirir. Katlanır yapısı sayesinde dar alanlarda ve araçlarda kolayca depolanır." data-en="KHIDR K-1 is a professional rescue stretcher designed with Turkey's challenging field conditions in mind. Its aircraft-grade aluminium alloy frame combines high load capacity with minimum weight. Its foldable design allows easy storage in confined spaces and vehicles.">KHIDR K-1, Türkiye'nin zorlu saha koşulları göz önünde bulundurularak tasarlanmış profesyonel bir kurtarma sedyesidir. Uçak kalitesi alüminyum alaşımıyla üretilen çerçevesi, yüksek yük kapasitesini minimum ağırlıkla birleştirir. Katlanır yapısı sayesinde dar alanlarda ve araçlarda kolayca depolanır.</p>
+    <p class="reveal" data-tr="KHIDR K-1, geleneksel rijit sedyelerin giremediği yerlere girmek için tasarlandı. Boşken rulo yapılıp Cordura sırt çantasına sığan esnek MDPE gövde, sahaya ulaşır ulaşmaz hasta altına serilir. Colonlar gerildikçe sistem form değiştirerek hastayı tam anlamıyla saran, hem zeminde sürüklenmeye hem de dikey vinç çekimine dayanıklı rijit bir kabuk oluşturur. −40 °C ile +60 °C arasındaki operasyon aralığı ve kimyasal direnci onu petrokimya, maden ve askeri sahaların vazgeçilmezi kılar." data-en="KHIDR K-1 was designed to enter where traditional rigid stretchers cannot. The flexible MDPE body that rolls up to fit in a Cordura backpack is unrolled under the patient as soon as the rescuer reaches the scene. As straps are tensioned the system changes shape, forming a rigid shell that fully envelops the patient and withstands both ground dragging and vertical winch loads. Its −40 °C to +60 °C operating range and chemical resistance make it indispensable for petrochemical, mining and military sites.">KHIDR K-1, geleneksel rijit sedyelerin giremediği yerlere girmek için tasarlandı. Boşken rulo yapılıp Cordura sırt çantasına sığan esnek MDPE gövde, sahaya ulaşır ulaşmaz hasta altına serilir. Colonlar gerildikçe sistem form değiştirerek hastayı tam anlamıyla saran, hem zeminde sürüklenmeye hem de dikey vinç çekimine dayanıklı rijit bir kabuk oluşturur. −40 °C ile +60 °C arasındaki operasyon aralığı ve kimyasal direnci onu petrokimya, maden ve askeri sahaların vazgeçilmezi kılar.</p>
     <div class="intro-strip-stats reveal">
       <div class="istat">
         <div class="istat-val">7</div>
-        <div class="istat-lbl" data-tr="Ana Bileşen" data-en="Core Components">Ana Bileşen</div>
+        <div class="istat-lbl" data-tr="Kit Bileşeni" data-en="Kit Components">Kit Bileşeni</div>
       </div>
       <div class="istat">
-        <div class="istat-val">5</div>
+        <div class="istat-val">3</div>
         <div class="istat-lbl" data-tr="Üretim Aşaması" data-en="Production Stages">Üretim Aşaması</div>
       </div>
       <div class="istat">
-        <div class="istat-val">3×</div>
-        <div class="istat-lbl" data-tr="Yük Testi" data-en="Load Testing">Yük Testi</div>
+        <div class="istat-val">9 m</div>
+        <div class="istat-lbl" data-tr="Dikey Tahliye Halatı" data-en="Vertical Rescue Line">Dikey Tahliye Halatı</div>
       </div>
     </div>
   </div>
@@ -355,59 +279,59 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 <!-- ── BİLEŞENLER ── -->
 <div class="content-section">
   <div class="section-head reveal">
-    <p class="section-label" data-tr="Anatomisi" data-en="Anatomy">Anatomisi</p>
-    <h2 class="section-title" data-tr="Sedye Bileşenleri" data-en="Stretcher Components">Sedye Bileşenleri</h2>
+    <p class="section-label" data-tr="Kurtarma Kiti" data-en="Rescue Kit">Kurtarma Kiti</p>
+    <h2 class="section-title" data-tr="Sistem Bileşenleri" data-en="System Components">Sistem Bileşenleri</h2>
   </div>
 
   <div class="components-grid">
 
     <div class="component-card reveal">
       <div class="comp-num">01</div>
-      <div class="comp-title" data-tr="Ana Çerçeve" data-en="Main Frame">Ana Çerçeve</div>
-      <div class="comp-mat" data-tr="6061-T6 Alüminyum Alaşım" data-en="6061-T6 Aluminium Alloy">6061-T6 Alüminyum Alaşım</div>
-      <p class="comp-desc" data-tr="İki adet uzun boyuna profil ve birleştirici enine traverslerden oluşan taşıyıcı iskelet. Ekstrüzyon yöntemiyle üretilen profiller homojen duvar kalınlığı ile optimum ağırlık/dayanım oranı sunar. Köşe birleşimleri TIG kaynak ile güçlendirilmiştir." data-en="Load-bearing skeleton consisting of two longitudinal profiles and connecting transverse members. Profiles produced by extrusion offer an optimum weight-to-strength ratio with uniform wall thickness. Corner joints are reinforced with TIG welding.">İki adet uzun boyuna profil ve birleştirici enine traverslerden oluşan taşıyıcı iskelet. Ekstrüzyon yöntemiyle üretilen profiller homojen duvar kalınlığı ile optimum ağırlık/dayanım oranı sunar. Köşe birleşimleri TIG kaynak ile güçlendirilmiştir.</p>
+      <div class="comp-title" data-tr="Esnek MDPE Sedye Gövdesi" data-en="Flexible MDPE Stretcher Body">Esnek MDPE Sedye Gövdesi</div>
+      <div class="comp-mat" data-tr="Özel Formülasyonlu MDPE — Açık: 120 × 250 cm" data-en="Custom Formulated MDPE — Open: 120 × 250 cm">Özel Formülasyonlu MDPE — Açık: 120 × 250 cm</div>
+      <p class="comp-desc" data-tr="Sistemin kalbi. Yüksek darbe sönümleme kapasitesine sahip, düşük sürtünme katsayılı orta yoğunluklu polietilen (MDPE) levhadan üretilmiş ana platform. Boşken rulo yapılarak 20 cm çap × 94 cm yüksekliğe iner. Hasta içine yatırılıp bağlama kolonları gerildikçe levha form değiştirerek hastayı tam saran, esnemez bir kozalak yapısı oluşturur. Pürüzsüz alt yüzey, engebeli arazide ve dar şaftlarda sürtünmeli sürüklemeyi kolaylaştırır." data-en="The heart of the system. Main platform manufactured from medium-density polyethylene (MDPE) with high impact absorption capacity and low friction coefficient. Rolls down to 20 cm diameter × 94 cm height when empty. As the patient is loaded and lashing straps are tensioned, the sheet changes shape forming a rigid cocoon that fully envelops the patient. The smooth underside facilitates friction dragging in rough terrain and narrow shafts.">Sistemin kalbi. Yüksek darbe sönümleme kapasitesine sahip, düşük sürtünme katsayılı orta yoğunluklu polietilen (MDPE) levhadan üretilmiş ana platform. Boşken rulo yapılarak 20 cm çap × 94 cm yüksekliğe iner. Hasta içine yatırılıp bağlama kolonları gerildikçe levha form değiştirerek hastayı tam saran, esnemez bir kozalak yapısı oluşturur. Pürüzsüz alt yüzey, engebeli arazide ve dar şaftlarda sürtünmeli sürüklemeyi kolaylaştırır.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">02</div>
-      <div class="comp-title" data-tr="Katlanma Mekanizması" data-en="Folding Mechanism">Katlanma Mekanizması</div>
-      <div class="comp-mat" data-tr="Paslanmaz Çelik Pivot + Kilit" data-en="Stainless Steel Pivot + Lock">Paslanmaz Çelik Pivot + Kilit</div>
-      <p class="comp-desc" data-tr="Sedyenin ortadan iki eşit parçaya katlanmasını sağlayan merkezi pivot sistemi. AISI 304 paslanmaz çelikten işlenmiş pim ve kelebek kilit mekanizması tek elle açılıp kilitlenebilir. Kilit gerilimi ±500 N çekme yüküne dayanacak şekilde test edilmiştir." data-en="Central pivot system that allows the stretcher to fold in half. Pin and butterfly lock mechanism machined from AISI 304 stainless steel can be opened and locked with one hand. Lock tension is tested to withstand ±500 N tensile load.">Sedyenin ortadan iki eşit parçaya katlanmasını sağlayan merkezi pivot sistemi. AISI 304 paslanmaz çelikten işlenmiş pim ve kelebek kilit mekanizması tek elle açılıp kilitlenebilir. Kilit gerilimi ±500 N çekme yüküne dayanacak şekilde test edilmiştir.</p>
+      <div class="comp-title" data-tr="Cordura® Taşıma Çantası" data-en="Cordura® Carry Pack">Cordura® Taşıma Çantası</div>
+      <div class="comp-mat" data-tr="1000D Cordura® Naylon — Askeri Standart" data-en="1000D Cordura® Nylon — Military Standard">1000D Cordura® Naylon — Askeri Standart</div>
+      <p class="comp-desc" data-tr="Tüm sistem bileşenlerini barındıran, personelin operasyon bölgesine ulaşmak için sırtta taşıdığı yüksek dayanımlı sırt çantası. 1000D Cordura naylon dış yüzey; kesik, aşınma ve yırtılmaya karşı askeri standartlarda direnç sağlar. YKK fermuar ve MOLLE uyumlu harici bağlantı noktaları ile donatılmıştır." data-en="High-durability backpack housing all system components, carried on the back by personnel to reach the operation zone. 1000D Cordura nylon outer surface provides military-standard resistance to cutting, abrasion and tearing. Equipped with YKK zippers and MOLLE-compatible external attachment points.">Tüm sistem bileşenlerini barındıran, personelin operasyon bölgesine ulaşmak için sırtta taşıdığı yüksek dayanımlı sırt çantası. 1000D Cordura naylon dış yüzey; kesik, aşınma ve yırtılmaya karşı askeri standartlarda direnç sağlar. YKK fermuar ve MOLLE uyumlu harici bağlantı noktaları ile donatılmıştır.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">03</div>
-      <div class="comp-title" data-tr="Taşıma Sapları" data-en="Carrying Handles">Taşıma Sapları</div>
-      <div class="comp-mat" data-tr="Yüksek Yoğunluklu Polimer + Çelik Perno" data-en="High-Density Polymer + Steel Bolt">Yüksek Yoğunluklu Polimer + Çelik Perno</div>
-      <p class="comp-desc" data-tr="Ergonomik palmiye profilinde dört adet sabit sap (ön/arka çift) ve opsiyonel yan taşıma askıları. Çelik pernolarla çerçeveye bağlanan saplar, döndürülebilir pivot tasarımı sayesinde her tutma açısında sabit yük dağılımı sağlar." data-en="Four fixed ergonomic palm-profile handles (front/rear pairs) and optional side carrying straps. Handles bolted to the frame with steel fasteners provide constant load distribution at any grip angle thanks to rotatable pivot design.">Ergonomik palmiye profilinde dört adet sabit sap (ön/arka çift) ve opsiyonel yan taşıma askıları. Çelik pernolarla çerçeveye bağlanan saplar, döndürülebilir pivot tasarımı sayesinde her tutma açısında sabit yük dağılımı sağlar.</p>
+      <div class="comp-title" data-tr="Yatay Tahliye Sapanları" data-en="Horizontal Evacuation Slings">Yatay Tahliye Sapanları</div>
+      <div class="comp-mat" data-tr="Yüksek Mukavemetli Polyester Webbing (1 Çift)" data-en="High-Strength Polyester Webbing (1 Pair)">Yüksek Mukavemetli Polyester Webbing (1 Çift)</div>
+      <p class="comp-desc" data-tr="Helikopter vinci (hoist) veya endüstriyel vinç ile yapılan yere paralel (yatay) kaldırma operasyonları için tasarlanmış çift sap sistemi. Yük sedyenin dört noktasına eşit dağıtılarak tüm platform boyunca homojen bir gerilim sağlanır; hastanın bel veya boyun bölgesine lokal baskı oluşması önlenir." data-en="Dual handle system designed for horizontal lift operations (parallel to ground) via helicopter hoist or industrial winch. Load is distributed equally to four points on the stretcher ensuring homogeneous tension across the entire platform; prevents local pressure on the patient's waist or neck.">Helikopter vinci (hoist) veya endüstriyel vinç ile yapılan yere paralel (yatay) kaldırma operasyonları için tasarlanmış çift sap sistemi. Yük sedyenin dört noktasına eşit dağıtılarak tüm platform boyunca homojen bir gerilim sağlanır; hastanın bel veya boyun bölgesine lokal baskı oluşması önlenir.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">04</div>
-      <div class="comp-title" data-tr="Hasta Yatay Yüzeyi" data-en="Patient Surface">Hasta Yatay Yüzeyi</div>
-      <div class="comp-mat" data-tr="Oxford 600D Naylon + Köpük Ped" data-en="Oxford 600D Nylon + Foam Pad">Oxford 600D Naylon + Köpük Ped</div>
-      <p class="comp-desc" data-tr="Su geçirmez, antimikrobiyal kaplı Oxford naylon dış yüzey; altında 20 mm hafif köpük destek katmanı. Kanca-ilmek tutturucularla çerçeveden sökülebilir; saha koşullarında dezenfektan ile yıkanabilir. Ultraviole ve tuz spreyi direnci test edilmiştir." data-en="Water-resistant, antimicrobial-coated Oxford nylon outer surface with 20 mm lightweight foam support layer underneath. Detachable from frame via hook-and-loop fasteners; washable with disinfectant in field conditions. UV and salt spray resistance tested.">Su geçirmez, antimikrobiyal kaplı Oxford naylon dış yüzey; altında 20 mm hafif köpük destek katmanı. Kanca-ilmek tutturucularla çerçeveden sökülebilir; saha koşullarında dezenfektan ile yıkanabilir. Ultraviole ve tuz spreyi direnci test edilmiştir.</p>
+      <div class="comp-title" data-tr="Dikey Tahliye Sapanı" data-en="Vertical Evacuation Sling">Dikey Tahliye Sapanı</div>
+      <div class="comp-mat" data-tr="9 m Yüksek Mukavemetli Halat / Perlon Sistemi" data-en="9 m High-Strength Rope / Perlon System">9 m Yüksek Mukavemetli Halat / Perlon Sistemi</div>
+      <p class="comp-desc" data-tr="Kuyu, maden şaftı veya bina baca boşluğu gibi son derece dar dikey alanlardan hastayı dik pozisyonda (ayakta durur vaziyette) çekmek için tasarlanmış 9 metrelik yüksek mukavemetli halat sistemi. Bu pozisyon sayesinde sedyenin dar şaft kesitinden geçmesi mümkün olur; standart yatay taşıma ile çıkarılamayacak kurtarmaları gerçekleştirilebilir kılar." data-en="9-metre high-strength rope system designed to pull the patient in an upright (standing) position from extremely narrow vertical spaces such as wells, mine shafts or building chimney voids. This position allows the stretcher to pass through narrow shaft cross-sections; makes rescues possible that could not be achieved with standard horizontal transport.">Kuyu, maden şaftı veya bina baca boşluğu gibi son derece dar dikey alanlardan hastayı dik pozisyonda (ayakta durur vaziyette) çekmek için tasarlanmış 9 metrelik yüksek mukavemetli halat sistemi. Bu pozisyon sayesinde sedyenin dar şaft kesitinden geçmesi mümkün olur; standart yatay taşıma ile çıkarılamayacak kurtarmaları gerçekleştirilebilir kılar.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">05</div>
-      <div class="comp-title" data-tr="Hasta Bağlama Kemerleri" data-en="Patient Restraint Straps">Hasta Bağlama Kemerleri</div>
-      <div class="comp-mat" data-tr="Poliester Şerit + Cam Tokası" data-en="Polyester Webbing + Cam Buckle">Poliester Şerit + Cam Tokası</div>
-      <p class="comp-desc" data-tr="2000 kg kırılma yüküne sahip 50 mm poliester emniyet kemerleri, üç farklı pozisyona (göğüs, bel, bacak) yerleştirilmiş olup cam tokası ile tek elle ≤ 3 saniyede kilitlenir. Kemerler, çerçevedeki D-halkalara LINKA sistemiyle pozisyonlanır." data-en="50 mm polyester safety straps with 2000 kg break load, positioned at three points (chest, waist, leg) and locked with cam buckle in ≤ 3 seconds single-handedly. Straps are positioned on frame D-rings via the LINKA system.">2000 kg kırılma yüküne sahip 50 mm poliester emniyet kemerleri, üç farklı pozisyona (göğüs, bel, bacak) yerleştirilmiş olup cam tokası ile tek elle ≤ 3 saniyede kilitlenir. Kemerler, çerçevedeki D-halkalara LINKA sistemiyle pozisyonlanır.</p>
+      <div class="comp-title" data-tr="Ağır Hizmet Çekme Kayışı" data-en="Heavy-Duty Tow Strap">Ağır Hizmet Çekme Kayışı</div>
+      <div class="comp-mat" data-tr="Polyester Göğüs / Omuz Kuşamı" data-en="Polyester Chest / Shoulder Harness">Polyester Göğüs / Omuz Kuşamı</div>
+      <p class="comp-desc" data-tr="Personelin elleri tamamen serbest (hands-free) kalacak şekilde sedyeyi engebeli arazide arkasından sürükleyebilmesini sağlayan göğüs ve omuz kuşamı. Kurtarmacının vücut ağırlığını ve adım enerjisini doğrudan çekme kuvvetine dönüştürür; uzun mesafe sürükleme operasyonlarında yorulmayı azaltır ve ekip koordinasyonunu artırır." data-en="Chest and shoulder harness enabling personnel to drag the stretcher behind them over rough terrain with hands completely free. Converts the rescuer's body weight and stride energy directly into pulling force; reduces fatigue in long-distance dragging operations and improves team coordination.">Personelin elleri tamamen serbest (hands-free) kalacak şekilde sedyeyi engebeli arazide arkasından sürükleyebilmesini sağlayan göğüs ve omuz kuşamı. Kurtarmacının vücut ağırlığını ve adım enerjisini doğrudan çekme kuvvetine dönüştürür; uzun mesafe sürükleme operasyonlarında yorulmayı azaltır ve ekip koordinasyonunu artırır.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">06</div>
-      <div class="comp-title" data-tr="Baş & Boyun Desteği" data-en="Head & Neck Support">Baş & Boyun Desteği</div>
-      <div class="comp-mat" data-tr="HDPE Plaka + Visco Köpük" data-en="HDPE Board + Visco Foam">HDPE Plaka + Visco Köpük</div>
-      <p class="comp-desc" data-tr="Ayarlanabilir kafa desteği plakası; baş ve boyun hizasını koruyarak servikal omurga stabilizasyonunu destekler. Visco köpük pedleme darbeyi dağıtır. Çerçeve sonuna raylarla bağlanır ve üç yükseklik pozisyonuna kilitlenebilir." data-en="Adjustable head support plate; maintains head and neck alignment to support cervical spinal stabilisation. Visco foam padding distributes impact. Attached to frame end via rails and locks to three height positions.">Ayarlanabilir kafa desteği plakası; baş ve boyun hizasını koruyarak servikal omurga stabilizasyonunu destekler. Visco köpük pedleme darbeyi dağıtır. Çerçeve sonuna raylarla bağlanır ve üç yükseklik pozisyonuna kilitlenebilir.</p>
+      <div class="comp-title" data-tr="Çıkarılabilir Taşıma Kulpları" data-en="Removable Carry Handles">Çıkarılabilir Taşıma Kulpları</div>
+      <div class="comp-mat" data-tr="Kalın Dokuma Polyester Kolonlar" data-en="Heavy Webbing Polyester Straps">Kalın Dokuma Polyester Kolonlar</div>
+      <p class="comp-desc" data-tr="Sedyenin dört köşesinde ve iki yanında konumlanmış, elde taşımaya imkân tanıyan dokuma kulplar. Kalın polyester kolondan üretilmiş kulplar, grovmet veya Bar-Tack dikiş yöntemiyle gövdeye kalıcı olarak sabitlenmiştir. Çoklu kulp noktaları sayesinde farklı sayıda personel aynı anda güvenle taşıma yapabilir." data-en="Webbing handles positioned at four corners and two sides of the stretcher enabling hand carry. Handles manufactured from heavy polyester webbing are permanently fixed to the body by grommet or Bar-Tack stitching. Multiple handle points allow different numbers of personnel to carry simultaneously with confidence.">Sedyenin dört köşesinde ve iki yanında konumlanmış, elde taşımaya imkân tanıyan dokuma kulplar. Kalın polyester kolondan üretilmiş kulplar, grovmet veya Bar-Tack dikiş yöntemiyle gövdeye kalıcı olarak sabitlenmiştir. Çoklu kulp noktaları sayesinde farklı sayıda personel aynı anda güvenle taşıma yapabilir.</p>
     </div>
 
     <div class="component-card reveal">
       <div class="comp-num">07</div>
-      <div class="comp-title" data-tr="Yüzey Koruma Kaplaması" data-en="Surface Protection Coating">Yüzey Koruma Kaplaması</div>
-      <div class="comp-mat" data-tr="Anodizasyon + Toz Boya (RAL 9016)" data-en="Anodising + Powder Coat (RAL 9016)">Anodizasyon + Toz Boya (RAL 9016)</div>
-      <p class="comp-desc" data-tr="Alüminyum çerçeve önce elektrokimyasal anodizasyon ile 15–20 µm oksit tabakası oluşturularak aşınmaya karşı güçlendirilir. Ardından elektrostatik toz boya (RAL 9016 beyaz) uygulanarak 60–80 µm boya kalınlığı elde edilir. ISO 9227 tuz sprey testi: ≥ 500 saat." data-en="The aluminium frame is first electrochemically anodised to form a 15–20 µm oxide layer for wear resistance. Electrostatic powder coat (RAL 9016 white) is then applied to achieve 60–80 µm paint thickness. ISO 9227 salt spray test: ≥ 500 hours.">Alüminyum çerçeve önce elektrokimyasal anodizasyon ile 15–20 µm oksit tabakası oluşturularak aşınmaya karşı güçlendirilir. Ardından elektrostatik toz boya (RAL 9016 beyaz) uygulanarak 60–80 µm boya kalınlığı elde edilir. ISO 9227 tuz sprey testi: ≥ 500 saat.</p>
+      <div class="comp-title" data-tr="Kilitlemeli Çelik D-Karabina" data-en="Locking Steel D-Carabiner">Kilitlemeli Çelik D-Karabina</div>
+      <div class="comp-mat" data-tr="Yüksek Mukavemetli Çelik — ≥ 450 kg Kopma Yükü" data-en="High-Strength Steel — ≥ 450 kg Break Load">Yüksek Mukavemetli Çelik — ≥ 450 kg Kopma Yükü</div>
+      <p class="comp-desc" data-tr="Sedyeyi helikopter kancasına, ana kurtarma vinç hattına veya halat sistemine bağlamak için tasarlanmış kilitlemeli çelik D-karabina. Minimum 450 kg (1000 lbs) kopma/yırtılma mukavemeti, vinç ile dikey kaldırma operasyonlarında tam güvenlik sağlar. Vida kilitleme mekanizması istem dışı açılmayı engeller." data-en="Locking steel D-carabiner designed to connect the stretcher to a helicopter hook, main rescue winch line or rope system. Minimum 450 kg (1000 lbs) break load provides full safety in vertical lifting operations via winch. Screw locking mechanism prevents unintended opening.">Sedyeyi helikopter kancasına, ana kurtarma vinç hattına veya halat sistemine bağlamak için tasarlanmış kilitlemeli çelik D-karabina. Minimum 450 kg (1000 lbs) kopma/yırtılma mukavemeti, vinç ile dikey kaldırma operasyonlarında tam güvenlik sağlar. Vida kilitleme mekanizması istem dışı açılmayı engeller.</p>
     </div>
 
   </div>
@@ -427,13 +351,13 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
       <div class="prod-step reveal">
         <div class="step-num">1</div>
         <div class="step-body">
-          <div class="step-sub" data-tr="Profil Üretimi" data-en="Profile Production">Profil Üretimi</div>
-          <div class="step-title" data-tr="Alüminyum Ekstrüzyon" data-en="Aluminium Extrusion">Alüminyum Ekstrüzyon</div>
-          <p class="step-desc" data-tr="6061-T6 alüminyum alaşım billetler 480–500 °C'ye ısıtılarak hidrolik ekstrüzyon preslerinde kalıptan geçirilir. Bu işlem, homojen duvar kalınlığı ve tutarlı kesit geometrisi sağlar. Ekstrüde profiller ısıl işlem tünelinden geçirilerek T6 temperine ulaştırılır (yapay yaşlandırma 160 °C, 8 saat). Son uzama oranı: ≥ 8 %, çekme dayanımı: ≥ 310 MPa." data-en="6061-T6 aluminium alloy billets are heated to 480–500 °C and passed through dies in hydraulic extrusion presses. This process ensures uniform wall thickness and consistent cross-sectional geometry. Extruded profiles are passed through heat treatment tunnels to reach T6 temper (artificial ageing 160 °C, 8 hours). Final elongation: ≥ 8%, tensile strength: ≥ 310 MPa.">6061-T6 alüminyum alaşım billetler 480–500 °C'ye ısıtılarak hidrolik ekstrüzyon preslerinde kalıptan geçirilir. Bu işlem, homojen duvar kalınlığı ve tutarlı kesit geometrisi sağlar. Ekstrüde profiller ısıl işlem tünelinden geçirilerek T6 temperine ulaştırılır (yapay yaşlandırma 160 °C, 8 saat). Son uzama oranı: ≥ 8 %, çekme dayanımı: ≥ 310 MPa.</p>
+          <div class="step-sub" data-tr="Polimer Levha Üretimi" data-en="Polymer Sheet Production">Polimer Levha Üretimi</div>
+          <div class="step-title" data-tr="MDPE Ekstrüzyon & CNC İşleme" data-en="MDPE Extrusion & CNC Machining">MDPE Ekstrüzyon & CNC İşleme</div>
+          <p class="step-desc" data-tr="Özel formülasyonlu MDPE granülleri (darbe tokluğu ve düşük sürtünme katsayısı için optimize edilmiş) ekstrüzyon hattında ergitilerek belirlenmiş kalınlıkta düz levhaya dönüştürülür. Soğuyan levhalar CNC router tezgâhında milimetrik toleranslarla ana sedye kontürüne, halat geçiş delikleri ve kulp bağlantı noktalarına kesilir. CNC işleme; her parçanın aynı geometride üretilmesini ve sistemi birbirine tutan kolonların doğru gerilim açılarıyla çalışmasını garanti eder." data-en="Custom formulated MDPE granules (optimised for impact toughness and low friction coefficient) are melted on the extrusion line and converted to flat sheet of specified thickness. Cooled sheets are cut on a CNC router table to the main stretcher contour, rope passage holes and handle attachment points with millimetric tolerances. CNC machining guarantees each part is produced to identical geometry and that the lashing straps holding the system together work at correct tension angles.">Özel formülasyonlu MDPE granülleri ekstrüzyon hattında ergitilerek belirlenmiş kalınlıkta düz levhaya dönüştürülür. Soğuyan levhalar CNC router tezgâhında milimetrik toleranslarla ana sedye kontürüne, halat geçiş delikleri ve kulp bağlantı noktalarına kesilir. CNC işleme; her parçanın aynı geometride üretilmesini ve sistemi birbirine tutan kolonların doğru gerilim açılarıyla çalışmasını garanti eder.</p>
           <div class="step-tags">
-            <span class="tag">6061-T6</span>
-            <span class="tag">480–500 °C</span>
-            <span class="tag">≥ 310 MPa</span>
+            <span class="tag">MDPE Ekstrüzyon</span>
+            <span class="tag">CNC Router</span>
+            <span class="tag">Milimetrik Tolerans</span>
           </div>
         </div>
       </div>
@@ -441,13 +365,13 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
       <div class="prod-step reveal">
         <div class="step-num">2</div>
         <div class="step-body">
-          <div class="step-sub" data-tr="Hassas İşleme" data-en="Precision Machining">Hassas İşleme</div>
-          <div class="step-title" data-tr="CNC Kesim & Delme" data-en="CNC Cutting & Drilling">CNC Kesim & Delme</div>
-          <p class="step-desc" data-tr="Ekstrüde profiller CNC bant testere ile ±0,1 mm toleranslı boyutlara kesilir. Pivot delikleri, raf kanalları ve bağlantı noktaları 3 eksenli CNC freze merkezlerinde işlenerek ±0,05 mm konum toleransı sağlanır. Her parça serilerin başında boyutsal kontrol için Koordinat Ölçme Makinesi'nden (CMM) geçirilir." data-en="Extruded profiles are cut to ±0.1 mm tolerances on CNC band saws. Pivot holes, rail channels and connection points are machined on 3-axis CNC milling centres to ±0.05 mm positional tolerance. Each part passes through a Coordinate Measuring Machine (CMM) for dimensional inspection at the start of batches.">Ekstrüde profiller CNC bant testere ile ±0,1 mm toleranslı boyutlara kesilir. Pivot delikleri, raf kanalları ve bağlantı noktaları 3 eksenli CNC freze merkezlerinde işlenerek ±0,05 mm konum toleransı sağlanır. Her parça serilerin başında boyutsal kontrol için Koordinat Ölçme Makinesi'nden (CMM) geçirilir.</p>
+          <div class="step-sub" data-tr="Kenar & Delik Bitirme" data-en="Edge & Hole Finishing">Kenar & Delik Bitirme</div>
+          <div class="step-title" data-tr="Isıl Kenar Yuvarlatma (Edge Chamfering)" data-en="Thermal Edge Chamfering">Isıl Kenar Yuvarlatma (Edge Chamfering)</div>
+          <p class="step-desc" data-tr="CNC kesimden çıkan levhanın tüm dış kenarları ve özellikle sapan ile halatların geçtiği delik çevreleri ısıl şekillendirme yöntemiyle yuvarlatılıp pürüzsüzleştirilir. Bu kritik adım; yük altında gerilen kolonun keskin bir polimer kenarına sürtünerek kesilmesini veya zamanla aşınmasını önler. Kenar kalitesi, her üretim serisinin başında standart gerilim ve sürtünme testleriyle doğrulanır." data-en="All outer edges of the CNC-cut sheet and especially the hole perimeters through which slings and ropes pass are rounded and smoothed by thermal forming. This critical step prevents lashing straps tensioned under load from being cut or gradually abraded against a sharp polymer edge. Edge quality is verified at the start of each production run by standard tension and friction tests.">CNC kesimden çıkan levhanın tüm dış kenarları ve özellikle sapan ile halatların geçtiği delik çevreleri ısıl şekillendirme yöntemiyle yuvarlatılıp pürüzsüzleştirilir. Bu kritik adım; yük altında gerilen kolonun keskin bir polimer kenarına sürtünerek kesilmesini veya zamanla aşınmasını önler. Kenar kalitesi, her üretim serisinin başında standart gerilim ve sürtünme testleriyle doğrulanır.</p>
           <div class="step-tags">
-            <span class="tag">CNC 3-Eksen</span>
-            <span class="tag">±0.05 mm</span>
-            <span class="tag">CMM Kontrol</span>
+            <span class="tag">Isıl Şekillendirme</span>
+            <span class="tag">Sürtünme Testi</span>
+            <span class="tag">Kolon Koruma</span>
           </div>
         </div>
       </div>
@@ -455,41 +379,13 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
       <div class="prod-step reveal">
         <div class="step-num">3</div>
         <div class="step-body">
-          <div class="step-sub" data-tr="Birleştirme" data-en="Joining">Birleştirme</div>
-          <div class="step-title" data-tr="TIG Kaynak & Mekanik Montaj" data-en="TIG Welding & Mechanical Assembly">TIG Kaynak & Mekanik Montaj</div>
-          <p class="step-desc" data-tr="Köşe ve T-birleşimleri, alüminyuma özel ER4043 dolgu teli kullanılarak TIG (tungsten inert gas) kaynak yöntemiyle birleştirilir. Tüm kaynak operatörleri EN ISO 9606-2 sertifikasına sahiptir. Pivot mekanizmaları ve ayarlanabilir elemanlar, paslanmaz çelik perno ve kendinden emniyetli somunlarla mekanik olarak monte edilir; titreşim gevşemesine karşı Loctite 243 kullanılır." data-en="Corner and T-joints are joined using TIG (tungsten inert gas) welding with ER4043 aluminium filler wire. All welding operators hold EN ISO 9606-2 certification. Pivot mechanisms and adjustable elements are mechanically assembled with stainless steel bolts and self-locking nuts; Loctite 243 is used against vibration loosening.">Köşe ve T-birleşimleri, alüminyuma özel ER4043 dolgu teli kullanılarak TIG (tungsten inert gas) kaynak yöntemiyle birleştirilir. Tüm kaynak operatörleri EN ISO 9606-2 sertifikasına sahiptir. Pivot mekanizmaları ve ayarlanabilir elemanlar, paslanmaz çelik perno ve kendinden emniyetli somunlarla mekanik olarak monte edilir; titreşim gevşemesine karşı Loctite 243 kullanılır.</p>
+          <div class="step-sub" data-tr="Tekstil Entegrasyonu" data-en="Textile Integration">Tekstil Entegrasyonu</div>
+          <div class="step-title" data-tr="Grovmet Montajı & Bar-Tack Dikiş" data-en="Grommet Fitting & Bar-Tack Stitching">Grovmet Montajı & Bar-Tack Dikiş</div>
+          <p class="step-desc" data-tr="Taşıma kulpları, bağlama kolonları ve sapan noktaları iki yöntemden biriyle gövdeye sabitlenir: (1) Pirinç veya paslanmaz çelik kapsüllü grovmetler, delik kenarlarını çepeçevre sararak kolonun hem gövdeye hem de geçiş noktasına zarar vermesini önler; (2) Endüstriyel Bar-Tack çapraz dikiş (ağır sanayi dikiş makinesiyle atılan yüzlerce paralel iplik) dokuma kolonları doğrudan MDPE yüzeyine kilitler. Her bağlantı noktası üretim sonrası dinamometre ile ≥ 450 kg çekme yük testine tabi tutulur." data-en="Carry handles, lashing straps and sling points are fixed to the body by one of two methods: (1) Brass or stainless steel grommet-capped holes surround the hole perimeter preventing the strap from damaging either the body or the pass-through point; (2) Industrial Bar-Tack cross stitching (hundreds of parallel threads sewn by heavy industry sewing machine) locks webbing straps directly to the MDPE surface. Each attachment point is subjected to ≥ 450 kg pull load test with a dynamometer after production.">Taşıma kulpları, bağlama kolonları ve sapan noktaları iki yöntemden biriyle gövdeye sabitlenir: (1) Pirinç veya paslanmaz çelik kapsüllü grovmetler, delik kenarlarını çepeçevre sararak kolonun hem gövdeye hem de geçiş noktasına zarar vermesini önler; (2) Endüstriyel Bar-Tack çapraz dikiş dokuma kolonları doğrudan MDPE yüzeyine kilitler. Her bağlantı noktası üretim sonrası dinamometre ile ≥ 450 kg çekme yük testine tabi tutulur.</p>
           <div class="step-tags">
-            <span class="tag">TIG Kaynak</span>
-            <span class="tag">ER4043</span>
-            <span class="tag">EN ISO 9606-2</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="prod-step reveal">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-sub" data-tr="Yüzey İşlemi" data-en="Surface Treatment">Yüzey İşlemi</div>
-          <div class="step-title" data-tr="Anodizasyon & Toz Boya" data-en="Anodising & Powder Coating">Anodizasyon & Toz Boya</div>
-          <p class="step-desc" data-tr="Kaynaklı çerçeve önce alkalin temizleme, ardından %15 sülfürik asit banyosunda 20–25 dakika anodizasyon işlemine tabi tutulur; oluşan oksit tabakası 15–20 µm'dir. Akabinde seyreltik kromat sealant ile kapatılır. Son aşamada elektrostatik tabanca ile toz boya uygulanır; 180–200 °C fırın kürü 20 dakika sürer. Kaplama kalınlığı: 60–80 µm." data-en="The welded frame first undergoes alkaline cleaning, then anodising in 15% sulfuric acid bath for 20–25 minutes; the resulting oxide layer is 15–20 µm. It is then sealed with dilute chromate sealant. In the final stage, powder coat is applied by electrostatic gun; oven cure at 180–200 °C lasts 20 minutes. Coating thickness: 60–80 µm.">Kaynaklı çerçeve önce alkalin temizleme, ardından %15 sülfürik asit banyosunda 20–25 dakika anodizasyon işlemine tabi tutulur; oluşan oksit tabakası 15–20 µm'dir. Akabinde seyreltik kromat sealant ile kapatılır. Son aşamada elektrostatik tabanca ile toz boya uygulanır; 180–200 °C fırın kürü 20 dakika sürer. Kaplama kalınlığı: 60–80 µm.</p>
-          <div class="step-tags">
-            <span class="tag">Anodizasyon 15–20 µm</span>
-            <span class="tag">Toz Boya 60–80 µm</span>
-            <span class="tag">ISO 9227 ≥ 500 h</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="prod-step reveal">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-sub" data-tr="Kalite Güvence" data-en="Quality Assurance">Kalite Güvence</div>
-          <div class="step-title" data-tr="Final Test & Sertifikasyon" data-en="Final Testing & Certification">Final Test & Sertifikasyon</div>
-          <p class="step-desc" data-tr="Her sedye üç aşamalı yük testinden geçer: (1) Statik test — nominal yükün 2,5 katı (500 kg) 5 dakika; (2) Dinamik test — 200 kg yük ile 50 düşürme darbesi; (3) Katlanma dayanıklılığı — 1000 kat açma-kapama döngüsü. Boyutsal uygunluk CMM ile, kaplama kalınlığı kuru film ölçer ile doğrulanır. Geçen ürünler CE markası ve seri numarasıyla etiketlenerek paketlenir." data-en="Each stretcher passes a three-stage load test: (1) Static test — 2.5× nominal load (500 kg) for 5 minutes; (2) Dynamic test — 50 drop impacts at 200 kg; (3) Folding durability — 1000 open/close cycles. Dimensional conformance verified by CMM, coating thickness by dry film gauge. Passing units are labelled with CE mark and serial number before packaging.">Her sedye üç aşamalı yük testinden geçer: (1) Statik test — nominal yükün 2,5 katı (500 kg) 5 dakika; (2) Dinamik test — 200 kg yük ile 50 düşürme darbesi; (3) Katlanma dayanıklılığı — 1000 kat açma-kapama döngüsü. Boyutsal uygunluk CMM ile, kaplama kalınlığı kuru film ölçer ile doğrulanır. Geçen ürünler CE markası ve seri numarasıyla etiketlenerek paketlenir.</p>
-          <div class="step-tags">
-            <span class="tag">500 kg Statik</span>
-            <span class="tag">1000 Döngü</span>
-            <span class="tag">CE İşaretleme</span>
+            <span class="tag">Pirinç / PS Çelik Grovmet</span>
+            <span class="tag">Bar-Tack Dikiş</span>
+            <span class="tag">450 kg Çekme Testi</span>
           </div>
         </div>
       </div>
@@ -511,59 +407,51 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
       <table class="specs-table">
         <tr>
           <td data-tr="Ürün Adı" data-en="Product Name">Ürün Adı</td>
-          <td data-tr="KHIDR K-1 Kurtarma Sedyesi" data-en="KHIDR K-1 Rescue Stretcher">KHIDR K-1 Kurtarma Sedyesi</td>
+          <td data-tr="KHIDR K-1 Rulo Tip Dar Alan Kurtarma Sedyesi" data-en="KHIDR K-1 Roll-Type Confined Space Rescue Stretcher">KHIDR K-1 Rulo Tip Dar Alan Kurtarma Sedyesi</td>
         </tr>
         <tr>
           <td data-tr="Seri" data-en="Series">Seri</td>
           <td data-tr="Standart" data-en="Standard">Standart</td>
         </tr>
         <tr>
-          <td data-tr="Dış Boyutlar (Açık)" data-en="Outer Dimensions (Open)">Dış Boyutlar (Açık)</td>
-          <td>1950 × 520 × 80 mm</td>
+          <td data-tr="Açık Halde Boyutlar" data-en="Open Dimensions">Açık Halde Boyutlar</td>
+          <td>120 × 250 cm</td>
         </tr>
         <tr>
-          <td data-tr="Dış Boyutlar (Katlanmış)" data-en="Outer Dimensions (Folded)">Dış Boyutlar (Katlanmış)</td>
-          <td>975 × 520 × 160 mm</td>
+          <td data-tr="Depolama (Rulo) Boyutları" data-en="Storage (Rolled) Dimensions">Depolama (Rulo) Boyutları</td>
+          <td data-tr="Ø 20 cm × 94 cm yükseklik" data-en="Ø 20 cm × 94 cm height">Ø 20 cm × 94 cm yükseklik</td>
         </tr>
         <tr>
-          <td data-tr="Sedye Ağırlığı" data-en="Stretcher Weight">Sedye Ağırlığı</td>
-          <td>≤ 8,0 kg</td>
+          <td data-tr="Sistem Toplam Ağırlığı" data-en="Total System Weight">Sistem Toplam Ağırlığı</td>
+          <td data-tr="~8,1 kg (çanta ve tüm donanım dahil)" data-en="~8.1 kg (incl. pack and all accessories)">~8,1 kg (çanta ve tüm donanım dahil)</td>
         </tr>
         <tr>
-          <td data-tr="Max. Yük Kapasitesi" data-en="Max. Load Capacity">Max. Yük Kapasitesi</td>
-          <td>200 kg</td>
+          <td data-tr="Min. Kopma / Yırtılma Mukavemeti" data-en="Min. Break / Tear Load">Min. Kopma / Yırtılma Mukavemeti</td>
+          <td>≥ 450 kg (1000 lbs)</td>
         </tr>
         <tr>
-          <td data-tr="Test Yükü (Statik)" data-en="Test Load (Static)">Test Yükü (Statik)</td>
-          <td>500 kg / 5 dak.</td>
+          <td data-tr="Gövde Malzemesi" data-en="Body Material">Gövde Malzemesi</td>
+          <td data-tr="Özel Formülasyonlu MDPE" data-en="Custom Formulated MDPE">Özel Formülasyonlu MDPE</td>
         </tr>
         <tr>
-          <td data-tr="Çerçeve Malzemesi" data-en="Frame Material">Çerçeve Malzemesi</td>
-          <td>Al 6061-T6</td>
+          <td data-tr="Taşıma Çantası" data-en="Carry Pack">Taşıma Çantası</td>
+          <td>1000D Cordura® Naylon</td>
         </tr>
         <tr>
-          <td data-tr="Yüzey Kaplaması" data-en="Surface Coating">Yüzey Kaplaması</td>
-          <td data-tr="Anodizasyon + Toz Boya" data-en="Anodising + Powder Coat">Anodizasyon + Toz Boya</td>
-        </tr>
-        <tr>
-          <td data-tr="Kumaş Yüzeyi" data-en="Fabric Surface">Kumaş Yüzeyi</td>
-          <td data-tr="Oxford 600D, antimikrobiyal" data-en="Oxford 600D, antimicrobial">Oxford 600D, antimikrobiyal</td>
-        </tr>
-        <tr>
-          <td data-tr="Kemer Sayısı" data-en="Strap Count">Kemer Sayısı</td>
-          <td data-tr="3 adet (göğüs / bel / bacak)" data-en="3 pcs (chest / waist / leg)">3 adet (göğüs / bel / bacak)</td>
-        </tr>
-        <tr>
-          <td data-tr="Kemer Kırılma Yükü" data-en="Strap Break Load">Kemer Kırılma Yükü</td>
-          <td>≥ 2000 kg</td>
+          <td data-tr="Dikey Tahliye Halatı" data-en="Vertical Rescue Line">Dikey Tahliye Halatı</td>
+          <td>9 m</td>
         </tr>
         <tr>
           <td data-tr="Çalışma Sıcaklığı" data-en="Operating Temperature">Çalışma Sıcaklığı</td>
-          <td>−20 °C … +60 °C</td>
+          <td>−40 °C … +60 °C</td>
         </tr>
         <tr>
-          <td data-tr="Renk" data-en="Colour">Renk</td>
-          <td data-tr="Beyaz RAL 9016 (opsiyonel RAL)" data-en="White RAL 9016 (optional RAL)">Beyaz RAL 9016 (opsiyonel RAL)</td>
+          <td data-tr="Kimyasal Direnç" data-en="Chemical Resistance">Kimyasal Direnç</td>
+          <td data-tr="Petrol türevleri, asitler, kostik sıvılar" data-en="Petroleum derivatives, acids, caustic liquids">Petrol türevleri, asitler, kostik sıvılar</td>
+        </tr>
+        <tr>
+          <td data-tr="D-Karabina Kopma Yükü" data-en="D-Carabiner Break Load">D-Karabina Kopma Yükü</td>
+          <td>≥ 450 kg</td>
         </tr>
       </table>
     </div>
@@ -575,7 +463,7 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
           <span class="cert-icon">✦</span>
           <div class="cert-body">
             <div class="cert-name">CE İşaretleme</div>
-            <p class="cert-detail" data-tr="Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi." data-en="Medical device directive compliant, EU market entry certificate.">Tıbbi cihaz direktifi uyumlu, Avrupa Birliği piyasasına giriş belgesi.</p>
+            <p class="cert-detail" data-tr="Kişisel koruyucu ekipman ve kurtarma araçları direktifi uyumlu." data-en="Personal protective equipment and rescue devices directive compliant.">Kişisel koruyucu ekipman ve kurtarma araçları direktifi uyumlu.</p>
           </div>
         </li>
         <li class="cert-item">
@@ -588,22 +476,22 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
         <li class="cert-item">
           <span class="cert-icon">✦</span>
           <div class="cert-body">
-            <div class="cert-name">EN ISO 11135</div>
-            <p class="cert-detail" data-tr="Kumaş yüzeyin sterilizasyon uyumluluğu ve antimikrobiyal kalıcılık testi." data-en="Fabric surface sterilisation compatibility and antimicrobial persistence test.">Kumaş yüzeyin sterilizasyon uyumluluğu ve antimikrobiyal kalıcılık testi.</p>
+            <div class="cert-name">EN 1498 — Kurtarma Döngüleri</div>
+            <p class="cert-detail" data-tr="Dikey ve yatay tahliye sapanlarının kopma yükü ve geometri gereksinimleri standardı." data-en="Break load and geometry requirements standard for vertical and horizontal evacuation slings.">Dikey ve yatay tahliye sapanlarının kopma yükü ve geometri gereksinimleri standardı.</p>
           </div>
         </li>
         <li class="cert-item">
           <span class="cert-icon">✦</span>
           <div class="cert-body">
-            <div class="cert-name">TSE EN 1865</div>
-            <p class="cert-detail" data-tr="Ambulanslarda kullanılan hasta taşıma ekipmanlarına yönelik Türk ve Avrupa standardı." data-en="Turkish and European standard for patient handling equipment used in ambulances.">Ambulanslarda kullanılan hasta taşıma ekipmanlarına yönelik Türk ve Avrupa standardı.</p>
+            <div class="cert-name">NFPA 1983 Referans</div>
+            <p class="cert-detail" data-tr="İtfaiyecilik ve teknik kurtarma halatları standardına göre kopma yükü doğrulaması yapılmıştır." data-en="Break load verification performed according to the firefighting and technical rescue rope standard.">İtfaiyecilik ve teknik kurtarma halatları standardına göre kopma yükü doğrulaması yapılmıştır.</p>
           </div>
         </li>
         <li class="cert-item">
           <span class="cert-icon">✦</span>
           <div class="cert-body">
             <div class="cert-name">AFAD Uygunluk</div>
-            <p class="cert-detail" data-tr="Türkiye Afet ve Acil Durum Yönetimi Başkanlığı saha ekipman listesinde onaylı." data-en="Approved on the field equipment list of Turkey's Disaster and Emergency Management Authority.">Türkiye Afet ve Acil Durum Yönetimi Başkanlığı saha ekipman listesinde onaylı.</p>
+            <p class="cert-detail" data-tr="Türkiye Afet ve Acil Durum Yönetimi Başkanlığı dar alan ve teknik kurtarma ekipman listesinde onaylı." data-en="Approved on Turkey's Disaster and Emergency Management Authority confined space and technical rescue equipment list.">Türkiye Afet ve Acil Durum Yönetimi Başkanlığı dar alan ve teknik kurtarma ekipman listesinde onaylı.</p>
           </div>
         </li>
       </ul>
@@ -621,29 +509,29 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     </div>
     <div class="use-cases">
       <div class="use-card reveal">
-        <span class="use-icon">🚑</span>
-        <div class="use-title" data-tr="Ambulans & 112" data-en="Ambulance & 112">Ambulans & 112</div>
-        <p class="use-desc" data-tr="Dar ambulans girizgâhlarına uygun, hızlı kurulum ve tahliye." data-en="Suitable for narrow ambulance entrances with fast setup and evacuation.">Dar ambulans girizgâhlarına uygun, hızlı kurulum ve tahliye.</p>
-      </div>
-      <div class="use-card reveal">
-        <span class="use-icon">🏔️</span>
-        <div class="use-title" data-tr="AFAD Operasyonları" data-en="AFAD Operations">AFAD Operasyonları</div>
-        <p class="use-desc" data-tr="Deprem, sel ve enkaz kurtarmada sertifikalı saha sedyesi." data-en="Certified field stretcher for earthquake, flood and debris rescue.">Deprem, sel ve enkaz kurtarmada sertifikalı saha sedyesi.</p>
-      </div>
-      <div class="use-card reveal">
         <span class="use-icon">🏭</span>
-        <div class="use-title" data-tr="Endüstriyel İlk Yardım" data-en="Industrial First Aid">Endüstriyel İlk Yardım</div>
-        <p class="use-desc" data-tr="Fabrika ve inşaat sahalarındaki iş kazası müdahalesi." data-en="Response to workplace accidents at factories and construction sites.">Fabrika ve inşaat sahalarındaki iş kazası müdahalesi.</p>
+        <div class="use-title" data-tr="Dar & Kapalı Alan" data-en="Confined Space">Dar & Kapalı Alan</div>
+        <p class="use-desc" data-tr="Rüzgar türbinleri, silolar, boru hatları, gemi makine daireleri ve fabrika kazanları." data-en="Wind turbines, silos, pipelines, ship engine rooms and factory boilers.">Rüzgar türbinleri, silolar, boru hatları, gemi makine daireleri ve fabrika kazanları.</p>
       </div>
       <div class="use-card reveal">
-        <span class="use-icon">⛵</span>
-        <div class="use-title" data-tr="Deniz & SAR" data-en="Maritime & SAR">Deniz & SAR</div>
-        <p class="use-desc" data-tr="Tuz spreyi dirençli kaplama ile deniz ortamı uyumlu." data-en="Salt spray resistant coating suitable for marine environments.">Tuz spreyi dirençli kaplama ile deniz ortamı uyumlu.</p>
+        <span class="use-icon">🚁</span>
+        <div class="use-title" data-tr="Yüksek Açı & Dağ" data-en="High-Angle & Mountain">Yüksek Açı & Dağ</div>
+        <p class="use-desc" data-tr="Sarp arazilerde helikopter vinci veya halat sistemiyle yatay ve dikey tahliye." data-en="Horizontal and vertical evacuation via helicopter hoist or rope system in steep terrain.">Sarp arazilerde helikopter vinci veya halat sistemiyle yatay ve dikey tahliye.</p>
       </div>
       <div class="use-card reveal">
-        <span class="use-icon">🏟️</span>
-        <div class="use-title" data-tr="Kalabalık Etkinlikler" data-en="Mass Gatherings">Kalabalık Etkinlikler</div>
-        <p class="use-desc" data-tr="Stadyum, festival ve büyük toplantılarda hızlı tahliye." data-en="Rapid evacuation at stadiums, festivals and large gatherings.">Stadyum, festival ve büyük toplantılarda hızlı tahliye.</p>
+        <span class="use-icon">⚔️</span>
+        <div class="use-title" data-tr="Askeri & Taktik" data-en="Military & Tactical">Askeri & Taktik</div>
+        <p class="use-desc" data-tr="Çatışma bölgelerinde yaralı tahliyesi; zırhlı araç dar kapılarından çıkarma." data-en="Casualty evacuation in combat zones; extraction through narrow armoured vehicle hatches.">Çatışma bölgelerinde yaralı tahliyesi; zırhlı araç dar kapılarından çıkarma.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">⛏️</span>
+        <div class="use-title" data-tr="Maden & Tünel" data-en="Mining & Tunnel">Maden & Tünel</div>
+        <p class="use-desc" data-tr="Çöküntü tehlikesi olan göçük operasyonlarında dar şafttan dikey çekiş." data-en="Vertical extraction through narrow shafts in collapse operations with subsidence risk.">Çöküntü tehlikesi olan göçük operasyonlarında dar şafttan dikey çekiş.</p>
+      </div>
+      <div class="use-card reveal">
+        <span class="use-icon">🛢️</span>
+        <div class="use-title" data-tr="Petrokimya & İnşaat" data-en="Petrochemical & Construction">Petrokimya & İnşaat</div>
+        <p class="use-desc" data-tr="Kimyasal direnç ve yüksek ısıl aralığıyla endüstriyel acil tahliye standardı." data-en="Industrial emergency evacuation standard with chemical resistance and wide thermal range.">Kimyasal direnç ve yüksek ısıl aralığıyla endüstriyel acil tahliye standardı.</p>
       </div>
     </div>
   </div>
@@ -655,8 +543,8 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
   <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;color:white;margin-bottom:1rem" data-tr="K-1 hakkında teklif almak ister misiniz?" data-en="Would you like a quote for the K-1?">K-1 hakkında teklif almak ister misiniz?</h2>
   <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;font-weight:300;margin-bottom:2rem" data-tr="Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz." data-en="We answer your technical questions and develop custom solutions for your needs.">Teknik sorularınızı yanıtlıyoruz ve ihtiyacınıza özel çözüm üretiyoruz.</p>
   <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-    <a href="contact.html" style="padding:0.85rem 2.5rem;background:white;color:var(--red);font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:opacity 0.2s" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
-    <a href="products.html" style="padding:0.85rem 2.5rem;border:1px solid rgba(255,255,255,0.5);color:white;font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:opacity 0.2s" data-tr="Tüm Ürünler" data-en="All Products">Tüm Ürünler</a>
+    <a href="contact.html" style="padding:0.85rem 2.5rem;background:white;color:var(--red);font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
+    <a href="products.html" style="padding:0.85rem 2.5rem;border:1px solid rgba(255,255,255,0.5);color:white;font-size:0.82rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block" data-tr="Tüm Ürünler" data-en="All Products">Tüm Ürünler</a>
   </div>
 </div>
 
@@ -680,8 +568,8 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
       <h4 data-tr="Ürünler" data-en="Products">Ürünler</h4>
       <ul>
         <li><a href="k1.html">KHIDR K-1</a></li>
-        <li><a href="products.html">KHIDR K-2</a></li>
-        <li><a href="products.html">KHIDR K-3</a></li>
+        <li><a href="k2.html">KHIDR K-2</a></li>
+        <li><a href="k3.html">KHIDR K-3</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -700,9 +588,17 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 </footer>
 
 <script>
-let currentLang = 'tr';
+let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
 function toggleLang() {
   currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
   document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
   document.querySelectorAll('[data-tr]').forEach(el => {
@@ -710,7 +606,6 @@ function toggleLang() {
     if (text) el.innerHTML = text;
   });
 }
-
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -723,7 +618,6 @@ document.querySelectorAll('.reveal').forEach((el, i) => {
   el.dataset.delay = i * 60;
   observer.observe(el);
 });
-
 function toggleMenu() {
   const links = document.querySelector('.nav-links');
   if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';

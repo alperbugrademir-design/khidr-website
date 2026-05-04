@@ -266,9 +266,17 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
 
 <script>
 
-let currentLang = 'tr';
+let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
 function toggleLang() {
   currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
   document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
   document.querySelectorAll('[data-tr]').forEach(el => {

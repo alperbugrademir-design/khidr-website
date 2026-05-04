@@ -205,11 +205,11 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     <div class="vm-grid">
       <div class="vm-card reveal">
         <h3><span data-tr="Vizyonumuz" data-en="Our Vision">Vizyonumuz</span></h3>
-        <p data-tr="Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak." data-en="To become Turkey's most trusted emergency rescue equipment manufacturer and bring our internationally standardized products to the global market. To stand beside every rescue team.">Türkiye'nin en güvenilir acil kurtarma ekipmanı üreticisi olmak ve uluslararası standartlarda ürettiğimiz ürünleri dünya pazarına taşımak. Her kurtarma ekibinin yanında olmak.</p>
+        <p data-tr="Türkiye'den dünyaya uzanan koruma-güvenlik ekipmanları alanında öncül bir marka yaratmak." data-en="To build a pioneering brand in the field of protection and safety equipment, reaching from Turkey to the world.">Türkiye'den dünyaya uzanan koruma-güvenlik ekipmanları alanında öncül bir marka yaratmak.</p>
       </div>
       <div class="vm-card reveal">
         <h3><span data-tr="Misyonumuz" data-en="Our Mission">Misyonumuz</span></h3>
-        <p data-tr="Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var." data-en="To maximize the quality and reliability of equipment used in emergency rescue operations. Every product we engineer exists to save a life.">Acil kurtarma operasyonlarında kullanılan ekipmanların kalitesini ve güvenilirliğini en üst düzeye çıkarmak. Mühendislik disiplini ile tasarladığımız her ürün, bir hayatı kurtarmak için var.</p>
+        <p data-tr="Dayanıklı, kullanışlı ve ergonomik arama-kurtarma sedyeleri üreterek tüm afet koşullarında kurtarma ekiplerinin en güçlü müttefiki olmak." data-en="To be the strongest ally of rescue teams in all disaster conditions by manufacturing durable, practical and ergonomic search-and-rescue stretchers.">Dayanıklı, kullanışlı ve ergonomik arama-kurtarma sedyeleri üreterek tüm afet koşullarında kurtarma ekiplerinin en güçlü müttefiki olmak.</p>
       </div>
     </div>
 
@@ -446,8 +446,16 @@ function switchTab(id, btn) {
 }
 
 let currentLang = localStorage.getItem('lang') || 'tr';
+if (currentLang === 'en') {
+  document.getElementById('lang-tr').classList.remove('active');
+  document.getElementById('lang-en').classList.add('active');
+  document.documentElement.lang = 'en';
+  document.querySelectorAll('[data-en]').forEach(el => { const t = el.getAttribute('data-en'); if (t) el.innerHTML = t; });
+}
 function toggleLang() {
   currentLang = currentLang === 'tr' ? 'en' : 'tr';
+  document.documentElement.lang = currentLang;
+  localStorage.setItem('lang', currentLang);
   localStorage.setItem('lang', currentLang);
   document.getElementById('lang-tr').classList.toggle('active', currentLang === 'tr');
   document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
@@ -471,7 +479,6 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 });
 
 document.querySelector('[href="about.html"]')?.classList.add('active');
-if (currentLang === 'en') toggleLang();
 </script>
 </body>
 </html>
