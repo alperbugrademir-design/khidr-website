@@ -826,6 +826,12 @@ if (currentLang === 'en') {
       if (text) el.innerHTML = text;
     });
   }
+function toggleMenu() {
+  const links = document.querySelector(".nav-links");
+  if (!links) return;
+  const isOpen = links.style.display === "flex";
+  links.style.display = isOpen ? "none" : "flex";
+}
 </script>
 </body>
 </html>
