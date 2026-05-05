@@ -556,6 +556,25 @@ footer {
 @media (max-width: 768px) {
   #navbar { padding: 1.2rem 1.5rem; }
   .nav-links, .nav-cta { display: none; }
+  .nav-links.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.5rem 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    gap: 0;
+    z-index: 99;
+  }
+  .nav-links.mobile-open a {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.88rem;
+  }
+  .nav-links.mobile-open a:last-child { border-bottom: none; }
   .hamburger { display: flex; }
   #features, #products { padding: 5rem 1.5rem; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -828,9 +847,11 @@ if (currentLang === 'en') {
   }
 function toggleMenu() {
   const links = document.querySelector(".nav-links");
+  const hamburger = document.querySelector(".hamburger");
   if (!links) return;
-  const isOpen = links.style.display === "flex";
-  links.style.display = isOpen ? "none" : "flex";
+  links.classList.toggle("mobile-open");
+  const isOpen = links.classList.contains("mobile-open");
+  hamburger.style.opacity = isOpen ? "0.6" : "1";
 }
 </script>
 </body>

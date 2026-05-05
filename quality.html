@@ -126,6 +126,25 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
   #navbar { padding:1.2rem 1.5rem; }
   .nav-links, .nav-cta { display:none; }
   .hamburger { display:flex; }
+  .nav-links.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.5rem 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    gap: 0;
+    z-index: 99;
+  }
+  .nav-links.mobile-open a {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.88rem;
+  }
+  .nav-links.mobile-open a:last-child { border-bottom: none; }
   .footer-grid { grid-template-columns:1fr 1fr; }
   .page-hero { padding:8rem 1.5rem 4rem; }
   .quality-section { padding:3rem 1.5rem 5rem; }
@@ -155,7 +174,7 @@ footer { background:var(--dark); color:white; padding:4rem 3rem 2rem; }
     </button>
     <a href="contact.html" class="nav-cta" data-tr="Teklif Al" data-en="Get a Quote">Teklif Al</a>
   </div>
-  <div class="hamburger"><span></span><span></span><span></span></div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 </nav>
  
 <div class="page-hero">
@@ -534,6 +553,14 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 });
  
 document.querySelector('[href="quality.html"]')?.classList.add('active');
+function toggleMenu() {
+  const links = document.querySelector(".nav-links");
+  const hamburger = document.querySelector(".hamburger");
+  if (!links) return;
+  links.classList.toggle("mobile-open");
+  const isOpen = links.classList.contains("mobile-open");
+  hamburger.style.opacity = isOpen ? "0.6" : "1";
+}
 </script>
 </body>
 </html>

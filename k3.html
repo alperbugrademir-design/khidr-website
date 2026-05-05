@@ -663,8 +663,12 @@ document.querySelectorAll('.reveal').forEach((el, i) => {
 });
 
 function toggleMenu() {
-  const links = document.querySelector('.nav-links');
-  if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+  const links = document.querySelector(".nav-links");
+  const hamburger = document.querySelector(".hamburger");
+  if (!links) return;
+  links.classList.toggle("mobile-open");
+  const isOpen = links.classList.contains("mobile-open");
+  hamburger.style.opacity = isOpen ? "0.6" : "1";
 }
 </script>
 </body>

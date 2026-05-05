@@ -272,9 +272,11 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 document.querySelector('[href="products.html"]')?.classList.add('active');
 function toggleMenu() {
   const links = document.querySelector(".nav-links");
+  const hamburger = document.querySelector(".hamburger");
   if (!links) return;
-  const isOpen = links.style.display === "flex";
-  links.style.display = isOpen ? "none" : "flex";
+  links.classList.toggle("mobile-open");
+  const isOpen = links.classList.contains("mobile-open");
+  hamburger.style.opacity = isOpen ? "0.6" : "1";
 }
 </script>
 </body>
