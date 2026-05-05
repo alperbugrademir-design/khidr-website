@@ -1,0 +1,1092 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ellingham Diyagramı</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --panel: #111318;
+  --border: #2a2f3a;
+  --accent: #e8a020;
+  --accent2: #4fc3f7;
+  --green: #4caf82;
+  --red: #e05555;
+  --text: #dde2ec;
+  --dim: #6b7280;
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Barlow Condensed', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  
+  /* MOBİL SEÇİM VE KOPYALAMA ENGELLEYİCİLER */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,195,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,195,247,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+.header {
+  position: relative;
+  z-index: 1;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--panel);
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.header h1 span { color: var(--accent2); }
+.header-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 2px;
+}
+
+/* LAYOUT */
+.main-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr;
+  height: calc(100vh - 65px);
+  position: relative;
+  z-index: 1;
+}
+
+/* SOL PANEL */
+.left-panel {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  grid-row: 1 / 3;
+}
+.panel-title {
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ELEMENT SEÇİCİ */
+.element-grid {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  overflow-y: auto;
+  flex: 1;
+}
+.elem-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+}
+.elem-btn:hover { border-color: var(--accent2); transform: scale(1.05); }
+.elem-btn.active { border-width: 2px; }
+.elem-symbol {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  display: block;
+  color: #fff;
+}
+.elem-name {
+  font-size: 9px;
+  color: var(--dim);
+  display: block;
+  margin-top: 1px;
+}
+.elem-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}
+
+/* KONTROL PANELİ */
+.controls {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ctrl-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ctrl-btn {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+.ctrl-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.ctrl-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+/* LEGEND */
+.legend {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.legend-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: var(--text);
+}
+.legend-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* SAĞ ÜST: DİYAGRAM */
+.diagram-area {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent2);
+  letter-spacing: 2px;
+}
+.temp-display {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--bg);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+canvas {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: crosshair;
+  flex: 1;
+  width: 100%;
+  display: block;
+}
+
+/* SAĞ ALT: BİLGİ PANELİ */
+.info-panel {
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  min-height: 140px;
+  max-height: 200px;
+}
+.info-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  overflow-y: auto;
+}
+.info-box-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.info-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  margin: 2px;
+  font-family: var(--mono);
+}
+.tag-spontan { background: rgba(76,175,130,0.15); color: var(--green); border: 1px solid var(--green); }
+.tag-nospontan { background: rgba(224,85,85,0.1); color: var(--red); border: 1px solid var(--red); }
+.info-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.info-dim { font-size: 12px; color: var(--dim); font-family: var(--mono); }
+
+/* KARŞILAŞTIRMA PANELİ */
+.compare-panel {
+  position: fixed;
+  top: 65px;
+  right: 0;
+  width: 300px;
+  max-width: 90vw; 
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 0 8px;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  box-shadow: -4px 4px 20px rgba(0,0,0,0.4);
+}
+.compare-panel.show { display: flex; }
+.compare-header {
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.compare-close {
+  background: none;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 4px;
+}
+.compare-close:hover { color: var(--red); }
+.compare-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.compare-label {
+  font-size: 11px;
+  color: var(--dim);
+  font-family: var(--mono);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+/* ÖZEL AÇILIR MENÜ (ÇÖKMEYİ ENGELLEYEN YAPI) */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+.dropdown-selected {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dropdown-selected::after {
+  content: ' ▼';
+  float: right;
+  font-size: 10px;
+  color: var(--dim);
+}
+.dropdown-selected:hover { border-color: var(--accent2); }
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--accent2);
+  border-radius: 4px;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.dropdown-list.show { display: block; }
+.dropdown-item {
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.dropdown-item:hover { background: var(--accent2); color: #000; }
+.dropdown-item.disabled {
+  color: var(--accent); background: var(--bg); cursor: default;
+  font-weight: bold; text-align: center; font-size: 10px; letter-spacing: 1px;
+}
+.dropdown-item.disabled:hover { background: var(--bg); color: var(--accent); }
+
+.compare-result {
+  padding: 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+.compare-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(42,47,58,0.5);
+  font-size: 12px;
+}
+.compare-row:last-child { border-bottom: none; }
+.compare-temp {
+  font-family: var(--mono);
+  color: var(--dim);
+  font-size: 11px;
+}
+.compare-dg {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: right;
+}
+.compare-verdict {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 700;
+}
+.verdict-yes { background: rgba(76,175,130,0.15); color: var(--green); }
+.verdict-no  { background: rgba(224,85,85,0.1);  color: var(--red); }
+.compare-summary {
+  margin: 10px 12px;
+  padding: 10px;
+  background: var(--bg);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.compare-toggle-btn {
+  position: fixed;
+  top: 70px;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  color: var(--accent2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 8px 10px;
+  cursor: pointer;
+  z-index: 55;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transition: all 0.2s;
+}
+.compare-toggle-btn:hover { background: var(--accent2); color: #000; }
+
+/* TOOLTIP */
+.tooltip {
+  position: fixed;
+  background: rgba(17,19,24,0.97);
+  border: 1px solid var(--accent2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 200;
+  display: none;
+  max-width: 260px;
+  line-height: 1.5;
+}
+.tooltip.show { display: block; }
+.tt-title { font-family: var(--mono); color: var(--accent); font-size: 12px; margin-bottom: 4px; }
+
+@media (max-width: 768px) {
+  .main-layout { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto; }
+  .left-panel { grid-row: 1; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+  .element-grid { grid-template-columns: repeat(8, 1fr); }
+  .info-panel { grid-template-columns: 1fr; max-height: none; }
+}
+</style>
+
+    <style>
+      @media (max-width: 900px) {
+        canvas#ellinghamCanvas { 
+          flex: none !important; 
+          height: 55vh !important; 
+          width: 100% !important; 
+        }
+        .left-panel { 
+          position: fixed !important; 
+          top: 0 !important; 
+          left: 0 !important;
+          transform: translateX(-100%) !important;
+          width: 80% !important; 
+          height: 100vh !important; 
+          z-index: 20000 !important; 
+          background: var(--bg, #08090d) !important;
+          border-right: 1px solid var(--border, #2a2f3a) !important;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          padding-bottom: 100px !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          will-change: transform !important;
+        }
+        .left-panel.open { 
+          transform: translateX(0) !important;
+        }
+        .evrensel-mobil-btn {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          position: fixed !important;
+          bottom: 25px !important;
+          right: 25px !important;
+          z-index: 20001 !important;
+          width: 56px !important;
+          height: 56px !important;
+          border-radius: 50% !important;
+          background: var(--accent, var(--cyan, #4fc3f7)) !important;
+          color: #000 !important;
+          font-size: 22px !important;
+          border: none !important;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important;
+          transition: all 0.2s !important;
+          cursor: pointer !important;
+        }
+        .evrensel-mobil-btn:active { transform: scale(0.9) !important; }
+        .main-container, .main-layout, .diagram-wrapper { 
+          display: block !important; 
+          flex-direction: column !important;
+        }
+        .diagram-box, .diagram-area, .canvas-wrapper { 
+          width: 100% !important; 
+          padding: 4px !important; 
+        }
+      }
+      @media (min-width: 901px) {
+        .evrensel-mobil-btn { display: none !important; }
+      }
+    </style>
+    </head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>ELLİNGHAM <span>DİYAGRAMI</span></h1>
+    <div class="header-sub">// Metal Oksit Kararlılığı & İndirgeme Termodinamiği</div>
+  </div>
+</div>
+
+<div class="main-layout">
+  <div class="left-panel">
+    <div class="panel-title">// Metal Seçici</div>
+    <div class="element-grid" id="elementGrid"></div>
+    <div class="legend">
+      <div class="legend-title">// REFERANS ÇİZGİLERİ</div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#ff6b6b;"></div>
+        <span>C + O2 → CO2</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#ffd93d; height:3px; background: repeating-linear-gradient(90deg,#ffd93d 0,#ffd93d 5px,transparent 5px,transparent 10px);"></div>
+        <span>2C + O2 → 2CO</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#a8e6cf; height:3px; background: repeating-linear-gradient(90deg,#a8e6cf 0,#a8e6cf 5px,transparent 5px,transparent 10px);"></div>
+        <span>2CO + O2 → 2CO2</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#74b9ff; height:3px; background: repeating-linear-gradient(90deg,#74b9ff 0,#74b9ff 5px,transparent 5px,transparent 10px);"></div>
+        <span>2H2 + O2 → 2H2O</span>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="ctrl-row">
+        <button class="ctrl-btn" onclick="selectAll()">TÜMÜNÜ SEÇ</button>
+        <button class="ctrl-btn danger" onclick="clearAll()">TEMİZLE</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" onclick="toggleComparePanel()" id="compareOpenBtn">KARŞILAŞTIR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram-area">
+    <div class="diagram-header">
+      <div class="diagram-title">// ΔG° = ΔH° - TΔS° (kJ/mol O2)</div>
+      <div class="temp-display" id="tempDisplay">T: — °C</div>
+    </div>
+    <canvas id="ellinghamCanvas"></canvas>
+  </div>
+
+  <div class="info-panel" id="infoPanel">
+    <div class="info-box">
+      <div class="info-box-title">// Seçilen Nokta</div>
+      <div class="info-text" id="infoPoint">Diyagram üzerine tıklayın veya fare/parmak ile üzerine gelin.</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">// Spontanlık (ΔG < 0)</div>
+      <div id="infoSpontan"><span class="info-dim">Henüz seçim yapılmadı.</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">// İndirgeme Analizi</div>
+      <div id="infoIndirgen"><span class="info-dim">Bir noktaya tıklayınca C, CO ve H2 ile indirgeme imkânı analiz edilir.</span></div>
+    </div>
+  </div>
+</div>
+
+<button class="compare-toggle-btn" id="compareToggleBtn" onclick="toggleComparePanel()">KARŞILAŞTIR</button>
+
+<div class="compare-panel" id="comparePanel">
+  <div class="compare-header">
+    <span>// REDÜKSİYON ANALİZİ</span>
+    <button class="compare-close" onclick="toggleComparePanel()">✕</button>
+  </div>
+  
+  <div class="compare-selectors">
+    <div>
+      <div class="compare-label">// İNDİRGEYEN</div>
+      <div class="custom-dropdown" id="dropdownA">
+        <div class="dropdown-selected" onclick="toggleCustomDropdown('A')">Seçin...</div>
+        <div class="dropdown-list" id="listA"></div>
+      </div>
+      <input type="hidden" id="selectA" value="">
+    </div>
+    
+    <div>
+      <div class="compare-label">// İNDİRGENEN OKSİT</div>
+      <div class="custom-dropdown" id="dropdownB">
+        <div class="dropdown-selected" onclick="toggleCustomDropdown('B')">Seçin...</div>
+        <div class="dropdown-list" id="listB"></div>
+      </div>
+      <input type="hidden" id="selectB" value="">
+    </div>
+  </div>
+
+  <div class="compare-summary" id="compareSummary">
+    İki reaksiyon seçin. Altta kalan çizgi (daha negatif ΔG) diğerini indirgeyebilir.
+  </div>
+  <div id="compareEquation" style="display:none; margin:0 12px 8px; padding:10px 12px; background:rgba(78,195,247,0.05); border:1px solid rgba(78,195,247,0.2); border-left:3px solid #4fc3f7; border-radius:4px;">
+    <div style="font-family:'Share Tech Mono',monospace; font-size:10px; color:#4fc3f7; letter-spacing:2px; margin-bottom:6px;">// NET REAKSİYON DENKLEMİ</div>
+    <div id="compareEqText" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#fff; margin-bottom:6px;"></div>
+    <div id="compareEqNote" style="font-size:11px; color:#6b7280; line-height:1.4;"></div>
+  </div>
+  <div class="compare-result" id="compareResult"></div>
+</div>
+
+<div class="tooltip" id="tooltip">
+  <div class="tt-title" id="ttTitle"></div>
+  <div id="ttBody"></div>
+</div>
+
+<script>
+const REACTIONS = [
+  { id: 'CO2', symbol: 'C', name: 'Karbon (CO2)', formula: 'C + O2 → CO2', color: '#ff6b6b', dashed: false, alwaysVisible: true, segments: [{ Tmin: 0, Tmax: 2000, dH: -393.5, dS: -0.001 }] },
+  { id: 'CO', symbol: 'C', name: 'Karbon (CO)', formula: '2C + O2 → 2CO', color: '#ffd93d', dashed: true, alwaysVisible: true, segments: [{ Tmin: 0, Tmax: 2000, dH: -221.0, dS: 0.179 }] },
+  { id: 'CO2r', symbol: 'C', name: 'Karbon (CO/CO2)', formula: '2CO + O2 → 2CO2', color: '#a8e6cf', dashed: true, alwaysVisible: true, segments: [{ Tmin: 0, Tmax: 2000, dH: -566.0, dS: -0.173 }] },
+  { id: 'H2', symbol: 'H', name: 'Hidrojen', formula: '2H2 + O2 → 2H2O', color: '#74b9ff', dashed: true, alwaysVisible: true, segments: [{ Tmin: 0, Tmax: 2000, dH: -483.6, dS: -0.090 }] },
+  { id: 'Cu', symbol: 'Cu', name: 'Bakır', formula: '4Cu + O2 → 2Cu2O', color: '#e07b39', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1085, dH: -338.0, dS: -0.150 }, { Tmin: 1085, Tmax: 2000, dH: -280.0, dS: -0.105 }] },
+  { id: 'Ni', symbol: 'Ni', name: 'Nikel', formula: '2Ni + O2 → 2NiO', color: '#a29bfe', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1455, dH: -489.5, dS: -0.168 }, { Tmin: 1455, Tmax: 2000, dH: -420.0, dS: -0.120 }] },
+  { id: 'Fe2O3', symbol: 'Fe', name: 'Demir (Fe2O3)', formula: '4Fe + 3O2 → 2Fe2O3', color: '#fd79a8', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 570, dH: -825.5, dS: -0.263 }, { Tmin: 570, Tmax: 1538, dH: -700.0, dS: -0.200 }, { Tmin: 1538, Tmax: 2000, dH: -600.0, dS: -0.150 }] },
+  { id: 'FeO', symbol: 'Fe', name: 'Demir (FeO)', formula: '2Fe + O2 → 2FeO', color: '#e84393', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1370, dH: -529.0, dS: -0.130 }, { Tmin: 1370, Tmax: 2000, dH: -480.0, dS: -0.100 }] },
+  { id: 'Zn', symbol: 'Zn', name: 'Çinko', formula: '2Zn + O2 → 2ZnO', color: '#00cec9', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 420, dH: -700.0, dS: -0.200 }, { Tmin: 420, Tmax: 907, dH: -650.0, dS: -0.155 }, { Tmin: 907, Tmax: 2000, dH: -520.0, dS: -0.080 }] },
+  { id: 'Pb', symbol: 'Pb', name: 'Kurşun', formula: '2Pb + O2 → 2PbO', color: '#b2bec3', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 327, dH: -435.4, dS: -0.200 }, { Tmin: 327, Tmax: 1749, dH: -400.0, dS: -0.170 }, { Tmin: 1749,Tmax: 2000, dH: -350.0, dS: -0.130 }] },
+  { id: 'Sn', symbol: 'Sn', name: 'Kalay', formula: '2Sn + O2 → 2SnO', color: '#dfe6e9', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 232, dH: -580.7, dS: -0.210 }, { Tmin: 232, Tmax: 2270, dH: -540.0, dS: -0.175 }] },
+  { id: 'Mo', symbol: 'Mo', name: 'Molibden', formula: '2Mo + O2 → 2MoO', color: '#fdcb6e', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 2623, dH: -596.0, dS: -0.168 }] },
+  { id: 'W', symbol: 'W', name: 'Tungsten', formula: '2W + O2 → 2WO', color: '#e17055', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 3422, dH: -589.7, dS: -0.165 }] },
+  { id: 'Cr', symbol: 'Cr', name: 'Krom', formula: '4Cr + 3O2 → 2Cr2O3', color: '#6c5ce7', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1907, dH: -752.0, dS: -0.175 }, { Tmin: 1907, Tmax: 2000, dH: -680.0, dS: -0.135 }] },
+  { id: 'Mn', symbol: 'Mn', name: 'Mangan', formula: '2Mn + O2 → 2MnO', color: '#00b894', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1244, dH: -730.0, dS: -0.150 }, { Tmin: 1244, Tmax: 2000, dH: -680.0, dS: -0.118 }] },
+  { id: 'Si', symbol: 'Si', name: 'Silisyum', formula: 'Si + O2 → SiO2', color: '#74b9ff', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1414, dH: -856.0, dS: -0.173 }, { Tmin: 1414, Tmax: 2000, dH: -800.0, dS: -0.140 }] },
+  { id: 'Ti', symbol: 'Ti', name: 'Titanyum', formula: 'Ti + O2 → TiO2', color: '#00cec9', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1668, dH: -944.0, dS: -0.177 }, { Tmin: 1668, Tmax: 2000, dH: -880.0, dS: -0.140 }] },
+  { id: 'Al', symbol: 'Al', name: 'Alüminyum', formula: '4Al + 3O2 → 2Al2O3', color: '#55efc4', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 660, dH: -1117.0, dS: -0.202 }, { Tmin: 660, Tmax: 2072, dH: -1050.0, dS: -0.170 }, { Tmin: 2072,Tmax: 3000, dH: -960.0, dS: -0.130 }] },
+  { id: 'Mg', symbol: 'Mg', name: 'Magnezyum', formula: '2Mg + O2 → 2MgO', color: '#fd79a8', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 650, dH: -1246.0, dS: -0.210 }, { Tmin: 650, Tmax: 1090, dH: -1185.0, dS: -0.170 }, { Tmin: 1090,Tmax: 3000, dH: -1050.0, dS: -0.095 }] },
+  { id: 'Ca', symbol: 'Ca', name: 'Kalsiyum', formula: '2Ca + O2 → 2CaO', color: '#ff7675', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 842, dH: -1270.0, dS: -0.207 }, { Tmin: 842, Tmax: 1484, dH: -1210.0, dS: -0.165 }, { Tmin: 1484,Tmax: 3000, dH: -1100.0, dS: -0.100 }] },
+  { id: 'Ba', symbol: 'Ba', name: 'Baryum', formula: '2Ba + O2 → 2BaO', color: '#e17055', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 727, dH: -1107.0, dS: -0.195 }, { Tmin: 727, Tmax: 1897, dH: -1050.0, dS: -0.158 }] },
+  { id: 'Li', symbol: 'Li', name: 'Lityum', formula: '4Li + O2 → 2Li2O', color: '#fab1a0', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 180, dH: -1200.0, dS: -0.205 }, { Tmin: 180, Tmax: 1342, dH: -1140.0, dS: -0.168 }] },
+  { id: 'Na', symbol: 'Na', name: 'Sodyum', formula: '4Na + O2 → 2Na2O', color: '#fdcb6e', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 98, dH: -828.0, dS: -0.320 }, { Tmin: 98, Tmax: 883, dH: -780.0, dS: -0.280 }] },
+  { id: 'K', symbol: 'K', name: 'Potasyum', formula: '4K + O2 → 2K2O', color: '#a29bfe', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 63, dH: -720.0, dS: -0.300 }, { Tmin: 63, Tmax: 759, dH: -672.0, dS: -0.265 }] },
+  { id: 'V', symbol: 'V', name: 'Vanadyum', formula: '2V + O2 → 2VO', color: '#6c5ce7', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1910, dH: -724.0, dS: -0.162 }] },
+  { id: 'Co', symbol: 'Co', name: 'Kobalt', formula: '2Co + O2 → 2CoO', color: '#0984e3', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1495, dH: -478.0, dS: -0.155 }, { Tmin: 1495, Tmax: 2000, dH: -420.0, dS: -0.115 }] },
+  { id: 'Ag', symbol: 'Ag', name: 'Gümüş', formula: '4Ag + O2 → 2Ag2O', color: '#dfe6e9', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 300, dH: -62.2, dS: -0.133 }, { Tmin: 300, Tmax: 962, dH: -40.0, dS: -0.090 }] },
+  { id: 'Sb', symbol: 'Sb', name: 'Antimon', formula: '4Sb + 3O2 → 2Sb2O3', color: '#b2bec3', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 631, dH: -658.0, dS: -0.228 }, { Tmin: 631, Tmax: 1587, dH: -600.0, dS: -0.183 }] },
+  { id: 'Bi', symbol: 'Bi', name: 'Bizmut', formula: '4Bi + 3O2 → 2Bi2O3', color: '#00b894', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 271, dH: -576.9, dS: -0.231 }, { Tmin: 271, Tmax: 1564, dH: -530.0, dS: -0.190 }] },
+  { id: 'Zr', symbol: 'Zr', name: 'Zirkonyum', formula: 'Zr + O2 → ZrO2', color: '#55efc4', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 1855, dH: -1097.0, dS: -0.185 }, { Tmin: 1855, Tmax: 3000, dH: -1020.0, dS: -0.145 }] },
+  { id: 'Ce', symbol: 'Ce', name: 'Seryum', formula: '4Ce + 3O2 → 2Ce2O3', color: '#e84393', dashed: false, alwaysVisible: false, segments: [{ Tmin: 0, Tmax: 798, dH: -1140.0, dS: -0.195 }, { Tmin: 798, Tmax: 3443, dH: -1080.0, dS: -0.155 }] }
+];
+
+const canvas = document.getElementById('ellinghamCanvas');
+const ctx = canvas.getContext('2d');
+
+const TMIN_C = 0; const TMAX_C = 2000; const DG_MIN = -1400; const DG_MAX = 200;
+const PAD = { top: 30, right: 120, bottom: 50, left: 75 };
+
+let activeIds = new Set(); let hoverT = null; let clickedT = null; let clickedDG = null;
+
+function buildElementGrid() {
+  const grid = document.getElementById('elementGrid');
+  const metals = REACTIONS.filter(r => !r.alwaysVisible);
+  const seen = new Set();
+  metals.forEach(r => {
+    if (seen.has(r.id)) return;
+    seen.add(r.id);
+    const btn = document.createElement('div');
+    btn.className = 'elem-btn'; btn.id = `eb-${r.id}`;
+    btn.onclick = () => toggleElement(r.id);
+    btn.innerHTML = `
+      <div class="elem-dot" id="dot-${r.id}" style="background:${r.color}; opacity:0.3;"></div>
+      <span class="elem-symbol">${r.symbol}</span>
+      <span class="elem-name">${r.name.split(' ')[0]}</span>
+    `;
+    grid.appendChild(btn);
+  });
+}
+
+function toggleElement(id) {
+  const related = REACTIONS.filter(r => r.id === id || (id === 'Fe2O3' && r.id === 'FeO') || (id === 'FeO' && r.id === 'Fe2O3'));
+  const isActive = activeIds.has(id);
+  if (isActive) related.forEach(r => activeIds.delete(r.id));
+  else related.forEach(r => activeIds.add(r.id));
+  updateElementButtons(); drawDiagram();
+}
+
+function updateElementButtons() {
+  REACTIONS.filter(r => !r.alwaysVisible).forEach(r => {
+    const btn = document.getElementById(`eb-${r.id}`);
+    const dot = document.getElementById(`dot-${r.id}`);
+    if (!btn) return;
+    if (activeIds.has(r.id)) {
+      btn.classList.add('active'); btn.style.borderColor = r.color;
+      btn.style.background = r.color + '22'; dot.style.opacity = '1';
+    } else {
+      btn.classList.remove('active'); btn.style.borderColor = '';
+      btn.style.background = ''; dot.style.opacity = '0.3';
+    }
+  });
+}
+
+function selectAll() { REACTIONS.filter(r => !r.alwaysVisible).forEach(r => activeIds.add(r.id)); updateElementButtons(); drawDiagram(); }
+function clearAll() { activeIds.clear(); updateElementButtons(); drawDiagram(); }
+
+function calcDG(reaction, T_C) {
+  const T_K = T_C + 273.15;
+  const seg = reaction.segments.find(s => T_C >= s.Tmin && T_C <= s.Tmax) || reaction.segments[reaction.segments.length - 1];
+  return seg.dH - T_K * seg.dS;
+}
+
+function toCanvasX(T_C) { return PAD.left + ((T_C - TMIN_C) / (TMAX_C - TMIN_C)) * (canvas.clientWidth - PAD.left - PAD.right); }
+function toCanvasY(dG) { return PAD.top + ((DG_MAX - dG) / (DG_MAX - DG_MIN)) * (canvas.clientHeight - PAD.top - PAD.bottom); }
+function fromCanvasX(px) { return TMIN_C + ((px - PAD.left) / (canvas.clientWidth - PAD.left - PAD.right)) * (TMAX_C - TMIN_C); }
+function fromCanvasY(py) { return DG_MAX - ((py - PAD.top) / (canvas.clientHeight - PAD.top - PAD.bottom)) * (DG_MAX - DG_MIN); }
+
+function drawDiagram() {
+  resizeCanvas();
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  drawGrid(); drawAxes();
+  REACTIONS.filter(r => r.alwaysVisible).forEach(r => drawLine(r));
+  REACTIONS.filter(r => !r.alwaysVisible && activeIds.has(r.id)).forEach(r => drawLine(r));
+  if (hoverT !== null) drawCursor(hoverT, '#ffffff22');
+  if (clickedT !== null) drawCursor(clickedT, '#4fc3f780');
+}
+
+function drawGrid() {
+  ctx.strokeStyle = '#2a2f3a'; ctx.lineWidth = 1;
+  for (let T = 0; T <= TMAX_C; T += 200) { const x = toCanvasX(T); ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, canvas.clientHeight - PAD.bottom); ctx.stroke(); }
+  for (let dg = DG_MIN; dg <= DG_MAX; dg += 200) { const y = toCanvasY(dg); ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(canvas.clientWidth - PAD.right, y); ctx.stroke(); }
+  ctx.strokeStyle = '#ffffff18'; ctx.lineWidth = 1.5; const y0 = toCanvasY(0); ctx.beginPath(); ctx.moveTo(PAD.left, y0); ctx.lineTo(canvas.clientWidth - PAD.right, y0); ctx.stroke();
+}
+
+function drawAxes() {
+  ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, canvas.clientHeight - PAD.bottom); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PAD.left, canvas.clientHeight - PAD.bottom); ctx.lineTo(canvas.clientWidth - PAD.right, canvas.clientHeight - PAD.bottom); ctx.stroke();
+  ctx.fillStyle = '#6b7280'; ctx.font = '11px Share Tech Mono'; ctx.textAlign = 'center';
+  for (let T = 0; T <= TMAX_C; T += 200) { ctx.fillText(T + '°C', toCanvasX(T), canvas.clientHeight - PAD.bottom + 18); }
+  ctx.textAlign = 'right';
+  for (let dg = DG_MIN; dg <= DG_MAX; dg += 200) { ctx.fillText(dg, PAD.left - 8, toCanvasY(dg) + 4); }
+  ctx.fillStyle = '#9ba3b0'; ctx.font = '12px Barlow Condensed'; ctx.textAlign = 'center';
+  ctx.fillText('Sıcaklık (°C)', PAD.left + (canvas.clientWidth - PAD.left - PAD.right) / 2, canvas.clientHeight - 8);
+  ctx.save(); ctx.translate(14, PAD.top + (canvas.clientHeight - PAD.top - PAD.bottom) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('ΔG° (kJ/mol O2)', 0, 0); ctx.restore();
+}
+
+function drawLine(reaction) {
+  const steps = 400; const dT = (TMAX_C - TMIN_C) / steps;
+  ctx.beginPath(); ctx.strokeStyle = reaction.color; ctx.lineWidth = reaction.alwaysVisible ? 1.5 : 2.2;
+  if (reaction.dashed) ctx.setLineDash([6, 4]); else ctx.setLineDash([]);
+  let started = false;
+  for (let i = 0; i <= steps; i++) {
+    const T = TMIN_C + i * dT; const dg = calcDG(reaction, T); const x = toCanvasX(T); const y = toCanvasY(dg);
+    if (y < PAD.top || y > canvas.clientHeight - PAD.bottom) { started = false; continue; }
+    if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  if (!reaction.alwaysVisible) {
+    const y = toCanvasY(calcDG(reaction, TMAX_C));
+    if (y >= PAD.top && y <= canvas.clientHeight - PAD.bottom) {
+      ctx.fillStyle = reaction.color; ctx.font = 'bold 11px Share Tech Mono'; ctx.textAlign = 'left'; ctx.fillText(reaction.symbol, toCanvasX(TMAX_C) + 5, y + 4);
+    }
+  }
+}
+
+function drawCursor(T, color) {
+  ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.setLineDash([4, 3]);
+  ctx.beginPath(); ctx.moveTo(toCanvasX(T), PAD.top); ctx.lineTo(toCanvasX(T), canvas.clientHeight - PAD.bottom); ctx.stroke(); ctx.setLineDash([]);
+}
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect(); const px = e.clientX - rect.left; const py = e.clientY - rect.top; const T = fromCanvasX(px);
+  if (T < TMIN_C || T > TMAX_C || px < PAD.left || px > canvas.clientWidth - PAD.right) { hoverT = null; document.getElementById('tempDisplay').textContent = 'T: — °C'; hideTooltip(); drawDiagram(); return; }
+  hoverT = T; document.getElementById('tempDisplay').textContent = `T: ${Math.round(T)} °C`; showTooltipNear(e.clientX, e.clientY, T, fromCanvasY(py)); drawDiagram();
+});
+
+canvas.addEventListener('mouseleave', () => { hoverT = null; document.getElementById('tempDisplay').textContent = 'T: — °C'; hideTooltip(); drawDiagram(); });
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect(); const px = e.clientX - rect.left; const py = e.clientY - rect.top; const T = fromCanvasX(px);
+  if (T < TMIN_C || T > TMAX_C || px < PAD.left || px > canvas.clientWidth - PAD.right) return;
+  clickedT = T; clickedDG = fromCanvasY(py); updateInfoPanel(T); drawDiagram();
+});
+
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault(); const touch = e.touches[0]; const px = touch.clientX - canvas.getBoundingClientRect().left; const T = fromCanvasX(px);
+  if (T < TMIN_C || T > TMAX_C) return; clickedT = T; updateInfoPanel(T); drawDiagram();
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault(); const touch = e.touches[0]; const px = touch.clientX - canvas.getBoundingClientRect().left; const T = fromCanvasX(px);
+  if (T < TMIN_C || T > TMAX_C || px < PAD.left || px > canvas.clientWidth - PAD.right) { hoverT = null; document.getElementById('tempDisplay').textContent = 'T: — °C'; hideTooltip(); }
+  else { hoverT = T; document.getElementById('tempDisplay').textContent = `T: ${Math.round(T)} °C`; showTooltipNear(touch.clientX, touch.clientY, T, fromCanvasY(touch.clientY - canvas.getBoundingClientRect().top)); }
+  drawDiagram();
+}, { passive: false });
+
+
+function showTooltipNear(mx, my, T, dg) {
+  const tt = document.getElementById('tooltip'); const title = document.getElementById('ttTitle'); const body = document.getElementById('ttBody');
+  const visibleReactions = REACTIONS.filter(r => r.alwaysVisible || activeIds.has(r.id));
+  let closest = null; let minDist = 30;
+  visibleReactions.forEach(r => { const rdg = calcDG(r, T); const dist = Math.abs(rdg - dg); if (dist < minDist) { minDist = dist; closest = r; } });
+  if (closest) {
+    const rdg = calcDG(closest, T); title.textContent = closest.formula;
+    body.innerHTML = `<span style="color:var(--dim)">T = </span>${Math.round(T)} °C<br><span style="color:var(--dim)">ΔG° = </span><strong style="color:${rdg < 0 ? 'var(--green)' : 'var(--red)'}">${rdg.toFixed(1)} kJ/mol O2</strong><br><span style="color:var(--dim)">Durum: </span>${rdg < 0 ? '✅ Spontan' : '❌ Spontan Değil'}`;
+    tt.style.left = (mx + 14) + 'px'; tt.style.top = (my - 10) + 'px'; tt.classList.add('show');
+  } else { hideTooltip(); }
+}
+
+function hideTooltip() { document.getElementById('tooltip').classList.remove('show'); }
+
+function updateInfoPanel(T) {
+  const visibleReactions = REACTIONS.filter(r => !r.alwaysVisible && activeIds.has(r.id));
+  document.getElementById('infoPoint').innerHTML = `<span style="color:var(--accent);font-family:var(--mono)">${Math.round(T)} °C</span> (${Math.round(T + 273.15)} K)<br><span style="color:var(--dim);font-size:12px">Seçili metal sayısı: ${visibleReactions.length}</span>`;
+  
+  const spontanDiv = document.getElementById('infoSpontan');
+  if (visibleReactions.length === 0) spontanDiv.innerHTML = '<span class="info-dim">Metal seçiniz.</span>';
+  else {
+    let html = '';
+    visibleReactions.forEach(r => { const dg = calcDG(r, T); html += `<span class="info-tag ${dg < 0 ? 'tag-spontan' : 'tag-nospontan'}">${dg < 0 ? '✓' : '✗'} ${r.symbol}: ${dg.toFixed(0)} kJ</span>`; });
+    spontanDiv.innerHTML = html;
+  }
+
+  const indirgenDiv = document.getElementById('infoIndirgen');
+  const dgC_CO2 = calcDG(REACTIONS.find(r => r.id === 'CO2'), T); const dgC_CO = calcDG(REACTIONS.find(r => r.id === 'CO'), T); const dgH2 = calcDG(REACTIONS.find(r => r.id === 'H2'), T);
+  let html = `<div style="font-size:12px; line-height:1.8;"><span style="color:var(--dim)">C→CO2:</span> ${dgC_CO2.toFixed(0)} kJ &nbsp; <span style="color:var(--dim)">C→CO:</span> ${dgC_CO.toFixed(0)} kJ &nbsp; <span style="color:var(--dim)">H2→H2O:</span> ${dgH2.toFixed(0)} kJ<br>`;
+  if (visibleReactions.length > 0) {
+    html += '<hr style="border-color:var(--border);margin:6px 0;">';
+    visibleReactions.forEach(r => {
+      const dgM = calcDG(r, T);
+      html += `<span style="color:var(--accent);font-family:var(--mono);font-weight:700">${r.symbol}:</span> ${dgC_CO < dgM || dgC_CO2 < dgM ? '<span style="color:var(--green)">C ile ✓</span> ' : '<span style="color:var(--red)">C ile ✗</span> '}${dgH2 < dgM ? '<span style="color:var(--green)">H2 ile ✓</span>' : '<span style="color:var(--red)">H2 ile ✗</span>'}<br>`;
+    });
+  }
+  indirgenDiv.innerHTML = html + '</div>';
+}
+
+function resizeCanvas() {
+  const w = document.querySelector('.diagram-area').clientWidth - 32; const h = document.querySelector('.diagram-area').clientHeight - document.querySelector('.diagram-header').offsetHeight - 26; const dpr = window.devicePixelRatio || 1;
+  if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
+    canvas.width = Math.floor(w * dpr); canvas.height = Math.max(Math.floor(h * dpr), 200 * dpr); canvas.style.width = w + 'px'; canvas.style.height = Math.max(h, 200) + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
+  }
+}
+window.addEventListener('resize', () => { drawDiagram(); });
+
+/* YENİ AÇILIR MENÜ (CUSTOM DROPDOWN) YÖNETİMİ */
+function toggleCustomDropdown(type) {
+  const list = document.getElementById('list' + type);
+  const otherType = type === 'A' ? 'B' : 'A';
+  document.getElementById('list' + otherType).classList.remove('show');
+  list.classList.toggle('show');
+}
+
+
+
+function selectOption(type, value, text) {
+  document.getElementById('select' + type).value = value;
+  document.getElementById('dropdown' + type).querySelector('.dropdown-selected').textContent = text;
+  document.getElementById('list' + type).classList.remove('show');
+  updateComparison();
+}
+
+function toggleComparePanel() {
+  const panel = document.getElementById('comparePanel');
+  const isOpen = panel.classList.toggle('show');
+  const btn = document.getElementById('compareToggleBtn');
+  if (btn) btn.style.display = isOpen ? 'none' : '';
+  if (isOpen) populateCompareSelects();
+}
+
+function populateCompareSelects() {
+  const metals = REACTIONS.filter(r => !r.alwaysVisible);
+  ['A', 'B'].forEach((type) => {
+    const list = document.getElementById('list' + type);
+    let html = `<div class="dropdown-item" onclick="selectOption('${type}', '', 'Seçin...')">Seçin...</div>`;
+    REACTIONS.filter(r => r.alwaysVisible && r.id !== 'CO2r').forEach(r => { 
+        html += `<div class="dropdown-item" onclick="selectOption('${type}', '${r.id}', '${r.formula}')">${r.formula}</div>`; 
+    });
+    html += `<div class="dropdown-item disabled">── Metal Oksitler ──</div>`;
+    metals.forEach(r => { 
+        html += `<div class="dropdown-item" onclick="selectOption('${type}', '${r.id}', '${r.formula}')">${r.formula}</div>`; 
+    });
+    list.innerHTML = html;
+  });
+}
+
+function updateComparison() {
+  const idA = document.getElementById('selectA').value;
+  const idB = document.getElementById('selectB').value;
+  const summary = document.getElementById('compareSummary');
+  const result = document.getElementById('compareResult');
+
+  if (!idA || !idB) { summary.innerHTML = 'İki reaksiyon seçin. Altta kalan çizgi (daha negatif ΔG) diğerini indirgeyebilir.'; result.innerHTML = ''; return; }
+  if (idA === idB) { summary.innerHTML = '<span style="color:var(--red)">Aynı reaksiyonu iki kez seçtiniz.</span>'; result.innerHTML = ''; return; }
+
+  const rA = REACTIONS.find(r => r.id === idA); const rB = REACTIONS.find(r => r.id === idB);
+  const temps = [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000];
+  let canReduceCount = 0; let crossingTemp = null; let prevDiff = null;
+
+  let tableHTML = `<div style="display:grid; grid-template-columns:55px 1fr 1fr 80px; gap:4px; padding:4px 0; border-bottom:1px solid var(--border); margin-bottom:4px;"><span class="compare-temp">T (°C)</span><span style="font-size:11px; color:${rA.color}; font-family:var(--mono); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${rA.symbol}</span><span style="font-size:11px; color:${rB.color}; font-family:var(--mono); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${rB.symbol}</span><span style="font-size:11px; color:var(--dim); text-align:center;">Durum</span></div>`;
+
+  temps.forEach(T => {
+    const dgA = calcDG(rA, T); const dgB = calcDG(rB, T); const diff = dgA - dgB;
+    if (prevDiff !== null && Math.sign(diff) !== Math.sign(prevDiff) && crossingTemp === null) crossingTemp = T; prevDiff = diff;
+    if (dgA < dgB) canReduceCount++;
+    tableHTML += `<div style="display:grid; grid-template-columns:55px 1fr 1fr 80px; gap:4px; align-items:center; padding:4px 0; border-bottom:1px solid rgba(42,47,58,0.4);"><span class="compare-temp">${T}</span><span class="compare-dg" style="color:${dgA < 0 ? 'var(--green)' : 'var(--red)'}">${dgA.toFixed(0)}</span><span class="compare-dg" style="color:${dgB < 0 ? 'var(--green)' : 'var(--red)'}">${dgB.toFixed(0)}</span>${dgA < dgB ? `<span class="compare-verdict verdict-yes">${rA.symbol}→ ✓</span>` : `<span class="compare-verdict verdict-no">${rB.symbol}→ ✓</span>`}</div>`;
+  });
+
+  result.innerHTML = tableHTML;
+  let sumHTML = '';
+  if (canReduceCount === 10) sumHTML = `<strong style="color:var(--green)">${rA.symbol}</strong>, tüm sıcaklık aralığında <strong style="color:${rB.color}">${rB.symbol}</strong> oksidini indirgeyebilir.<br><span style="color:var(--dim); font-size:12px">ΔG(${rA.symbol}) her zaman ΔG(${rB.symbol})'den daha negatif.</span>`;
+  else if (canReduceCount === 0) sumHTML = `<strong style="color:var(--red)">${rA.symbol}</strong>, <strong style="color:${rB.color}">${rB.symbol}</strong> oksidini indirgeyemez.<br><span style="color:var(--dim); font-size:12px">ΔG(${rB.symbol}) her zaman daha negatif.</span>`;
+  else sumHTML = `Çizgiler <strong style="color:var(--accent)">${crossingTemp ? `~${crossingTemp}°C civarında` : 'bir sıcaklıkta'}</strong> kesişiyor.<br>${canReduceCount > 5 ? `Yüksek sıcaklıkta <strong style="color:var(--green)">${rA.symbol}</strong> indirgeyebilir.` : `Düşük sıcaklıkta <strong style="color:var(--green)">${rA.symbol}</strong> indirgeyebilir.`}`;
+  
+  summary.innerHTML = sumHTML + `<hr style="border-color:var(--border); margin:8px 0;"><span style="color:var(--dim); font-size:11px; font-family:var(--mono)">A: ${rA.formula}<br>B: ${rB.formula}</span>`;
+
+  const winnerA = canReduceCount >= 5;
+
+  // 1. ENDÜSTRİYEL REAKSİYONLAR DEV SÖZLÜĞÜ (Hardcoded)
+  const ozelSozluk = {
+      // --- KARBONMONOKSİT (CO) İLE İNDİRGEME (Yüksek Fırın / Gaz İndirgemesi) ---
+      'CO2r_Fe2O3': { eq: '3CO + Fe2O3 → 2Fe + 3CO2', note: 'Yüksek Fırın (Sıcak Gaz) İndirgemesi' },
+      'CO2r_FeO':   { eq: 'CO + FeO → Fe + CO2', note: 'Wüstit İndirgemesi' },
+      'CO2r_Cu':    { eq: '2CO + Cu2O → 2Cu + 2CO2', note: 'Bakır İndirgemesi' },
+      'CO2r_Ni':    { eq: 'CO + NiO → Ni + CO2', note: 'Nikel İndirgemesi' },
+      'CO2r_Pb':    { eq: 'CO + PbO → Pb + CO2', note: 'Kurşun İndirgemesi' },
+      'CO2r_Co':    { eq: 'CO + CoO → Co + CO2', note: 'Kobalt İndirgemesi' },
+      'CO2r_Sn':    { eq: 'CO + SnO → Sn + CO2', note: 'Kalay İndirgemesi' },
+
+      // --- C (KARBON) İLE İNDİRGEME (Karboktermik - CO çıkışlı) ---
+      'CO_Fe2O3':   { eq: '3C + Fe2O3 → 2Fe + 3CO', note: 'Karboktermik Direkt İndirgeme' },
+      'CO_FeO':     { eq: 'C + FeO → Fe + CO', note: 'Wüstit Direkt İndirgeme' },
+      'CO_ZnO':     { eq: 'C + ZnO → Zn + CO', note: 'Çinko Üretimi (Retort / ISF Prosesi)' },
+      'CO_Si':      { eq: '2C + SiO2 → Si + 2CO', note: 'Silisyum Üretimi (Elektrik Ark Ocağı)' },
+      'CO_Mn':      { eq: 'C + MnO → Mn + CO', note: 'Ferromangan Üretimi' },
+      'CO_Cr':      { eq: '3C + Cr2O3 → 2Cr + 3CO', note: 'Ferrokrom Üretimi' },
+      'CO_Pb':      { eq: 'C + PbO → Pb + CO', note: 'Kurşun Üretimi (Şaft Fırını)' },
+      'CO_Sn':      { eq: 'C + SnO → Sn + CO', note: 'Kalay Üretimi (Reverber Fırın)' },
+      'CO_Ni':      { eq: 'C + NiO → Ni + CO', note: 'Nikel Üretimi' },
+      'CO_Cu':      { eq: 'C + Cu2O → 2Cu + CO', note: 'Bakır Üretimi' },
+      'CO_Ti':      { eq: '2C + TiO2 → Ti + 2CO', note: 'Karboktermik (TiC karbürleşme riski yüksektir!)' },
+      'CO_V':       { eq: 'C + VO → V + CO', note: 'Vanadyum İndirgemesi' },
+      'CO_W':       { eq: 'C + WO → W + CO', note: 'Tungsten İndirgemesi' },
+      'CO_Mo':      { eq: 'C + MoO → Mo + CO', note: 'Molibden İndirgemesi' },
+
+      // --- C (KARBON) İLE İNDİRGEME (Düşük Sıcaklık - CO2 çıkışlı) ---
+      'CO2_Fe2O3':  { eq: '3C + 2Fe2O3 → 4Fe + 3CO2', note: 'Karboktermik Düşük Sıcaklık Reaksiyonu' },
+      'CO2_FeO':    { eq: 'C + 2FeO → 2Fe + CO2', note: 'Wüstit Düşük Sıcaklık Karboktermik' },
+
+      // --- HİDROJEN (H2) İLE İNDİRGEME (Sünger Metal & Toz Metalürjisi) ---
+      'H2_Fe2O3':   { eq: '3H2 + Fe2O3 → 2Fe + 3H2O', note: 'Sünger Demir Üretimi (MIDREX Prosesi)' },
+      'H2_FeO':     { eq: 'H2 + FeO → Fe + H2O', note: 'Hidrojenle Temiz İndirgeme' },
+      'H2_W':       { eq: 'H2 + WO → W + H2O', note: 'Tungsten Tozu Üretimi' },
+      'H2_Mo':      { eq: 'H2 + MoO → Mo + H2O', note: 'Molibden Tozu Üretimi' },
+      'H2_Cu':      { eq: 'H2 + Cu2O → 2Cu + H2O', note: 'Bakır Tozu Üretimi' },
+      'H2_Ni':      { eq: 'H2 + NiO → Ni + H2O', note: 'Nikel Tozu Üretimi' },
+      'H2_Co':      { eq: 'H2 + CoO → Co + H2O', note: 'Kobalt Tozu Üretimi' },
+
+      // --- ALÜMİNOTERMİK (Al ile İndirgeme - Goldschmidt Prosesi) ---
+      'Al_Fe2O3':   { eq: '2Al + Fe2O3 → 2Fe + Al2O3', note: 'Termit Reaksiyonu (Demiryolu Ray Kaynağı)' },
+      'Al_FeO':     { eq: '2Al + 3FeO → 3Fe + Al2O3', note: 'Alüminotermik İndirgeme' },
+      'Al_Cr':      { eq: '2Al + Cr2O3 → 2Cr + Al2O3', note: 'Saf Krom Üretimi' },
+      'Al_Mn':      { eq: '2Al + 3MnO → 3Mn + Al2O3', note: 'Saf Mangan Üretimi' },
+      'Al_Ti':      { eq: '4Al + 3TiO2 → 3Ti + 2Al2O3', note: 'Alüminotermik Titanyum' },
+      'Al_V':       { eq: '2Al + 3VO → 3V + Al2O3', note: 'Vanadyum Üretimi' },
+      'Al_Si':      { eq: '4Al + 3SiO2 → 3Si + 2Al2O3', note: 'Silikotermik İndirgeme' },
+      'Al_W':       { eq: '2Al + 3WO → 3W + Al2O3', note: 'Alüminotermik Tungsten' },
+      'Al_Mo':      { eq: '2Al + 3MoO → 3Mo + Al2O3', note: 'Alüminotermik Molibden' },
+
+      // --- MAGNEZYUM İLE İNDİRGEME (Magnezotermik) ---
+      'Mg_Ti':      { eq: '2Mg + TiO2 → Ti + 2MgO', note: 'Kroll Prosesi (Genelde klorürden yapılır, oksit zorlayıcıdır)' },
+      'Mg_Zr':      { eq: '2Mg + ZrO2 → Zr + 2MgO', note: 'Zirkonyum Üretimi' },
+      'Mg_V':       { eq: 'Mg + VO → V + MgO', note: 'Magnezotermik Vanadyum' },
+      'Mg_Si':      { eq: '2Mg + SiO2 → Si + 2MgO', note: 'Magnezotermik Silisyum' },
+
+      // --- KALSİYUM İLE İNDİRGEME (Kalsiyotermik) ---
+      'Ca_Ti':      { eq: '2Ca + TiO2 → Ti + 2CaO', note: 'Kalsiyotermik Titanyum Üretimi' },
+      'Ca_Zr':      { eq: '2Ca + ZrO2 → Zr + 2CaO', note: 'Kalsiyotermik Zirkonyum' },
+      'Ca_V':       { eq: 'Ca + VO → V + CaO', note: 'Kalsiyotermik Vanadyum' },
+            
+      // --- SİLİSYUM İLE İNDİRGEME (Silikotermik) ---
+      'Si_Cr':      { eq: '3Si + 2Cr2O3 → 4Cr + 3SiO2', note: 'Silikotermik Krom Üretimi' },
+      'Si_Mn':      { eq: 'Si + 2MnO → 2Mn + SiO2', note: 'Silikotermik Mangan' },
+      'Si_Mg':      { eq: 'Si + 2MgO → 2Mg + SiO2', note: 'Pidgeon Prosesi (Magnezyum Üretimi)' }
+  };
+
+  // 2. KİMLİK EŞLEŞTİRMESİ (A ve B'nin sırası fark etmeksizin sözlükte arama)
+  const indirgeyenID = winnerA ? rA.id : rB.id;
+  const oksitID = winnerA ? rB.id : rA.id;
+  const aramaAnahtari = `${indirgeyenID}_${oksitID}`;
+  
+  let netEq = "";
+  let noteText = "";
+
+  // 3. SÖZLÜKTE VARSA ONU KULLAN, YOKSA İSKELET FORMÜLÜ YAZ (Fallback)
+  if (ozelSozluk[aramaAnahtari]) {
+      netEq = ozelSozluk[aramaAnahtari].eq;
+      noteText = ozelSozluk[aramaAnahtari].note;
+  } else {
+      const getMetal = (form) => form.split('+')[0].trim().replace(/^[0-9]+/, '');
+      const getOxide = (form) => { let p = form.split('→'); return p.length > 1 ? p[1].trim().replace(/^[0-9]+/, '') : form; };
+      
+      if (winnerA) {
+          netEq = `${getMetal(rA.formula)} + ${getOxide(rB.formula)}  →  ${getOxide(rA.formula)} + ${getMetal(rB.formula)}`;
+      } else {
+          netEq = `${getMetal(rB.formula)} + ${getOxide(rA.formula)}  →  ${getOxide(rB.formula)} + ${getMetal(rA.formula)}`;
+      }
+      noteText = "Not: Katsayılar sadeleştirilmiştir (Dengelenmemiş net reaksiyon).";
+  }
+  
+  // 4. EKRANA YAZDIR VE TAŞMAYI ÖNLE
+  const textEl = document.getElementById('compareEqText');
+  textEl.style.whiteSpace = "normal"; 
+  textEl.style.wordWrap = "break-word";
+  textEl.style.fontSize = "14px";
+  
+  textEl.textContent = netEq;
+  document.getElementById('compareEqNote').textContent = noteText;
+  document.getElementById('compareEquation').style.display = 'block';
+
+  // 5. DİYAGRAMI ÇİZ VE KESİŞİM NOKTASINI İŞARETLE
+  drawDiagram(); 
+  if (crossingTemp) { 
+      const x = toCanvasX(crossingTemp); const y = toCanvasY(calcDG(rA, crossingTemp)); 
+      ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fillStyle = 'rgba(232,160,32,0.3)'; ctx.fill(); ctx.strokeStyle = '#e8a020'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#e8a020'; ctx.font = 'bold 11px Share Tech Mono'; ctx.textAlign = 'center'; ctx.fillText('~' + Math.round(crossingTemp) + 'C', x, y - 14); 
+  }
+}
+
+buildElementGrid(); ['Fe2O3', 'FeO', 'Al', 'Cu', 'Ni'].forEach(id => activeIds.add(id)); updateElementButtons(); setTimeout(() => { drawDiagram(); }, 100);
+</script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const btn = document.createElement("button");
+        btn.className = "evrensel-mobil-btn";
+        btn.setAttribute("aria-label", "Kontrol Paneli");
+        btn.innerHTML = "&#9881;";
+        document.body.appendChild(btn);
+        
+        const panel = document.querySelector(".left-panel");
+        if (panel) {
+          btn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            const isOpen = panel.classList.toggle("open");
+            btn.innerHTML = isOpen ? "&#10005;" : "&#9881;";
+            btn.style.background = isOpen 
+              ? "#ff1744" 
+              : "var(--accent, var(--cyan, #4fc3f7))";
+          });
+          document.addEventListener("click", function(e) {
+            if (panel.classList.contains("open") 
+                && !panel.contains(e.target) 
+                && e.target !== btn) {
+              panel.classList.remove("open");
+              btn.innerHTML = "&#9881;";
+              btn.style.background = "var(--accent, var(--cyan, #4fc3f7))";
+            }
+          });
+        }
+      });
+    </script>
+    </body>
+</html>

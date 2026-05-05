@@ -1,0 +1,1356 @@
+#import ui
+
+html_kodu = r"""
+
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pourbaix Lab v4</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090d;
+    --surface: rgba(14,17,26,0.85);
+    --glass: rgba(18,22,36,0.65);
+    --glass-border: rgba(80,120,180,0.12);
+    --glass-shine: rgba(120,180,255,0.04);
+    --cyan: #00e5ff;
+    --cyan-dim: rgba(0,229,255,0.15);
+    --cyan-glow: rgba(0,229,255,0.3);
+    --amber: #ffab40;
+    --amber-dim: rgba(255,171,64,0.12);
+    --rose: #ff4081;
+    --rose-dim: rgba(255,64,129,0.12);
+    --green: #69f0ae;
+    --green-dim: rgba(105,240,174,0.12);
+    --text: #e0e6f0;
+    --text-dim: #5a6580;
+    --text-faint: #3a4260;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+  ::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--sans);
+    height: 100vh; width: 100vw; display: flex; flex-direction: column;
+    overflow: hidden; -webkit-user-select: none; user-select: none;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 80%, rgba(0,229,255,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 20%, rgba(255,171,64,0.025) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10,12,20,1) 0%, var(--bg) 100%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+  .app { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100vh; padding: 12px; gap: 12px; }
+
+/* HEADER */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; flex-shrink: 0; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--cyan), #0091ea);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: 800; font-size: 12px; color: #08090d;
+  box-shadow: 0 0 20px rgba(0,229,255,0.4);
+}
+.brand h1 { font-family: var(--sans); font-weight: 700; font-size: 20px; color: #fff; letter-spacing: -0.5px; }
+.brand h1 em { font-style: normal; color: var(--cyan); }
+.header-meta { font-family: var(--mono); font-size: 10px; color: var(--text-dim); display: flex; gap: 16px; align-items: center; }
+.header-meta .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* GLASS */
+.glass {
+background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius);
+backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; overflow: hidden;
+}
+.glass::before {
+content: ''; position: absolute; inset: 0;
+background: linear-gradient(135deg, var(--glass-shine) 0%, transparent 50%);
+pointer-events: none; border-radius: var(--radius);
+}
+.panel-label {
+font-family: var(--mono); font-size: 9px; font-weight: 500; color: var(--text-dim);
+letter-spacing: 2px; text-transform: uppercase; padding: 12px 14px 8px;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+/* LAYOUT */
+.workspace { flex: 1; display: flex; gap: 12px; min-height: 0; }
+
+/* LEFT PICKER */
+.picker { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; padding-bottom: 12px; }
+.metal-list { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+  grid-auto-rows: max-content; 
+  align-content: start; 
+  gap: 6px; padding: 10px 12px; 
+  overflow-y: auto; flex: 1; min-height: 0; 
+}
+.m-card {
+  position: relative; 
+  padding: 10px 8px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  text-align: center; overflow: hidden;
+}
+.m-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(0,229,255,0.08) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s; pointer-events: none; border-radius: var(--radius-sm);
+}
+.m-card:hover { border-color: rgba(0,229,255,0.25); transform: translateY(-1px); }
+.m-card:hover::after { opacity: 1; }
+.m-card.active { 
+  border-color: var(--cyan); background: rgba(0,229,255,0.06); 
+  box-shadow: 0 0 24px rgba(0,229,255,0.1), inset 0 0 20px rgba(0,229,255,0.03); 
+}
+.m-card.active::after { opacity: 1; }
+.m-card .sym { font-family: var(--sans); font-weight: 800; font-size: 22px; color: #fff; line-height: 1; }
+.m-card .label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 3px; }
+.m-card .meta { font-family: var(--mono); font-size: 8px; color: var(--text-faint); margin-top: 2px; }
+
+.m-badge {
+  position: absolute; top: -1px; right: -1px; width: 20px; height: 20px;
+  border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+  background: linear-gradient(135deg, var(--cyan), #0091ea);
+  color: #fff; font-family: var(--mono); font-weight: 800; font-size: 11px; 
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  display: none; align-items: center; justify-content: center;
+  z-index: 5; 
+}
+.m-card.active .m-badge { display: flex; }
+
+
+/* CONTROLS */
+.ctrl-area { padding: 0 12px; display: none; flex-direction: column; gap: 10px; margin-top: 6px; }
+.ctrl-row { display: flex; flex-direction: column; gap: 3px; }
+.ctrl-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+.ctrl-head b { color: var(--cyan); font-weight: 600; }
+
+input[type="range"] {
+  -webkit-appearance: none; width: 100%; height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.05); outline: none; margin: 8px 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--cyan); cursor: pointer; box-shadow: 0 0 12px rgba(0,229,255,0.5);
+  border: 2px solid #08090d;
+}
+.ctrl-hint { font-family: var(--mono); font-size: 8px; color: var(--text-faint); }
+.chk-row {
+  display: flex; align-items: center; justify-content: space-between; flex-direction: row-reverse;
+  font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+  background: rgba(255,255,255,0.02); padding: 8px 10px; border-radius: 6px;
+  cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 4px;
+}
+.chk-row:hover { background: rgba(255,255,255,0.04); color: var(--text); border-color: rgba(255,255,255,0.05); }
+.chk-row input {
+  -webkit-appearance: none; width: 28px; height: 16px; background: rgba(255,255,255,0.1);
+  border-radius: 8px; position: relative; cursor: pointer; transition: 0.3s; margin: 0;
+}
+.chk-row input:checked { background: var(--cyan); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
+.chk-row input::after {
+  content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+  background: #fff; border-radius: 50%; transition: 0.3s;
+}
+.chk-row input:checked::after { transform: translateX(12px); }
+.toggle-row { display: flex; gap: 4px; flex-wrap: wrap; }
+.toggle-btn {
+padding: 4px 8px; border-radius: 4px; font-family: var(--mono); font-size: 9px;
+cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+color: var(--text-dim); transition: all 0.2s;
+}
+.toggle-btn.on { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.08); }
+.toggle-btn:hover { border-color: rgba(0,229,255,0.3); }
+
+.btn-area { padding: 10px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.btn {
+  padding: 12px 0; border-radius: var(--radius-sm); font-family: var(--mono); font-weight: 700;
+  font-size: 11px; cursor: pointer; transition: all 0.2s; text-align: center; border: none; letter-spacing: 0.5px;
+}
+.btn-go {
+  grid-column: 1 / -1; 
+  background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,145,234,0.15));
+  border: 1px solid rgba(0,229,255,0.3); color: var(--cyan); text-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
+.btn-go:hover { background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(0,145,234,0.25)); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
+.btn-go:disabled { border-color: transparent; color: var(--text-faint); background: rgba(255,255,255,0.03); text-shadow: none; }
+.btn-exp {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: var(--text-dim);
+}
+.btn-exp:hover { border-color: rgba(255,255,255,0.15); color: var(--text); background: rgba(255,255,255,0.06); }
+.btn-exp:disabled { opacity: 0.3; cursor: default; }
+
+/* CENTER DIAGRAM */
+.diagram-wrap {
+flex: 1; min-width: 0; display: flex; position: relative;
+background: rgba(6,8,14,0.9); padding: 0;
+}
+canvas#cv { width: 100%; height: 100%; display: none; cursor: crosshair; touch-action: none; }
+.ph-empty { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+.ph-empty .icon { font-size: 48px; opacity: 0.08; margin-bottom: 12px; }
+.ph-empty p { font-family: var(--mono); font-size: 12px; color: var(--text-faint); letter-spacing: 1px; line-height: 1.8; }
+.ax { position: absolute; font-family: var(--mono); font-size: 10px; color: var(--text-faint); display: none; }
+.ax.y { transform: translateY(-50%) rotate(-90deg); left: 12px; top: 50%; transform-origin: left center; width: 160px; letter-spacing: 1px; }
+.ax.x { bottom: 6px; left: 50%; transform: translateX(-50%); letter-spacing: 1px; }
+
+/* FLOATING TOOLTIP */
+#tooltip {
+  position: absolute; pointer-events: none; display: none; z-index: 100;
+  background: rgba(8,9,13,0.92); border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 8px; padding: 8px 10px; backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); max-width: 220px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 15px rgba(0,229,255,0.08);
+  font-family: var(--mono); font-size: 10px; color: var(--text);
+}
+#tooltip .tt-coord { color: var(--cyan); font-size: 11px; font-weight: 600; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; }
+#tooltip .tt-phase { margin: 3px 0; display: flex; align-items: center; gap: 6px; }
+#tooltip .tt-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+#tooltip .tt-type { font-size: 8px; padding: 1px 4px; border-radius: 3px; margin-left: auto; }
+
+/* RIGHT ANALYSIS */
+.analysis { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 10px; }
+.a-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.04); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm); padding: 12px; display: none; animation: fadeUp 0.3s ease;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.a-card.vis { display: block; }
+.a-title { font-family: var(--mono); font-size: 9px; color: var(--text-faint); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.coord-line { font-family: var(--mono); font-size: 13px; color: var(--cyan); padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 10px; }
+.phase-item {
+  padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;
+  background: rgba(0,0,0,0.2); border-left: 3px solid var(--text-faint);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  animation: fadeUp 0.2s ease;
+}
+.phase-item .p-sys { font-family: var(--mono); font-size: 9px; font-weight: 500; }
+.phase-item .p-name { font-family: var(--mono); font-size: 14px; font-weight: 700; color: #fff; margin: 4px 0; }
+.phase-item .p-rxn {
+font-family: var(--mono); font-size: 10px; color: var(--cyan); opacity: 0.8;
+background: rgba(0,229,255,0.05); padding: 5px 7px; border-radius: 4px; margin-top: 6px; line-height: 1.4;
+}
+.sement-box {
+display: none; padding: 10px; border-radius: 6px; margin-top: 4px;
+background: var(--green-dim); border: 1px solid rgba(105,240,174,0.2);
+font-family: var(--mono); font-size: 10px; color: var(--green); line-height: 1.5;
+}
+.sement-box b { font-size: 11px; display: block; margin-bottom: 4px; }
+.advice-text { font-family: var(--sans); font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+.advice-text b { font-family: var(--mono); font-weight: 600; }
+.legend-grid { display: flex; flex-direction: column; gap: 4px; }
+.leg-row { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+.leg-swatch { width: 14px; height: 10px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+.leg-line { width: 18px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+.leg-row span { color: #fff; font-weight: 500; }
+.a-card.legend-card { display: block; }
+
+/* PATH CARD */
+.path-list { max-height: 120px; overflow-y: auto; }
+.path-item { font-family: var(--mono); font-size: 9px; color: var(--text-dim); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
+.path-item .pi-idx { color: var(--amber); font-weight: 600; width: 16px; }
+.path-item .pi-trans { color: var(--rose); font-size: 8px; margin-top: 1px; }
+
+/* INDICATOR */
+#zoomIndicator {
+position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+font-family: var(--mono); font-size: 10px; color: var(--cyan);
+background: rgba(8,9,13,0.85); border: 1px solid rgba(0,229,255,0.2);
+padding: 4px 12px; border-radius: 12px; display: none; z-index: 50;
+pointer-events: none; backdrop-filter: blur(8px);
+}
+.mob-menu-btn { display: none; } 
+@media (max-width: 900px) {
+  canvas#cv { 
+    flex: none !important; 
+    height: 65vh !important; 
+    width: 100% !important; 
+  }
+  .workspace { flex-direction: column; }
+  
+  .mob-menu-btn {
+    display: block; position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    padding: 12px 20px; border-radius: 30px; 
+    background: linear-gradient(135deg, var(--cyan), #0091ea); 
+    color: #fff; font-family: var(--sans); font-weight: 800; font-size: 14px;
+    border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  }
+
+  .picker { 
+    position: fixed; top: 0; left: -100%; 
+    width: 85%; height: 100vh !important; max-height: 100vh !important; display: flex; flex-direction: column;
+    background: #08090d; z-index: 999; 
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto; padding-bottom: 80px; box-shadow: 5px 0 25px rgba(0,0,0,0.8);
+  }
+
+  .picker.open { left: 0; }
+  
+  .metal-list { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+  .analysis { 
+    width: 100%; 
+    flex-direction: row !important; 
+    overflow-x: auto; 
+    padding: 10px 5px; 
+    gap: 10px; 
+    align-items: flex-start;
+    -webkit-overflow-scrolling: touch; 
+    scrollbar-width: none; 
+  }
+  .analysis::-webkit-scrollbar { display: none; } 
+
+  .a-card { 
+    flex: 0 0 280px; 
+    margin: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    height: 180px; 
+    overflow-y: auto; 
+  }
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">Pb</div>
+      <h1>Pourbaix <em>Lab</em></h1>
+    </div>
+    <div class="header-meta">
+      <span id="statusText">HAZIR</span>
+      <div class="dot" id="statusDot" style="background:var(--amber)"></div>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="glass picker">
+      <div class="panel-label">Metal Kutuphanesi &middot; Maks 3</div>
+      <div class="metal-list" id="mList">
+        <div class="m-card" data-m="Fe"><div class="m-badge"></div><div class="sym">Fe</div><div class="label">Demir</div><div class="meta">26 &middot; 55.8</div></div>
+        <div class="m-card" data-m="Cu"><div class="m-badge"></div><div class="sym">Cu</div><div class="label">Bakir</div><div class="meta">29 &middot; 63.5</div></div>
+        <div class="m-card" data-m="Zn"><div class="m-badge"></div><div class="sym">Zn</div><div class="label">Cinko</div><div class="meta">30 &middot; 65.4</div></div>
+        <div class="m-card" data-m="Al"><div class="m-badge"></div><div class="sym">Al</div><div class="label">Aluminyum</div><div class="meta">13 &middot; 27.0</div></div>
+        <div class="m-card" data-m="Au"><div class="m-badge"></div><div class="sym">Au</div><div class="label">Altin</div><div class="meta">79 &middot; 197.0</div></div>
+        <div class="m-card" data-m="Ni"><div class="m-badge"></div><div class="sym">Ni</div><div class="label">Nikel</div><div class="meta">28 &middot; 58.7</div></div>
+        <div class="m-card" data-m="Co"><div class="m-badge"></div><div class="sym">Co</div><div class="label">Kobalt</div><div class="meta">27 &middot; 58.9</div></div>
+        <div class="m-card" data-m="Ag"><div class="m-badge"></div><div class="sym">Ag</div><div class="label">Gumus</div><div class="meta">47 &middot; 107.9</div></div>
+        <div class="m-card" data-m="Pb"><div class="m-badge"></div><div class="sym">Pb</div><div class="label">Kursun</div><div class="meta">82 &middot; 207.2</div></div>
+        <div class="m-card" data-m="Mn"><div class="m-badge"></div><div class="sym">Mn</div><div class="label">Mangan</div><div class="meta">25 &middot; 54.9</div></div>
+      </div>
+
+  <div class="ctrl-area" id="ctrls">
+    <div class="ctrl-row">
+      <div class="ctrl-head"><span>Iyon Kons. (log C)</span><b id="vLogC">-6</b></div>
+      <input type="range" id="sLogC" min="-6" max="0" step="0.5" value="-6">
+      <div class="ctrl-hint">Korozyon siniri: 10^-6 M</div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-head"><span>Sicaklik</span><b id="vTemp">25 C (298 K)</b></div>
+      <input type="range" id="sTemp" min="0" max="100" step="5" value="25">
+      <div class="ctrl-hint">Nernst katsayisi T ile olceklenir</div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-head"><span>Referans Elektrot</span></div>
+      <div class="toggle-row">
+        <div class="toggle-btn on" id="tSHE" onclick="setRef('SHE')">SHE</div>
+        <div class="toggle-btn" id="tSCE" onclick="setRef('SCE')">SCE</div>
+      </div>
+      <div class="ctrl-hint">SCE = SHE - 0.241 V</div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-head"><span>Gorunum</span></div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label class="chk-row"><input type="checkbox" id="chkLbl" checked> Faz etiketleri</label>
+        <label class="chk-row"><input type="checkbox" id="chkOverlay"> Overlay modu</label>
+        <label class="chk-row"><input type="checkbox" id="chkPath"> Proses yolu cizimi</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-area">
+    <button class="btn btn-go" id="btnGo" disabled>SISTEMI BASLAT</button>
+    <button class="btn btn-exp" id="btnPng" disabled title="PNG Indir">PNG</button>
+        <button class="btn btn-exp" id="btnReset" disabled title="Zoom Sıfırla" onclick="event.preventDefault(); viewPH0=0; viewPH1=14; viewE0=-2.0; viewE1=2.0; document.getElementById('zoomIndicator').style.display='none'; if(active) draw();">1:1</button>
+  </div>
+</div>
+
+<div class="glass diagram-wrap" id="dWrap">
+  <div class="ph-empty" id="empty">
+    <div class="icon">&#9883;</div>
+    <p>Kutuphaneden metal secin<br><span style="opacity:0.5">Karsilastirma icin maks. 3 adet</span></p>
+  </div>
+  <div class="ax y" id="axY">POTANSIYEL (Eh) / V vs SHE</div>
+  <div class="ax x" id="axX">pH</div>
+  <canvas id="cv"></canvas>
+  <div id="tooltip"></div>
+  <div id="zoomIndicator"></div>
+</div>
+
+<div class="analysis" id="aPanel">
+  <div class="panel-label" style="padding:0 2px 8px; border:none;">Lic & Sementasyon Radari</div>
+
+  <div class="a-card" id="cState">
+    <div class="a-title">Aktif Koordinat</div>
+    <div class="coord-line" id="vCoord">pH: &mdash; | Eh: &mdash; V</div>
+    <div id="phList"></div>
+    <div class="sement-box" id="semBox">
+      <b>&#9889; Sementasyon Tespiti</b>
+      Bir metal cozunurken digeri cokeliyor. Galvanik hucre olusur.
+    </div>
+  </div>
+
+  <div class="a-card" id="cAdv">
+    <div class="a-title">Muhendislik Tavsiyesi &middot; <span id="advM">&mdash;</span></div>
+    <div class="advice-text" id="advT" style="color:var(--text-faint)">Analiz icin grafige dokunun.</div>
+  </div>
+
+  <div class="a-card" id="cPath" style="display:none">
+    <div class="a-title">Proses Yolu</div>
+    <div class="path-list" id="pathList"></div>
+    <div style="margin-top:6px;display:flex;gap:4px">
+      <button class="btn btn-exp" style="flex:1;padding:6px;font-size:9px" onclick="clearPath()">TEMIZLE</button>
+      <button class="btn btn-exp" style="flex:1;padding:6px;font-size:9px" onclick="undoPath()">GERI AL</button>
+    </div>
+  </div>
+
+  <div class="a-card legend-card" id="cLeg">
+    <div class="a-title">Gorunur Katmanlar</div>
+    <div class="legend-grid" id="dynLeg"></div>
+    <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.04);" id="lineLeg"></div>
+  </div>
+</div>
+
+  </div>
+</div>
+<button id="btnMobMenu" class="mob-menu-btn">☰ Kontroller</button>
+<script>
+const cv = document.getElementById('cv');
+const cx = cv.getContext('2d');
+let sel = [], dSel = [], logC = -6, tempC = 25, active = false, bgCache = null;
+const MAX = 3;
+
+// === REFERENCE ELECTRODE ===
+let refMode = 'SHE';
+let refOffset = 0;
+function setRef(mode) {
+  refMode = mode;
+  refOffset = mode === 'SCE' ? -0.241 : 0;
+  document.getElementById('tSHE').classList.toggle('on', mode === 'SHE');
+  document.getElementById('tSCE').classList.toggle('on', mode === 'SCE');
+  document.getElementById('axY').textContent = 'POTANSIYEL (Eh) / V vs ' + mode;
+  if (active) draw();
+}
+
+// === ZOOM & PAN STATE ===
+let viewPH0 = 0, viewPH1 = 14, viewE0 = -2.0, viewE1 = 2.0;
+const BASE_PH0 = 0, BASE_PH1 = 14, BASE_E0 = -2.0, BASE_E1 = 2.0;
+let isPanning = false, panStartX = 0, panStartY = 0, panPH0 = 0, panPH1 = 0, panE0 = 0, panE1 = 0;
+let pinchDist0 = 0, pinchPH0 = 0, pinchPH1 = 0, pinchE0 = 0, pinchE1 = 0;
+
+// === PROCESS PATH ===
+let pathPoints = [];
+let pathMode = false;
+
+function nf1() { return ((tempC + 273.15) / 298.15) * 0.05916; }
+
+const LC = {
+  Fe:[255,255,255,255], Cu:[255,152,0,255], Zn:[186,104,200,255], Al:[176,190,197,255], Au:[255,215,0,255],
+  Ni:[0,230,118,255], Co:[244,67,54,255], Ag:[176,190,197,255], Pb:[255,193,7,255], Mn:[171,71,188,255]
+};
+const LCC = { Fe:'#fff', Cu:'#ff9800', Zn:'#ba68c8', Al:'#b0bec5', Au:'#ffd700', Ni:'#00e676', Co:'#f44336', Ag:'#b0bec5', Pb:'#ffc107', Mn:'#ab47bc' };
+
+const PC = {
+  'Fe (Metal)':[90,100,110,190],'Fe2+':[56,142,60,140],'Fe3+':[230,150,20,140],'HFeO2-':[0,150,136,140],'Fe3O4':[38,50,56,200],'Fe2O3':[211,47,47,200],
+  'Cu (Metal)':[191,54,12,200],'Cu2+':[30,136,229,140],'HCuO2-':[46,204,113,140],'Cu2O':[183,28,28,200],'CuO':[55,55,55,200],
+  'Zn (Metal)':[158,158,158,190],'Zn2+':[79,195,247,140],'ZnO22-':[55,71,79,140],'ZnO':[224,224,224,170],
+  'Al (Metal)':[120,144,156,190],'Al3+':[128,216,255,140],'AlO2-':[142,36,170,140],'Al2O3':[189,189,189,170],
+  'Au (Metal)':[255,215,0,190],'Au3+':[255,245,100,140],'Au2O3':[93,64,55,200],
+  'Ni (Metal)':[120,144,156,190],'Ni2+':[0,200,83,140],'HNiO2-':[0,191,165,140],'NiO':[27,153,139,170],
+  'Co (Metal)':[96,108,118,190],'Co2+':[229,57,53,140],'Co(OH)2':[183,28,28,170],'Co(OH)3':[126,87,194,170],
+  'Ag (Metal)':[207,216,220,190],'Ag+':[207,216,220,140],'Ag2O':[69,90,100,200],'AgO':[38,50,56,200],
+  'Pb (Metal)':[96,108,118,190],'Pb2+':[224,224,224,120],'HPbO2-':[255,213,79,120],'PbO':[255,167,38,170],'PbO2':[150,60,0,200],
+  'Mn (Metal)':[158,158,158,190],'Mn2+':[248,187,208,140],'Mn(OH)2':[244,143,177,170],'Mn2O3':[121,85,72,180],'MnO2':[33,33,33,200],'MnO4-':[156,39,176,160]
+};
+
+const RX = {
+  'Fe (Metal)':'Kararli','Fe2+':'Fe -> Fe2+ + 2e-  (E=-0.44V)','Fe3+':'Fe2+ -> Fe3+ + e-  (E=+0.771V)',
+  'HFeO2-':'Fe + 2H2O -> HFeO2- + 3H+ + 2e-','Fe3O4':'3Fe + 4H2O -> Fe3O4 + 8H+ + 8e-','Fe2O3':'2Fe + 3H2O -> Fe2O3 + 6H+ + 6e-',
+  'Cu (Metal)':'Kararli','Cu2+':'Cu -> Cu2+ + 2e-  (E=+0.34V)','HCuO2-':'Cu + 2H2O -> HCuO2- + 3H+ + 2e-',
+  'Cu2O':'2Cu + H2O -> Cu2O + 2H+ + 2e-','CuO':'Cu2O + H2O -> 2CuO + 2H+ + 2e-',
+  'Zn (Metal)':'Kararli','Zn2+':'Zn -> Zn2+ + 2e-  (E=-0.763V)','ZnO22-':'Zn(OH)2 + 2OH- -> ZnO22- + 2H2O','ZnO':'Zn + H2O -> ZnO + 2H+ + 2e-',
+  'Al (Metal)':'Kararli','Al3+':'Al -> Al3+ + 3e-  (E=-1.66V)','AlO2-':'Al2O3 + H2O -> 2AlO2- + 2H+','Al2O3':'2Al + 3H2O -> Al2O3 + 6H+ + 6e-',
+  'Au (Metal)':'Kararli','Au3+':'Au -> Au3+ + 3e-  (E=+1.50V)','Au2O3':'2Au + 3H2O -> Au2O3 + 6H+ + 6e-',
+  'Ni (Metal)':'Kararli','Ni2+':'Ni -> Ni2+ + 2e-  (E=-0.25V)','HNiO2-':'Ni + 2H2O -> HNiO2- + 3H+ + 2e-','NiO':'Ni + H2O -> NiO + 2H+ + 2e-',
+  'Co (Metal)':'Kararli','Co2+':'Co -> Co2+ + 2e-  (E=-0.28V)','Co(OH)2':'Co + 2H2O -> Co(OH)2 + 2H+ + 2e-','Co(OH)3':'Co(OH)2 + H2O -> Co(OH)3 + H+ + e-',
+  'Ag (Metal)':'Kararli','Ag+':'Ag -> Ag+ + e-  (E=+0.80V)','Ag2O':'2Ag + H2O -> Ag2O + 2H+ + 2e-','AgO':'Ag2O + H2O -> 2AgO + 2H+ + 2e-',
+  'Pb (Metal)':'Kararli','Pb2+':'Pb -> Pb2+ + 2e-  (E=-0.13V)','HPbO2-':'Pb + 2H2O -> HPbO2- + 3H+ + 2e-','PbO':'Pb + H2O -> PbO + 2H+ + 2e-','PbO2':'PbO + H2O -> PbO2 + 2H+ + 2e-',
+  'Mn (Metal)':'Kararli','Mn2+':'Mn -> Mn2+ + 2e-  (E=-1.18V)','Mn(OH)2':'Mn + 2H2O -> Mn(OH)2 + 2H+ + 2e-',
+  'Mn2O3':'2Mn2+ + 3H2O -> Mn2O3 + 6H+ + 2e-','MnO2':'Mn2+ + 2H2O -> MnO2 + 4H+ + 2e-','MnO4-':'Mn2+ + 4H2O -> MnO4- + 8H+ + 5e-'
+};
+
+const DN = {
+  'Fe (Metal)':'Fe (Metal)','Fe2+':'Fe\u00b2\u207a','Fe3+':'Fe\u00b3\u207a','HFeO2-':'HFeO\u2082\u207b','Fe3O4':'Fe\u2083O\u2084 (Manyetit)','Fe2O3':'Fe\u2082O\u2083 (Hematit)',
+  'Cu (Metal)':'Cu (Metal)','Cu2+':'Cu\u00b2\u207a','HCuO2-':'HCuO\u2082\u207b','Cu2O':'Cu\u2082O (Kuprit)','CuO':'CuO (Tenorit)',
+  'Zn (Metal)':'Zn (Metal)','Zn2+':'Zn\u00b2\u207a','ZnO22-':'ZnO\u2082\u00b2\u207b (Cinkat)','ZnO':'ZnO / Zn(OH)\u2082',
+  'Al (Metal)':'Al (Metal)','Al3+':'Al\u00b3\u207a','AlO2-':'AlO\u2082\u207b (Aluminat)','Al2O3':'Al\u2082O\u2083 (Korund)',
+  'Au (Metal)':'Au (Metal)','Au3+':'Au\u00b3\u207a','Au2O3':'Au\u2082O\u2083',
+  'Ni (Metal)':'Ni (Metal)','Ni2+':'Ni\u00b2\u207a','HNiO2-':'HNiO\u2082\u207b','NiO':'NiO / Ni(OH)\u2082',
+  'Co (Metal)':'Co (Metal)','Co2+':'Co\u00b2\u207a','Co(OH)2':'Co(OH)\u2082','Co(OH)3':'Co(OH)\u2083',
+  'Ag (Metal)':'Ag (Metal)','Ag+':'Ag\u207a','Ag2O':'Ag\u2082O','AgO':'AgO',
+  'Pb (Metal)':'Pb (Metal)','Pb2+':'Pb\u00b2\u207a','HPbO2-':'HPbO\u2082\u207b','PbO':'PbO (Gleyt)','PbO2':'PbO\u2082',
+  'Mn (Metal)':'Mn (Metal)','Mn2+':'Mn\u00b2\u207a','Mn(OH)2':'Mn(OH)\u2082','Mn2O3':'Mn\u2082O\u2083','MnO2':'MnO\u2082 (Piroluzit)','MnO4-':'MnO\u2084\u207b (Permanganat)'
+};
+
+const MPH = {
+  Fe:['Fe (Metal)','Fe2+','Fe3+','HFeO2-','Fe3O4','Fe2O3'],
+  Cu:['Cu (Metal)','Cu2+','HCuO2-','Cu2O','CuO'],
+  Zn:['Zn (Metal)','Zn2+','ZnO22-','ZnO'],
+  Al:['Al (Metal)','Al3+','AlO2-','Al2O3'],
+  Au:['Au (Metal)','Au3+','Au2O3'],
+  Ni:['Ni (Metal)','Ni2+','HNiO2-','NiO'],
+  Co:['Co (Metal)','Co2+','Co(OH)2','Co(OH)3'],
+  Ag:['Ag (Metal)','Ag+','Ag2O','AgO'],
+  Pb:['Pb (Metal)','Pb2+','HPbO2-','PbO','PbO2'],
+  Mn:['Mn (Metal)','Mn2+','Mn(OH)2','Mn2O3','MnO2','MnO4-']
+};
+
+const P = {t:20, r:20, b:40, l:65};
+
+function eFe(pH, E, C) {
+  const k = nf1();
+  const e_fe_fe2 = -0.44 + (k/2)*C;
+  const e_fe2_fe3 = 0.771;
+  const ph_fe3_fe2o3 = 1.0 - 0.333*C;
+  const ph_fe2_fe2o3 = 1.76 - (1.0/3)*C;
+  const e_fe_fe3o4 = -0.085 - k*pH;
+  const e_fe3o4_fe2o3 = 0.221 - k*pH;
+  const ph_hfeo2 = 12.5 - 0.5*C;
+  const e_fe_hfeo2 = -0.80 - k*pH;
+  if (pH < ph_hfeo2 && E < e_fe_fe2 && E < e_fe_fe3o4) return {p:'Fe (Metal)', t:'immunity'};
+  if (pH >= ph_hfeo2 && E < e_fe_hfeo2) return {p:'Fe (Metal)', t:'immunity'};
+  if (pH >= ph_hfeo2 && E >= e_fe_hfeo2) return {p:'HFeO2-', t:'corrosion'};
+  if (pH < ph_fe3_fe2o3 && E > e_fe2_fe3) return {p:'Fe3+', t:'corrosion'};
+  if (pH < ph_fe2_fe2o3 && E >= e_fe_fe2 && E <= e_fe2_fe3) return {p:'Fe2+', t:'corrosion'};
+  if (pH >= ph_fe2_fe2o3 && E >= e_fe_fe3o4 && E < e_fe3o4_fe2o3) return {p:'Fe3O4', t:'passivity'};
+  if (E >= e_fe3o4_fe2o3 && pH >= ph_fe3_fe2o3) return {p:'Fe2O3', t:'passivity'};
+  if (pH >= ph_fe3_fe2o3 && pH < ph_fe2_fe2o3 && E > e_fe2_fe3) return {p:'Fe2O3', t:'passivity'};
+  if (pH < ph_fe2_fe2o3) return {p:'Fe2+', t:'corrosion'};
+  return {p:'Fe2O3', t:'passivity'};
+}
+
+function eCu(pH, E, C) {
+  const k = nf1();
+  const e_cu_cu2 = 0.34 + (k/2)*C;
+  const ph_cu2_cuo = 3.94 - 0.5*C;
+  const e_cu_cu2o = 0.471 - k*pH;
+  const e_cu2o_cuo = 0.669 - k*pH;
+  const ph_cuo_hcuo2 = 19.0 + C;
+  if (E <= e_cu_cu2 && E <= e_cu_cu2o) return {p:'Cu (Metal)', t:'immunity'};
+  if (pH <= ph_cu2_cuo && E > e_cu_cu2) return {p:'Cu2+', t:'corrosion'};
+  if (pH > ph_cuo_hcuo2 && E > e_cu2o_cuo) return {p:'HCuO2-', t:'corrosion'};
+  if (E > e_cu_cu2o && E <= e_cu2o_cuo && pH > ph_cu2_cuo) return {p:'Cu2O', t:'passivity'};
+  if (E > e_cu2o_cuo) return {p:'CuO', t:'passivity'};
+  return {p:'Cu (Metal)', t:'immunity'};
+}
+
+function eZn(pH, E, C) {
+  const k = nf1();
+  const e_zn_zn2 = -0.763 + (k/2)*C;
+  const ph_zn2_zno = 5.5 - 0.5*C;
+  const e_zn_zno = -0.439 - k*pH;
+  const ph_zno_znkat = 15.0 + 0.5*C;
+  if (E <= e_zn_zn2 && E <= e_zn_zno) return {p:'Zn (Metal)', t:'immunity'};
+  if (pH <= ph_zn2_zno && E > e_zn_zn2) return {p:'Zn2+', t:'corrosion'};
+  if (pH >= ph_zno_znkat) return {p:'ZnO22-', t:'corrosion'};
+  if (pH > ph_zn2_zno && E > e_zn_zno) return {p:'ZnO', t:'passivity'};
+  return {p:'Zn (Metal)', t:'immunity'};
+}
+
+function eAl(pH, E, C) {
+  const k = nf1();
+  const a = -1.66 + (k/3)*C;
+  const b = -1.55 - k*pH;
+  const c = 1.89 - 0.333*C;
+  const d = 14.6 + 0.5*C;
+  if (E <= a && E <= b) return {p:'Al (Metal)', t:'immunity'};
+  if (pH <= c && E > a) return {p:'Al3+', t:'corrosion'};
+  if (pH >= d) return {p:'AlO2-', t:'corrosion'};
+  if (E > b) return {p:'Al2O3', t:'passivity'};
+  return {p:'Al (Metal)', t:'immunity'};
+}
+
+function eAu(pH, E, C) {
+  const k = nf1();
+  const a = 1.50 + (k/3)*C;
+  const b = 1.80 - 0.333*C;
+  const c = 1.46 - k*pH;
+  if (E <= a && E <= c) return {p:'Au (Metal)', t:'immunity'};
+  if (pH <= b && E > a) return {p:'Au3+', t:'corrosion'};
+  if (E > c) return {p:'Au2O3', t:'passivity'};
+  return {p:'Au (Metal)', t:'immunity'};
+}
+
+function eNi(pH, E, C) {
+  const k = nf1();
+  const a = -0.25 + (k/2)*C;
+  const b = 6.1 - 0.5*C;
+  const c = 0.11 - k*pH;
+  const d = 14.2 + 0.5*C;
+  if (E <= a && E <= c) return {p:'Ni (Metal)', t:'immunity'};
+  if (pH <= b && E > a) return {p:'Ni2+', t:'corrosion'};
+  if (pH >= d) return {p:'HNiO2-', t:'corrosion'};
+  if (E > c) return {p:'NiO', t:'passivity'};
+  return {p:'Ni (Metal)', t:'immunity'};
+}
+
+function eCo(pH, E, C) {
+  const k = nf1();
+  const e_co_co2 = -0.28 + (k/2)*C;
+  const ph_co2_cooh2 = 6.8 - 0.5*C;
+  const e_co_cooh2 = 0.12 - k*pH;
+  const e_cooh2_cooh3 = 0.17 - k*pH;
+  if (E <= e_co_co2 && E <= e_co_cooh2) return {p:'Co (Metal)', t:'immunity'};
+  if (pH <= ph_co2_cooh2 && E > e_co_co2) {
+    if (E > e_cooh2_cooh3) return {p:'Co(OH)3', t:'passivity'};
+    return {p:'Co2+', t:'corrosion'};
+  }
+  if (pH > ph_co2_cooh2) {
+    if (E > e_cooh2_cooh3) return {p:'Co(OH)3', t:'passivity'};
+    if (E > e_co_cooh2) return {p:'Co(OH)2', t:'passivity'};
+  }
+  return {p:'Co (Metal)', t:'immunity'};
+}
+
+function eAg(pH, E, C) {
+  const k = nf1();
+  const a = 0.80 + k*C;
+  const b = 6.5 - 0.5*C;
+  const c = 1.17 - k*pH;
+  const d = 1.40 - k*pH;
+  if (E <= a && E <= c) return {p:'Ag (Metal)', t:'immunity'};
+  if (pH <= b && E > a) return {p:'Ag+', t:'corrosion'};
+  if (E > d) return {p:'AgO', t:'passivity'};
+  if (E > c) return {p:'Ag2O', t:'passivity'};
+  return {p:'Ag (Metal)', t:'immunity'};
+}
+
+function ePb(pH, E, C) {
+  const k = nf1();
+  const a = -0.13 + (k/2)*C;
+  const b = 5.0 - 0.5*C;
+  const c = 0.25 - k*pH;
+  const d = 13.0 + 0.5*C;
+  const e = 1.47 - k*pH;
+  if (E <= a && E <= c) return {p:'Pb (Metal)', t:'immunity'};
+  if (pH <= b && E > a) return {p:'Pb2+', t:'corrosion'};
+  if (pH >= d && E < e) return {p:'HPbO2-', t:'corrosion'};
+  if (E > e) return {p:'PbO2', t:'passivity'};
+  if (pH > b && E > c) return {p:'PbO', t:'passivity'};
+  return {p:'Pb (Metal)', t:'immunity'};
+}
+
+function eMn(pH, E, C) {
+  const k = nf1();
+  const e_mn_mn2 = -1.18 + (k/2)*C;
+  const ph_mn2_mnoh2 = 7.5 - 0.5*C;
+  const e_mn_mnoh2 = -0.73 - k*pH;
+  const e_mn2_mn2o3 = 0.30 - k*pH;
+  const e_mn2o3_mno2 = 1.01 - k*pH;
+  const e_mn2_mno4 = 1.51 - (8*k/5)*pH + (k/5)*C;
+  if (E <= e_mn_mn2 && E <= e_mn_mnoh2) return {p:'Mn (Metal)', t:'immunity'};
+  if (E > e_mn2_mno4 && E > e_mn2o3_mno2) return {p:'MnO4-', t:'corrosion'};
+  if (E > e_mn2o3_mno2 && pH > 0) return {p:'MnO2', t:'passivity'};
+  if (E > e_mn2_mn2o3 && pH > ph_mn2_mnoh2 - 2) return {p:'Mn2O3', t:'passivity'};
+  if (pH > ph_mn2_mnoh2 && E > e_mn_mnoh2 && E <= e_mn2_mn2o3) return {p:'Mn(OH)2', t:'passivity'};
+  if (E > e_mn_mn2) return {p:'Mn2+', t:'corrosion'};
+  return {p:'Mn (Metal)', t:'immunity'};
+}
+
+const EF = {Fe:eFe, Cu:eCu, Zn:eZn, Al:eAl, Au:eAu, Ni:eNi, Co:eCo, Ag:eAg, Pb:ePb, Mn:eMn};
+function gp(m, pH, E) { return EF[m](pH, E, logC); }
+
+// ============================
+// UI WIRING
+// ============================
+const mList = document.getElementById('mList');
+const btnGo = document.getElementById('btnGo');
+const btnPng = document.getElementById('btnPng');
+const btnReset = document.getElementById('btnReset');
+
+mList.addEventListener('click', e => {
+  const c = e.target.closest('.m-card'); if (!c) return;
+  const m = c.dataset.m;
+  if (sel.includes(m)) { sel = sel.filter(x => x !== m); c.classList.remove('active'); }
+  else { if (sel.length >= MAX) return; sel.push(m); c.classList.add('active'); }
+  document.querySelectorAll('.m-badge').forEach(b => b.style.display = 'none');
+  sel.forEach((m,i) => { let b = document.querySelector(`[data-m="${m}"] .m-badge`); if(b){b.textContent=i+1;b.style.display='flex';} });
+  btnGo.disabled = sel.length === 0;
+  btnGo.textContent = sel.length > 1 ? 'KARSILASTIR' : sel.length === 1 ? 'SISTEMI CIZ' : 'SISTEMI BASLAT';
+});
+
+btnGo.addEventListener('click', () => {
+  if (!sel.length) return;
+  dSel = [...sel]; 
+  active = true;
+  resetView();
+  document.getElementById('empty').style.display = 'none';
+  cv.style.display = 'block';
+  document.getElementById('axY').style.display = 'block';
+  document.getElementById('axX').style.display = 'block';
+  document.getElementById('ctrls').style.display = 'flex';
+  document.getElementById('cState').classList.add('vis');
+  document.getElementById('cAdv').classList.add('vis');
+  btnPng.disabled = false;
+  btnReset.disabled = false;
+  document.getElementById('statusText').textContent = 'AKTIF';
+  document.getElementById('statusDot').style.background = 'var(--green)';
+  let lh = '';
+  sel.forEach((m,i) => {
+    let d = i === 0 ? ' (Zemin + Sinir)' : ' (Sinir)';
+    lh += `<div class="leg-row"><div class="leg-line" style="background:${LCC[m]}"></div><span>${m}</span>${d}</div>`;
+  });
+  document.getElementById('lineLeg').innerHTML = lh;
+  updLegend();
+  btnGo.textContent = 'HESAPLANIYOR...';
+  setTimeout(() => { rsz(); btnGo.textContent = 'AKTIF'; }, 50);
+});
+
+document.getElementById('sLogC').oninput = upd;
+document.getElementById('sTemp').oninput = upd;
+document.getElementById('chkLbl').onchange = () => { if(active) draw(); };
+document.getElementById('chkOverlay').onchange = () => { if(active) draw(); };
+document.getElementById('chkPath').onchange = function() {
+  pathMode = this.checked;
+  document.getElementById('cPath').style.display = pathMode ? 'block' : 'none';
+  if (!pathMode) { pathPoints = []; if(active) draw(); }
+};
+
+let drawTimer = null;
+function debouncedDraw() {
+  clearTimeout(drawTimer);
+  drawTimer = setTimeout(() => { if(active) draw(); }, 150);
+}
+
+function upd() {
+  logC = parseFloat(document.getElementById('sLogC').value);
+  document.getElementById('vLogC').textContent = logC;
+  tempC = parseFloat(document.getElementById('sTemp').value);
+  document.getElementById('vTemp').textContent = tempC + ' C (' + (Math.round(tempC + 273.15)) + ' K)';
+  debouncedDraw();
+}
+
+function resetView() {
+  viewPH0 = BASE_PH0; viewPH1 = BASE_PH1;
+  viewE0 = BASE_E0; viewE1 = BASE_E1;
+  showZoomLevel();
+}
+btnReset.addEventListener('click', () => { resetView(); if(active) draw(); });
+
+function showZoomLevel() {
+  const zi = document.getElementById('zoomIndicator');
+  const zoomX = (BASE_PH1 - BASE_PH0) / (viewPH1 - viewPH0);
+  if (Math.abs(zoomX - 1) < 0.01) { zi.style.display = 'none'; return; }
+  zi.textContent = zoomX.toFixed(1) + 'x';
+  zi.style.display = 'block';
+  clearTimeout(zi._timer);
+  zi._timer = setTimeout(() => { zi.style.display = 'none'; }, 2000);
+}
+
+function rsz() {
+  if (!active) return;
+  const r = cv.parentElement.getBoundingClientRect();
+  const d = window.devicePixelRatio || 1;
+  cv.width = r.width * d; cv.height = r.height * d;
+  cv.style.width = r.width + 'px'; cv.style.height = r.height + 'px';
+  cx.scale(d, d);
+  draw();
+}
+window.addEventListener('resize', rsz);
+
+const W = () => parseFloat(cv.style.width);
+const H = () => parseFloat(cv.style.height);
+const px = (p) => P.l + ((p - viewPH0) / (viewPH1 - viewPH0)) * (W() - P.l - P.r);
+const ey = (e) => P.t + ((viewE1 - e - refOffset) / (viewE1 - viewE0)) * (H() - P.t - P.b);
+const xp = (x) => viewPH0 + ((x - P.l) / (W() - P.l - P.r)) * (viewPH1 - viewPH0);
+const ye = (y) => viewE1 - ((y - P.t) / (H() - P.t - P.b)) * (viewE1 - viewE0) - refOffset;
+
+function updLegend() {
+  const sel = dSel;
+  const m = sel[0]; const ph = MPH[m] || [];
+  let h = `<div style="font-family:var(--mono);font-size:9px;color:var(--cyan);margin-bottom:6px;letter-spacing:1px">${m} SISTEMI</div>`;
+  ph.forEach(p => { let c = PC[p] || [128,128,128,200];
+    h += `<div class="leg-row"><div class="leg-swatch" style="background:rgba(${c[0]},${c[1]},${c[2]},${c[3]/255})"></div><span>${DN[p]||p}</span></div>`;
+  });
+  document.getElementById('dynLeg').innerHTML = h;
+}
+
+function compLabels(m) {
+  const lb = {};
+  const phRange = viewPH1 - viewPH0;
+  const eRange = viewE1 - viewE0;
+  const sP = phRange / 40, sE = eRange / 48;
+  for (let pH = viewPH0; pH <= viewPH1; pH += sP)
+    for (let E = viewE0; E <= viewE1; E += sE) {
+      let i = gp(m, pH, E);
+      if (!lb[i.p]) lb[i.p] = {sp:0, se:0, n:0};
+      lb[i.p].sp += pH; lb[i.p].se += E; lb[i.p].n++;
+    }
+  let r = [];
+  for (let p in lb) {
+    let d = lb[p]; if (d.n < 3) continue;
+    let cP = Math.max(viewPH0 + 0.5, Math.min(viewPH1 - 0.5, d.sp / d.n));
+    let cE = Math.max(viewE0 + 0.1, Math.min(viewE1 - 0.1, d.se / d.n));
+    let sl = DN[p] || p; sl = sl.replace(/ \(.*\)/, '');
+    r.push({l:sl, pH:cP, E:cE});
+  }
+  return r;
+}
+
+// ============================
+// MAIN DRAW
+// ============================
+function draw() {
+  if (!dSel.length) return;
+  const sel = dSel;
+  cx.clearRect(0, 0, W(), H());
+  const overlayMode = document.getElementById('chkOverlay').checked && sel.length > 1;
+
+  const phStep = calcStep(viewPH1 - viewPH0, 7);
+  const eStep = calcStep(viewE1 - viewE0, 8);
+  cx.strokeStyle = 'rgba(255,255,255,0.03)'; cx.lineWidth = 1;
+  for (let p = Math.ceil(viewPH0/phStep)*phStep; p <= viewPH1; p += phStep) {
+    cx.beginPath(); cx.moveTo(px(p), P.t); cx.lineTo(px(p), H()-P.b); cx.stroke();
+  }
+  for (let e = Math.ceil(viewE0/eStep)*eStep; e <= viewE1; e += eStep) {
+    cx.beginPath(); cx.moveTo(P.l, ey(e)); cx.lineTo(W()-P.r, ey(e)); cx.stroke();
+  }
+  cx.strokeStyle = 'rgba(255,255,255,0.08)'; cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(P.l, P.t); cx.lineTo(P.l, H()-P.b); cx.lineTo(W()-P.r, H()-P.b); cx.stroke();
+
+  const dp = window.devicePixelRatio || 1;
+  const w = Math.floor(W() - P.l - P.r);
+  const h = Math.floor(H() - P.t - P.b);
+  const img = cx.createImageData(w*dp, h*dp);
+  const sX = 2, sY = 2;
+  const pm = sel[0];
+
+  if (!overlayMode) {
+    for (let y = 0; y < h*dp; y += sY) {
+      let E = viewE1 - (y / (h*dp)) * (viewE1 - viewE0);
+      for (let x = 0; x < w*dp; x += sX) {
+        let pH = viewPH0 + (x / (w*dp)) * (viewPH1 - viewPH0);
+        let bp = gp(pm, pH, E).p;
+        let fc = PC[bp] || [0,0,0,0];
+        let dpH = (viewPH1 - viewPH0) / (w*dp) * sX;
+        let dE = (viewE1 - viewE0) / (h*dp) * sY;
+        for (let m of sel) {
+          let cp = gp(m, pH, E).p;
+          let pl = gp(m, pH - dpH, E).p;
+          let pu = gp(m, pH, E + dE).p;
+          if (cp !== pl || cp !== pu) { fc = LC[m]; break; }
+        }
+        for (let dy = 0; dy < sY; dy++) for (let dx = 0; dx < sX; dx++) {
+          if (y+dy >= h*dp || x+dx >= w*dp) continue;
+          let i = ((y+dy) * Math.floor(w*dp) + (x+dx)) * 4;
+          img.data[i] = fc[0]; img.data[i+1] = fc[1]; img.data[i+2] = fc[2]; img.data[i+3] = fc[3];
+        }
+      }
+    }
+  } else {
+    const blendAlpha = Math.floor(180 / sel.length);
+    for (let y = 0; y < h*dp; y += sY) {
+      let E = viewE1 - (y / (h*dp)) * (viewE1 - viewE0);
+      for (let x = 0; x < w*dp; x += sX) {
+        let pH = viewPH0 + (x / (w*dp)) * (viewPH1 - viewPH0);
+        let rr = 0, gg = 0, bb = 0, aa = 0;
+        let isBoundary = false;
+        let dpH = (viewPH1 - viewPH0) / (w*dp) * sX;
+        let dE = (viewE1 - viewE0) / (h*dp) * sY;
+        for (let m of sel) {
+          let cp = gp(m, pH, E).p;
+          let cpc = PC[cp] || [128,128,128,200];
+          rr += cpc[0]; gg += cpc[1]; bb += cpc[2]; aa += blendAlpha;
+          let pl = gp(m, pH - dpH, E).p;
+          let pu = gp(m, pH, E + dE).p;
+          if (cp !== pl || cp !== pu) { rr = LC[m][0]*sel.length; gg = LC[m][1]*sel.length; bb = LC[m][2]*sel.length; aa = 255*sel.length; isBoundary = true; break; }
+        }
+        let fr = Math.min(255, Math.round(rr/sel.length));
+        let fg = Math.min(255, Math.round(gg/sel.length));
+        let fb = Math.min(255, Math.round(bb/sel.length));
+        let fa = Math.min(255, Math.round(aa/sel.length));
+        for (let dy = 0; dy < sY; dy++) for (let dx = 0; dx < sX; dx++) {
+          if (y+dy >= h*dp || x+dx >= w*dp) continue;
+          let i = ((y+dy) * Math.floor(w*dp) + (x+dx)) * 4;
+          img.data[i] = fr; img.data[i+1] = fg; img.data[i+2] = fb; img.data[i+3] = fa;
+        }
+      }
+    }
+  }
+
+  cx.putImageData(img, P.l*dp, P.t*dp);
+  cx.setTransform(dp, 0, 0, dp, 0, 0);
+
+  const kw = nf1();
+  cx.strokeStyle = 'rgba(0,229,255,0.35)'; cx.lineWidth = 1.5; cx.setLineDash([6,4]);
+  let wo0 = 1.229 - kw * viewPH0, wo1 = 1.229 - kw * viewPH1;
+  cx.beginPath(); cx.moveTo(px(viewPH0), ey(wo0)); cx.lineTo(px(viewPH1), ey(wo1)); cx.stroke();
+  let wh0 = -kw * viewPH0, wh1 = -kw * viewPH1;
+  cx.beginPath(); cx.moveTo(px(viewPH0), ey(wh0)); cx.lineTo(px(viewPH1), ey(wh1)); cx.stroke();
+  cx.setLineDash([]);
+
+  if (document.getElementById('chkLbl').checked) {
+    cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    sel.forEach((m, index) => {
+      let lbs = compLabels(m);
+      lbs.forEach(lb => {
+        let x = px(lb.pH), y = ey(lb.E);
+        if (x < P.l || x > W()-P.r || y < P.t || y > H()-P.b) return;
+        if (index === 0) {
+          cx.font = '600 9px JetBrains Mono';
+          let tw = cx.measureText(lb.l).width + 10;
+          cx.fillStyle = 'rgba(8,9,13,0.8)';
+          cx.beginPath();
+          const rr=4, bw=tw, bh=18, bx=x-bw/2, by=y-bh/2;
+          cx.moveTo(bx+rr,by); cx.lineTo(bx+bw-rr,by); cx.quadraticCurveTo(bx+bw,by,bx+bw,by+rr);
+          cx.lineTo(bx+bw,by+bh-rr); cx.quadraticCurveTo(bx+bw,by+bh,bx+bw-rr,by+bh);
+          cx.lineTo(bx+rr,by+bh); cx.quadraticCurveTo(bx,by+bh,bx,by+bh-rr);
+          cx.lineTo(bx,by+rr); cx.quadraticCurveTo(bx,by,bx+rr,by); cx.fill();
+          cx.strokeStyle = 'rgba(0,229,255,0.12)'; cx.lineWidth = 0.5; cx.stroke();
+          cx.fillStyle = 'rgba(255,255,255,0.9)'; cx.fillText(lb.l, x, y);
+        } else {
+          let offsetY = index * 13;
+          cx.font = '700 8.5px JetBrains Mono';
+          cx.lineWidth = 2.5; cx.strokeStyle = 'rgba(8,9,13,0.9)';
+          cx.strokeText(lb.l, x, y + offsetY);
+          cx.fillStyle = LCC[m]; cx.fillText(lb.l, x, y + offsetY);
+        }
+      });
+    });
+  }
+
+  cx.fillStyle = 'rgba(255,255,255,0.25)'; cx.font = '300 10px JetBrains Mono';
+  cx.textAlign = 'right'; cx.textBaseline = 'middle';
+  for (let e = Math.ceil(viewE0/eStep)*eStep; e <= viewE1; e += eStep) {
+    let displayE = e + refOffset;
+    let label = Math.abs(displayE) < 0.001 ? '0.0' : displayE.toFixed(1);
+    cx.fillText(label, P.l - 6, ey(e));
+  }
+  cx.textAlign = 'center'; cx.textBaseline = 'top';
+  for (let p = Math.ceil(viewPH0/phStep)*phStep; p <= viewPH1; p += phStep) {
+    cx.fillText(Math.abs(p) < 0.001 ? '0' : p.toFixed(p % 1 === 0 ? 0 : 1), px(p), H()-P.b+6);
+  }
+
+  cx.fillStyle = 'rgba(0,229,255,0.5)'; cx.textAlign = 'left'; cx.font = '500 10px JetBrains Mono'; cx.textBaseline = 'bottom';
+  let labelPH = Math.max(viewPH0 + 0.3, viewPH0);
+  cx.fillText('O\u2082/H\u2082O', px(labelPH), ey(1.229 - kw*labelPH) - 5);
+  cx.fillText('H\u2082O/H\u2082', px(labelPH), ey(-kw*labelPH) - 5);
+
+  cx.fillStyle = 'rgba(255,171,64,0.4)'; cx.font = '300 9px JetBrains Mono'; cx.textAlign = 'right'; cx.textBaseline = 'top';
+  cx.fillText(tempC + 'C | logC=' + logC + ' | ' + refMode, W()-P.r-6, P.t+6);
+
+  if (pathMode && pathPoints.length > 0) {
+    cx.strokeStyle = 'rgba(255,171,64,0.7)'; cx.lineWidth = 2; cx.setLineDash([]);
+    cx.beginPath();
+    pathPoints.forEach((pt, i) => {
+      let x = px(pt.pH), y = ey(pt.E);
+      if (i === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
+    });
+    cx.stroke();
+
+    pathPoints.forEach((pt, i) => {
+      let x = px(pt.pH), y = ey(pt.E);
+      cx.beginPath(); cx.arc(x, y, 5, 0, Math.PI*2);
+      cx.fillStyle = 'rgba(255,171,64,0.9)'; cx.fill();
+      cx.strokeStyle = 'rgba(0,0,0,0.5)'; cx.lineWidth = 1; cx.stroke();
+      cx.fillStyle = '#000'; cx.font = 'bold 7px JetBrains Mono';
+      cx.textAlign = 'center'; cx.textBaseline = 'middle';
+      cx.fillText(i+1, x, y);
+    });
+  }
+
+  bgCache = cx.getImageData(0, 0, cv.width, cv.height);
+}
+
+function calcStep(range, targetTicks) {
+  let raw = range / targetTicks;
+  let mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  let norm = raw / mag;
+  let step;
+  if (norm < 1.5) step = 1;
+  else if (norm < 3.5) step = 2;
+  else if (norm < 7.5) step = 5;
+  else step = 10;
+  return step * mag;
+}
+
+// ============================
+// INTERACTION (touch/mouse)
+// ============================
+function interact(e) {
+  if (!active || !bgCache) return;
+  const sel = dSel;
+  if (e.type === 'touchmove') e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  
+  // 1. Ekrandaki kesin koordinatları al
+  const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+  
+  const x = clientX - r.left;
+  const y = clientY - r.top;
+  
+  if (x < P.l || x > W()-P.r || y < P.t || y > H()-P.b) { hideTooltip(); return; }
+  let pH = xp(x), E = ye(y);
+
+  document.getElementById('vCoord').textContent = 'pH: ' + pH.toFixed(2) + ' | Eh: ' + (E + refOffset).toFixed(3) + ' V' + (refMode === 'SCE' ? ' (SCE)' : '') + ' | ' + tempC + 'C';
+
+  let html = '', types = [], ttHtml = '';
+  ttHtml = `<div class="tt-coord">pH ${pH.toFixed(1)} | ${(E+refOffset).toFixed(2)}V</div>`;
+
+  sel.forEach(m => {
+    let i = gp(m, pH, E); types.push(i.t);
+    let tl = i.t === 'immunity' ? 'Bagisik' : i.t === 'corrosion' ? 'Korozyon' : 'Pasivite';
+    let tc = i.t === 'immunity' ? 'var(--cyan)' : i.t === 'corrosion' ? 'var(--rose)' : 'var(--green)';
+    let tbg = i.t === 'immunity' ? 'rgba(0,229,255,0.15)' : i.t === 'corrosion' ? 'rgba(255,64,129,0.15)' : 'rgba(105,240,174,0.15)';
+
+    let rx = RX[i.p] || '\u2014';
+    if (rx.includes('(E=') && i.p !== 'Fe3+') {
+      let n = i.p.includes('3+') ? 3 : (i.p === 'Ag+' ? 1 : 2);
+      let baseE = parseFloat(rx.split('E=')[1].split('V')[0]);
+      let dynE = baseE + (nf1() / n) * logC;
+      rx = rx.replace(/E=[+-]?\d+\.\d+V/, `E=${dynE.toFixed(3)}V Anlik`);
+    }
+
+    html += `<div class="phase-item" style="border-left-color:rgb(${LC[m][0]},${LC[m][1]},${LC[m][2]})">
+      <div class="p-sys" style="color:${tc}">${m} \u2014 ${tl}</div>
+      <div class="p-name" style="color:rgb(${LC[m][0]},${LC[m][1]},${LC[m][2]})">${DN[i.p]||i.p}</div>
+      <div class="p-rxn">${rx}</div></div>`;
+
+    ttHtml += `<div class="tt-phase"><div class="tt-dot" style="background:rgb(${LC[m][0]},${LC[m][1]},${LC[m][2]})"></div>${m}: ${DN[i.p]||i.p}<span class="tt-type" style="background:${tbg};color:${tc}">${tl}</span></div>`;
+  });
+  document.getElementById('phList').innerHTML = html;
+
+  let hc = types.includes('corrosion'), hi = types.includes('immunity');
+  document.getElementById('semBox').style.display = (sel.length > 1 && hc && hi) ? 'block' : 'none';
+
+  let pm = sel[0], pi = gp(pm, pH, E);
+  document.getElementById('advM').textContent = pm;
+  let at = document.getElementById('advT'); at.style.color = 'var(--text)';
+  if (pi.t === 'immunity') at.innerHTML = '<b style="color:var(--cyan)">BAGISIKLIK:</b> ' + pm + ' metal halinde kararli. Katodik koruma bolgesi. Lic icin potansiyeli yukseltin.';
+  else if (pi.t === 'corrosion') at.innerHTML = '<b style="color:var(--rose)">KOROZYON:</b> ' + pm + ' sulu iyona cozunuyor. Lic hedef bolgesindesiniz. Sementasyon icin potansiyeli dusurun.';
+  else at.innerHTML = '<b style="color:var(--green)">PASIVITE:</b> ' + pm + ' yuzeyinde koruyucu tabaka olustu. Cozundurmek icin pH kaydirin.';
+
+
+    // --- YENI TAKIP MOTORU ---
+  const tt = document.getElementById('tooltip');
+  tt.innerHTML = ttHtml;
+  tt.style.display = 'block';
+
+  const tw = tt.offsetWidth || 180;
+  const th = tt.offsetHeight || 60;
+
+  let tx = x + 15;
+  let ty = y + 15;
+
+  if (tx + tw > r.width) tx = x - tw - 15;
+  if (ty + th > r.height) ty = y - th - 15;
+
+  tt.style.left = tx + 'px';
+  tt.style.top = ty + 'px';
+
+  // Redraw crosshair
+  cx.putImageData(bgCache, 0, 0);
+  const dp = window.devicePixelRatio || 1;
+  cx.setTransform(dp, 0, 0, dp, 0, 0);
+  cx.strokeStyle = 'rgba(255,255,255,0.08)'; cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(P.l, y); cx.lineTo(W()-P.r, y); cx.stroke();
+  cx.beginPath(); cx.moveTo(x, P.t); cx.lineTo(x, H()-P.b); cx.stroke();
+  cx.beginPath(); cx.arc(x, y, 6, 0, Math.PI*2); cx.fillStyle = 'rgba(0,229,255,0.15)'; cx.fill();
+  cx.beginPath(); cx.arc(x, y, 3, 0, Math.PI*2); cx.fillStyle = '#fff'; cx.fill();
+  cx.strokeStyle = 'rgba(0,0,0,0.5)'; cx.lineWidth = 1; cx.stroke();
+}
+
+function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+cv.addEventListener('mousemove', interact);
+cv.addEventListener('touchmove', interact, {passive: false});
+cv.addEventListener('mouseleave', hideTooltip);
+
+// Path mode click
+cv.addEventListener('click', e => {
+  if (!active || !pathMode) return;
+  const r = cv.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  if (x < P.l || x > W()-P.r || y < P.t || y > H()-P.b) return;
+  let pH = xp(x), E = ye(y);
+  pathPoints.push({pH, E});
+  updatePathUI();
+  draw();
+});
+
+cv.addEventListener('touchend', e => {
+  if (!active || !pathMode || e.changedTouches.length === 0) return;
+  if (isPanning) return;
+  e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  const t = e.changedTouches[0];
+  const x = t.clientX - r.left, y = t.clientY - r.top;
+  if (x < P.l || x > W()-P.r || y < P.t || y > H()-P.b) return;
+  let pH = xp(x), E = ye(y);
+  pathPoints.push({pH, E});
+  updatePathUI();
+  draw();
+});
+
+function clearPath() { pathPoints = []; updatePathUI(); if(active) draw(); }
+function undoPath() { pathPoints.pop(); updatePathUI(); if(active) draw(); }
+
+function updatePathUI() {
+  const sel = dSel;
+  let html = '';
+  pathPoints.forEach((pt, i) => {
+    let phases = sel.map(m => { let r = gp(m, pt.pH, pt.E); return m + ':' + (DN[r.p]||r.p).replace(/ \(.*\)/,''); }).join(' | ');
+    let trans = '';
+    if (i > 0) {
+      let prev = pathPoints[i-1];
+      sel.forEach(m => {
+        let pp = gp(m, prev.pH, prev.E).p;
+        let cp = gp(m, pt.pH, pt.E).p;
+        if (pp !== cp) trans += `${m}: ${DN[pp]||pp} \u2192 ${DN[cp]||cp}  `;
+      });
+    }
+    html += `<div class="path-item"><span class="pi-idx">${i+1}</span><span>pH:${pt.pH.toFixed(1)} E:${(pt.E+refOffset).toFixed(2)}V</span></div>`;
+    if (trans) html += `<div class="path-item"><span></span><span class="pi-trans">\u21B3 ${trans}</span></div>`;
+  });
+  document.getElementById('pathList').innerHTML = html;
+}
+
+// ============================
+// ZOOM & PAN
+// ============================
+cv.addEventListener('wheel', e => {
+  if (!active) return;
+  e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  const pH_c = xp(mx), E_c = ye(my);
+  const factor = e.deltaY > 0 ? 1.15 : 0.87;
+  zoomAround(pH_c, E_c, factor);
+}, {passive: false});
+
+function zoomAround(pH_c, E_c, factor) {
+  let newPH0 = pH_c - (pH_c - viewPH0) * factor;
+  let newPH1 = pH_c + (viewPH1 - pH_c) * factor;
+  let newE0 = E_c - (E_c - viewE0) * factor;
+  let newE1 = E_c + (viewE1 - E_c) * factor;
+
+  if (newPH1 - newPH0 < 1) return;
+  if (newPH1 - newPH0 > 20) { newPH0 = BASE_PH0; newPH1 = BASE_PH1; }
+  if (newE1 - newE0 < 0.5) return;
+  if (newE1 - newE0 > 6) { newE0 = BASE_E0; newE1 = BASE_E1; }
+
+  viewPH0 = newPH0; viewPH1 = newPH1; viewE0 = newE0; viewE1 = newE1;
+  showZoomLevel();
+  draw();
+}
+
+cv.addEventListener('mousedown', e => {
+  if (!active || pathMode) return;
+  if (e.button !== 0) return;
+  isPanning = true;
+  panStartX = e.clientX; panStartY = e.clientY;
+  panPH0 = viewPH0; panPH1 = viewPH1; panE0 = viewE0; panE1 = viewE1;
+  cv.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  const dx = e.clientX - panStartX, dy = e.clientY - panStartY;
+  const phPerPx = (panPH1 - panPH0) / (W() - P.l - P.r);
+  const ePerPx = (panE1 - panE0) / (H() - P.t - P.b);
+  viewPH0 = panPH0 - dx * phPerPx; viewPH1 = panPH1 - dx * phPerPx;
+  viewE0 = panE0 + dy * ePerPx; viewE1 = panE1 + dy * ePerPx;
+  draw();
+});
+
+window.addEventListener('mouseup', () => {
+  if (isPanning) { isPanning = false; cv.style.cursor = 'crosshair'; }
+});
+
+let lastTouchDist = 0;
+cv.addEventListener('touchstart', e => {
+  if (!active) return;
+  if (e.touches.length === 2) {
+    isPanning = true;
+    lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    pinchPH0 = viewPH0; pinchPH1 = viewPH1; pinchE0 = viewE0; pinchE1 = viewE1;
+  } else if (e.touches.length === 1 && !pathMode) {
+    isPanning = true;
+    panStartX = e.touches[0].clientX; panStartY = e.touches[0].clientY;
+    panPH0 = viewPH0; panPH1 = viewPH1; panE0 = viewE0; panE1 = viewE1;
+  }
+}, {passive: true});
+
+cv.addEventListener('touchmove', e => {
+  if (!active) return;
+  if (e.touches.length === 2 && isPanning) {
+    e.preventDefault();
+    let dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    let factor = lastTouchDist / dist;
+    let cx_ = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    let cy_ = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    const r = cv.getBoundingClientRect();
+    let pH_c = xp(cx_ - r.left), E_c = ye(cy_ - r.top);
+    let phRange = (pinchPH1 - pinchPH0) * factor;
+    let eRange = (pinchE1 - pinchE0) * factor;
+    if (phRange < 1 || eRange < 0.5) return;
+    viewPH0 = pH_c - phRange/2; viewPH1 = pH_c + phRange/2;
+    viewE0 = E_c - eRange/2; viewE1 = E_c + eRange/2;
+    showZoomLevel();
+    draw();
+    return;
+  }
+}, {passive: false});
+
+cv.addEventListener('touchend', e => {
+  if (e.touches.length === 0) isPanning = false;
+});
+
+
+// ============================
+// PNG EXPORT (MOBİL ÖLÇEKLENDİRMELİ)
+// ============================
+btnPng.addEventListener('click', () => {
+  if (!active) return;
+  const sel = dSel;
+  const tCv = document.createElement('canvas');
+  tCv.width = cv.width; tCv.height = cv.height;
+  const tCx = tCv.getContext('2d');
+  tCx.drawImage(cv, 0, 0);
+  const dp = window.devicePixelRatio || 1;
+  tCx.scale(dp, dp);
+
+  const pm = sel[0];
+  const phases = MPH[pm] || [];
+
+  // MOBİL TESPİTİ VE ÖLÇEKLENDİRME MATEMATİĞİ
+  const isMob = W() < 600;
+  const fSize = isMob ? 7 : 10;
+  const rowH = isMob ? 11 : 15;
+  const pad = isMob ? 8 : 15;
+  const sq = isMob ? 6 : 10; 
+  const indent = isMob ? 10 : 16; 
+
+  tCx.font = `bold ${fSize}px "JetBrains Mono", monospace`;
+  let maxTextW = tCx.measureText('GORUNUR KATMANLAR').width;
+  tCx.font = `normal ${fSize}px "JetBrains Mono", monospace`;
+  phases.forEach(p => { let w = tCx.measureText(DN[p]||p).width + indent; if (w > maxTextW) maxTextW = w; });
+  if (sel.length > 1) {
+    for (let i = 1; i < sel.length; i++) {
+      let w = tCx.measureText(sel[i] + ' Sinirlari').width + indent + 4;
+      if (w > maxTextW) maxTextW = w;
+    }
+  }
+
+  let totalRows = 1 + 1 + phases.length;
+  if (sel.length > 1) totalRows += 1 + (sel.length - 1);
+  const boxW = maxTextW + (isMob ? 16 : 30);
+  const boxH = totalRows * rowH + (isMob ? 10 : 16);
+  
+  const startX = P.l + pad;
+  const startY = H() - P.b - boxH - pad;
+
+  // Kutuyu daha şeffaf (0.80) yapıyoruz
+  tCx.fillStyle = 'rgba(8,9,13,0.80)';
+  tCx.fillRect(startX - (isMob ? 6 : 10), startY, boxW, boxH);
+  tCx.strokeStyle = 'rgba(0,229,255,0.4)'; tCx.lineWidth = 1;
+  tCx.strokeRect(startX - (isMob ? 6 : 10), startY, boxW, boxH);
+
+  tCx.textBaseline = 'middle';
+  let currY = startY + (isMob ? 6 : 10);
+
+  tCx.font = `bold ${fSize}px "JetBrains Mono", monospace`;
+  tCx.fillStyle = '#00e5ff';
+  tCx.textAlign = 'left';
+  tCx.fillText('GORUNUR KATMANLAR', startX, currY); currY += rowH;
+
+  tCx.fillStyle = '#5a6580';
+  tCx.fillText('-- ' + pm + ' SISTEMI (ZEMIN) --', startX, currY); currY += rowH;
+
+  phases.forEach(p => {
+    let c = PC[p] || [128,128,128,255];
+    tCx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},1)`;
+    tCx.fillRect(startX, currY - sq/2, sq, sq);
+    tCx.fillStyle = '#ffffff';
+    tCx.font = `normal ${fSize}px "JetBrains Mono", monospace`;
+    tCx.fillText(DN[p]||p, startX + indent, currY); currY += rowH;
+  });
+
+  if (sel.length > 1) {
+    tCx.font = `bold ${fSize}px "JetBrains Mono", monospace`;
+    tCx.fillStyle = '#5a6580';
+    tCx.fillText('-- SINIR CIZGILERI --', startX, currY); currY += rowH;
+    for (let i = 1; i < sel.length; i++) {
+      let m = sel[i], c = LC[m];
+      tCx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},1)`;
+      tCx.fillRect(startX, currY - 1, sq + 4, 2);
+      tCx.fillStyle = '#ffffff';
+      tCx.font = `normal ${fSize}px "JetBrains Mono", monospace`;
+      tCx.fillText(m + ' Sinirlari', startX + indent + 4, currY); currY += rowH;
+    }
+  }
+
+  document.getElementById('pngPreview').src = tCv.toDataURL('image/png');
+  document.getElementById('pngModal').style.display = 'flex';
+});
+
+function indirVePaylas() { window.location.href = "app://quicklook"; }
+
+const btnMobMenu = document.getElementById('btnMobMenu');
+const leftPanel = document.querySelector('.picker');
+
+if(btnMobMenu && leftPanel) {
+  btnMobMenu.addEventListener('click', () => {
+    leftPanel.classList.toggle('open');
+    if(leftPanel.classList.contains('open')) {
+      btnMobMenu.innerHTML = '✕ Kapat';
+      btnMobMenu.style.background = '#ff1744';
+    } else {
+      btnMobMenu.innerHTML = '☰ Kontroller';
+      btnMobMenu.style.background = 'linear-gradient(135deg, var(--cyan), #0091ea)';
+    }
+  });
+}
+</script>
+
+<div id="pngModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+  <div style="width:100%; max-width:800px; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <span style="color:#00e5ff; font-family:monospace; font-size:12px;">Onizleme Modu</span>
+    <div>
+      <button onclick="indirVePaylas()" style="background:#69f0ae; color:#08090d; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:monospace; margin-right:10px;">INDIR / PAYLAS</button>
+      <button onclick="document.getElementById('pngModal').style.display='none'" style="background:#ff4081; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:monospace;">KAPAT</button>
+    </div>
+  </div>
+  <img id="pngPreview" style="max-width:100%; max-height:85vh; border:1px solid rgba(0,229,255,0.3); border-radius:10px; background:#08090d; box-shadow: 0 0 30px rgba(0,229,255,0.2); -webkit-touch-callout: default !important; -webkit-user-select: auto !important; pointer-events: auto;" />
+</div>
+</body>
+</html>
+"""
+

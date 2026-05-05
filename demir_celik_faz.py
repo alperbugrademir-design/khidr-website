@@ -1,0 +1,505 @@
+#import ui
+
+html_kodu = r"""
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pro Fe-C Faz Diyagramı</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { 
+    --bg: #0a0c10; --panel: #111318; --border: #2a2f3a; 
+    --accent: #a29bfe; --accent2: #4fc3f7; --text: #dde2ec; --dim: #6b7280;
+    --green: #4caf82; --red: #e05555; --orange: #e8a020;
+    --mono: 'Share Tech Mono', monospace; --sans: 'Barlow Condensed', sans-serif; 
+  }
+  * { box-sizing: border-box; }
+  body { 
+    background: var(--bg); color: var(--text); font-family: var(--sans); 
+    margin: 0; padding: 15px; -webkit-user-select: none; user-select: none; 
+    height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+  }
+  
+  .header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; flex-shrink: 0; flex-wrap: wrap; gap: 10px; }
+  .title-area h2 { margin: 0; font-size: 26px; color: #fff; letter-spacing: 1px; line-height: 1; }
+  .title-area span { color: var(--accent); }
+  
+  .controls-wrapper { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .control-group { display: flex; gap: 8px; align-items: center; }
+  .input-box { background: var(--bg); border: 1px solid var(--border); color: var(--accent2); font-family: var(--mono); padding: 6px 10px; border-radius: 4px; width: 70px; font-size: 14px; text-align: center; }
+  .input-box:focus { outline: none; border-color: var(--accent); }
+  .btn-go { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); font-family: var(--mono); font-weight: bold; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+  
+  .zoom-group { display: flex; align-items: center; gap: 10px; background: var(--panel); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); width: 100%; justify-content: flex-end; }
+  .zoom-slider { -webkit-appearance: none; width: 150px; height: 4px; background: var(--border); border-radius: 2px; outline: none; }
+  .zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--bg); }
+  
+  .main-container { flex: 1; display: flex; gap: 15px; min-height: 0; }
+  
+  /* ALAŞIM PANELİ */
+  .alloy-panel { width: 200px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
+  .alloy-header { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 1px; text-align: center; margin-bottom: 5px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .alloy-group { display: flex; flex-direction: column; gap: 4px; background: var(--bg); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
+  .alloy-group.austenite { border-left: 3px solid var(--accent2); }
+  .alloy-group.ferrite { border-left: 3px solid var(--orange); }
+  .alloy-label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: #fff; }
+  .alloy-slider { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border); border-radius: 2px; outline: none; margin-top: 4px; }
+  .alloy-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; }
+  .austenite .alloy-slider::-webkit-slider-thumb { background: var(--accent2); }
+  .ferrite .alloy-slider::-webkit-slider-thumb { background: var(--orange); }
+  .btn-reset { background: rgba(224, 85, 85, 0.1); border: 1px solid var(--red); color: var(--red); font-family: var(--mono); padding: 5px; border-radius: 4px; cursor: pointer; margin-top: auto; font-size: 11px; }
+
+  /* DİYAGRAM ALANI */
+  .diagram-box { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; position: relative; min-width: 300px; }
+  canvas#fecCanvas { flex: 1; width: 100%; border: 1px solid var(--border); border-radius: 4px; background: #0d0f14; cursor: crosshair; touch-action: none; display: block; }
+
+  /* SAĞ PANEL */
+  .analysis-panel { width: 250px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex-shrink: 0; }
+  .info-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px; position: relative; }
+  .info-box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .info-box.secondary::before { background: var(--orange); }
+  .info-box.radar::before { background: var(--green); }
+  
+  .box-title { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; }
+  .val-large { font-size: 18px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 4px; }
+  .val-sub { font-size: 12px; color: var(--dim); line-height: 1.4; }
+  .progress-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; margin-bottom: 3px; margin-top: 8px;}
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; display: flex; }
+  .micro-container { background: #0d0f14; border: 1px solid var(--border); border-radius: 50%; width: 90px; height: 90px; margin: 10px auto; overflow: hidden; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+  canvas#microCanvas { width: 100%; height: 100%; display: block; }
+
+  @media (max-width: 900px) { .main-container { flex-direction: column; } .alloy-panel { width: 100%; flex-direction: row; flex-wrap: wrap; max-height: 120px; } .alloy-group { flex: 1; min-width: 120px; } .analysis-panel { width: 100%; display: grid; grid-template-columns: 1fr 1fr; } .micro-container { width: 70px; height: 70px; } .header-row { flex-direction: column; align-items: flex-start; } .controls-wrapper { width: 100%; align-items: flex-start; } .zoom-group { justify-content: space-between; } }
+  @media (max-width: 500px) { .analysis-panel { grid-template-columns: 1fr; } .alloy-panel { max-height: none; } }
+</style>
+</head>
+<body>
+  
+  <div class="header-row">
+    <div class="title-area"><h2>Fe-C <span>DİYAGRAMI</span></h2></div>
+    <div class="controls-wrapper">
+      <div class="control-group">
+        <input type="number" id="inCarb" class="input-box" placeholder="% C" step="0.1" min="0" max="6.67">
+        <input type="number" id="inTemp" class="input-box" placeholder="°C" step="10" min="400" max="1600">
+        <button class="btn-go" onclick="goToManual()">GİT</button>
+      </div>
+      <div class="zoom-group">
+        <span style="font-size:11px; color:var(--dim); font-family:var(--mono);">🔍 EKSEN (C%):</span>
+        <input type="range" id="zoomSlider" class="zoom-slider" min="0.05" max="6.67" step="0.01" value="6.67" oninput="handleZoom()">
+        <span id="zoomVal" style="font-size:12px; color:var(--accent); font-family:var(--mono); min-width:45px; text-align:right;">%6.67</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="main-container">
+    
+    <div class="alloy-panel">
+      <div class="alloy-header">ÖSTENİT YAPICILAR (γ)</div>
+      <div class="alloy-group austenite">
+        <div class="alloy-label"><span>Ni (Nikel)</span><span id="valNi">0.0%</span></div>
+        <input type="range" id="slNi" class="alloy-slider" min="0" max="20" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      <div class="alloy-group austenite">
+        <div class="alloy-label"><span>Mn (Mangan)</span><span id="valMn">0.0%</span></div>
+        <input type="range" id="slMn" class="alloy-slider" min="0" max="15" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      
+      <div class="alloy-header" style="margin-top:5px;">FERRİT YAPICILAR (α)</div>
+      <div class="alloy-group ferrite">
+        <div class="alloy-label"><span>Cr (Krom)</span><span id="valCr">0.0%</span></div>
+        <input type="range" id="slCr" class="alloy-slider" min="0" max="25" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      <div class="alloy-group ferrite">
+        <div class="alloy-label"><span>Si (Silisyum)</span><span id="valSi">0.0%</span></div>
+        <input type="range" id="slSi" class="alloy-slider" min="0" max="5" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      <div class="alloy-group ferrite">
+        <div class="alloy-label"><span>Mo (Molibden)</span><span id="valMo">0.0%</span></div>
+        <input type="range" id="slMo" class="alloy-slider" min="0" max="5" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      <div class="alloy-group ferrite">
+        <div class="alloy-label"><span>V (Vanadyum)</span><span id="valV">0.0%</span></div>
+        <input type="range" id="slV" class="alloy-slider" min="0" max="3" step="0.1" value="0" oninput="updateAlloys()">
+      </div>
+      
+      <button class="btn-reset" onclick="resetAlloys()">Sıfırla (Saf Fe-C)</button>
+    </div>
+
+    <div class="diagram-box">
+      <canvas id="fecCanvas"></canvas>
+    </div>
+    
+    <div class="analysis-panel">
+      
+      <div class="info-box radar">
+        <div class="box-title">// ÇELİK RADARI (AISI / DIN)</div>
+        <div id="radarName" class="val-large" style="color:var(--green);">Saf Demir-Karbon</div>
+        <div id="radarDesc" class="val-sub">Değerleri değiştirerek standart çelikleri keşfedin.</div>
+        <div id="radarWarn" style="margin-top:8px; font-size:11px; color:var(--red); display:none; font-family:var(--mono); background:rgba(224,85,85,0.1); padding:4px; border-radius:3px; border-left: 2px solid var(--red);">UYARI: %5 Alaşım sınırı aşıldı! 2D Fe-C diyagram limitleri zorlanıyor (Görsel sınırlandırıldı).</div>
+      </div>
+
+      <div class="info-box">
+        <div class="box-title">// AKTİF FAZ BÖLGESİ</div>
+        <div id="phaseTitle" class="val-large" style="font-size: 16px;">Diyagramda Gezinin</div>
+        <div id="tempCarbDisplay" style="font-family: var(--mono); color: var(--accent2); font-size: 14px; margin-bottom: 4px;">T: — °C | C: — %</div>
+      </div>
+      
+      <div class="info-box secondary">
+        <div class="box-title">// KALDIRAÇ KURALI (wt%)</div>
+        <div id="fracContainer" style="display:none;">
+          <div class="progress-row"><span id="lbl1" style="color:var(--accent)">Faz 1</span><span id="val1">%0</span></div>
+          <div class="progress-bar"><div id="bar1" style="background:var(--accent); width:0%; transition: width 0.3s;"></div></div>
+          <div class="progress-row"><span id="lbl2" style="color:var(--orange)">Faz 2</span><span id="val2">%0</span></div>
+          <div class="progress-bar"><div id="bar2" style="background:var(--orange); width:0%; transition: width 0.3s;"></div></div>
+        </div>
+        <div id="mathTitle" class="val-sub" style="margin-top:6px; color:var(--orange);">Hesaplanıyor...</div>
+      </div>
+
+      <div class="info-box" style="text-align: center;">
+         <div class="box-title">// SANAL MİKROSKOP</div>
+         <div class="micro-container">
+            <canvas id="microCanvas" width="200" height="200"></canvas>
+         </div>
+         <div id="microDesc" class="val-sub" style="font-family: var(--mono); color: var(--accent2); font-weight: bold;">Temsili Mikroyapı</div>
+         <div id="microLegend" style="font-family: var(--mono); font-size: 11px; color: var(--dim); margin-top: 6px; line-height: 1.5; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('fecCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let T_MAX = 1600, T_MIN = 400, C_MAX = 6.67; 
+    const PAD = { top: 20, right: 30, bottom: 30, left: 45 };
+    let currentC = 0, currentT = 0, currentTieLine = null;
+
+    let dynA1 = 727, dynA3 = 912, dynCeut = 0.76, dynCmax = 2.14;
+
+    const steelDB = [
+      { name: "1020 (S235/S275)", c: [0.15, 0.25], cr:[0,0.2], ni:[0,0.2], mo:[0,0.1], mn:[0.3, 0.6], desc: "Düşük karbonlu yapı çeliği (İnşaat, profil)." },
+      { name: "1040 (C40)", c: [0.37, 0.44], cr:[0,0.2], ni:[0,0.2], mo:[0,0.1], mn:[0.6, 0.9], desc: "İmalat çeliği (Makine parçaları, miller)." },
+      { name: "4140 (42CrMo4)", c: [0.38, 0.45], cr:[0.8, 1.2], ni:[0,0.3], mo:[0.15, 0.3], mn:[0.7, 1.0], desc: "Yüksek dayanımlı ıslah çeliği (Krank mili, dişli)." },
+      { name: "4340 (34CrNiMo6)", c: [0.38, 0.43], cr:[0.7, 0.9], ni:[1.6, 2.0], mo:[0.2, 0.3], mn:[0.6, 0.8], desc: "Ağır sanayi ve havacılık ıslah çeliği." },
+      { name: "D2 (1.2379)", c: [1.4, 1.6], cr:[11.0, 13.0], ni:[0,0.5], mo:[0.7, 1.2], mn:[0.1, 0.6], desc: "Soğuk iş takım çeliği (Mükemmel aşınma direnci)." },
+      { name: "304 Paslanmaz", c: [0, 0.08], cr:[17.5, 20.0], ni:[8.0, 11.0], mo:[0,0.5], mn:[0, 2.0], desc: "Östenitik paslanmaz çelik (Gıda, tıp, kimya)." },
+      { name: "Hadfield Çeliği", c: [1.0, 1.4], cr:[0,1.0], ni:[0,0.5], mo:[0,0.5], mn:[11.0, 14.0], desc: "Darbeye dayanıklı östenitik çelik (Kırıcı çeneleri)." },
+      { name: "5160 (Yay Çeliği)", c:[0.55, 0.65], cr:[0.7, 0.9], ni:[0,0.2], mo:[0,0.1], mn:[0.7, 0.9], desc: "Otomotiv makas ve süspansiyon yayları."}
+    ];
+
+    function checkRadar() {
+      const Ni = parseFloat(document.getElementById('slNi').value);
+      const Mn = parseFloat(document.getElementById('slMn').value);
+      const Cr = parseFloat(document.getElementById('slCr').value);
+      const Si = parseFloat(document.getElementById('slSi').value);
+      const Mo = parseFloat(document.getElementById('slMo').value);
+      const V  = parseFloat(document.getElementById('slV').value);
+      const totalAlloy = Ni + Mn + Cr + Si + Mo + V;
+
+      document.getElementById('radarWarn').style.display = totalAlloy >= 5 ? 'block' : 'none';
+
+      let matched = false;
+      if (currentC > 0 || totalAlloy > 0) {
+          for(let s of steelDB) {
+              if (currentC >= s.c[0] && currentC <= s.c[1] && Cr >= s.cr[0] && Cr <= s.cr[1] && Ni >= s.ni[0] && Ni <= s.ni[1] && Mo >= s.mo[0] && Mo <= s.mo[1] && Mn >= s.mn[0] && Mn <= s.mn[1]) {
+                  document.getElementById('radarName').textContent = s.name; document.getElementById('radarDesc').textContent = s.desc; matched = true; break;
+              }
+          }
+          if(!matched) {
+              if (currentC > dynCmax) { document.getElementById('radarName').textContent = totalAlloy > 0 ? "Alaşımlı Dökme Demir" : "Sade Dökme Demir"; document.getElementById('radarDesc').textContent = `Maksimum östenit çözünürlüğü (%${dynCmax.toFixed(2)}) aşıldı. Bu bir dökme demirdir.`; } 
+              else { document.getElementById('radarName').textContent = totalAlloy > 0 ? "Özel Alaşım Çeliği" : "Sade Karbonlu Çelik"; document.getElementById('radarDesc').textContent = "Seçilen değerler kayıtlı bir standart çeliğe uymuyor."; }
+          }
+      } else {
+          document.getElementById('radarName').textContent = "Saf Demir-Karbon"; document.getElementById('radarDesc').textContent = "Değerleri değiştirerek standart çelikleri keşfedin.";
+      }
+    }
+    
+    function updateAlloys() {
+      const Ni = parseFloat(document.getElementById('slNi').value); document.getElementById('valNi').textContent = Ni.toFixed(1) + "%";
+      const Mn = parseFloat(document.getElementById('slMn').value); document.getElementById('valMn').textContent = Mn.toFixed(1) + "%";
+      const Cr = parseFloat(document.getElementById('slCr').value); document.getElementById('valCr').textContent = Cr.toFixed(1) + "%";
+      const Si = parseFloat(document.getElementById('slSi').value); document.getElementById('valSi').textContent = Si.toFixed(1) + "%";
+      const Mo = parseFloat(document.getElementById('slMo').value); document.getElementById('valMo').textContent = Mo.toFixed(1) + "%";
+      const V  = parseFloat(document.getElementById('slV').value);  document.getElementById('valV').textContent = V.toFixed(1) + "%";
+
+      const effNi = Math.min(Ni, 6); const effMn = Math.min(Mn, 6); const effCr = Math.min(Cr, 8); const effSi = Math.min(Si, 3); const effMo = Math.min(Mo, 3); const effV = Math.min(V, 2);
+
+      dynA1 = 727 - 17*effNi - 11*effMn + 29*effSi + 17*effCr + 30*effMo + 40*effV;
+      dynA3 = 912 - 15*effNi - 30*effMn + 40*effSi + 30*effCr + 40*effMo + 60*effV;
+      
+      if(dynA3 > 1394) dynA3 = 1394; 
+      if(dynA1 > dynA3) dynA1 = dynA3 - 5; 
+
+      dynCeut = 0.76 - 0.04*effNi - 0.05*effMn - 0.06*effCr - 0.08*effSi - 0.1*effMo - 0.15*effV;
+      if (dynCeut < 0.05) dynCeut = 0.05; 
+
+      dynCmax = 2.14 - 0.05*effNi - 0.05*effMn - 0.1*effCr - 0.1*effSi - 0.1*effMo;
+      if (dynCmax < dynCeut + 0.1) dynCmax = dynCeut + 0.1; 
+
+      checkRadar(); draw(); if(currentC > 0) analyze(currentC, currentT);
+    }
+
+    function resetAlloys() { ['slNi', 'slMn', 'slCr', 'slSi', 'slMo', 'slV'].forEach(id => document.getElementById(id).value = 0); updateAlloys(); }
+    function handleZoom() { C_MAX = parseFloat(document.getElementById('zoomSlider').value); document.getElementById('zoomVal').textContent = "%" + C_MAX.toFixed(2); draw(); if(currentC > 0 && currentC <= C_MAX) analyze(currentC, currentT); }
+
+    function goToManual() {
+      const cVal = parseFloat(document.getElementById('inCarb').value); const tVal = parseFloat(document.getElementById('inTemp').value);
+      if(!isNaN(cVal) && !isNaN(tVal)) {
+        currentC = Math.max(0, Math.min(6.67, cVal)); currentT = Math.max(400, Math.min(1600, tVal));
+        if(currentC > C_MAX) { document.getElementById('zoomSlider').value = currentC; handleZoom(); }
+        checkRadar(); analyze(currentC, currentT); draw();
+      }
+    }
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1;
+      canvas.width = (rect.width - 20) * dpr; canvas.height = (rect.height - 20) * dpr;
+      canvas.style.width = (rect.width - 20) + 'px'; canvas.style.height = (rect.height - 20) + 'px';
+      ctx.scale(dpr, dpr); draw();
+    }
+    window.addEventListener('resize', resize);
+    
+    const W = () => parseFloat(canvas.style.width); const H = () => parseFloat(canvas.style.height);
+    function tToY(T) { return PAD.top + ((T_MAX - T) / (T_MAX - T_MIN)) * (H() - PAD.top - PAD.bottom); }
+    function cToX(C) { return PAD.left + (C / C_MAX) * (W() - PAD.left - PAD.right); }
+    function yToT(y) { return T_MAX - ((y - PAD.top) / (H() - PAD.top - PAD.bottom)) * (T_MAX - T_MIN); }
+    function xToC(x) { return ((x - PAD.left) / (W() - PAD.left - PAD.right)) * C_MAX; }
+
+    function calcA3(C) { return dynA3 - (dynA3-dynA1)*Math.pow(C/dynCeut, 0.85); }
+    function calcAcm(C) { return dynA1 + (1147-dynA1)*Math.pow((C-dynCeut)/(dynCmax-dynCeut), 1.5); }
+    function calcGammaLiquidus(C) { return 1493 - (1493-1147)*Math.pow((C-0.53)/(4.3-0.53), 0.85); }
+    function calcGammaSolidus(C) { return 1493 - (1493-1147)*Math.pow((C-0.17)/(dynCmax-0.17), 1.15); }
+
+    function drawPolyLine(fn, cStart, cEnd, step, color) {
+      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2;
+      for(let c = cStart; c <= cEnd; c += step) {
+        if(c > C_MAX) break;
+        const x = cToX(c), y = tToY(fn(c));
+        if(c === cStart) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W(), H()); const cLine = '#a29bfe';
+      let cStep = C_MAX > 3 ? 1 : (C_MAX > 1 ? 0.2 : (C_MAX > 0.1 ? 0.05 : 0.01));
+      ctx.strokeStyle = '#2a2f3a'; ctx.lineWidth = 1;
+      for(let t=400; t<=1600; t+=200) { ctx.beginPath(); ctx.moveTo(PAD.left, tToY(t)); ctx.lineTo(W()-PAD.right, tToY(t)); ctx.stroke(); }
+      for(let c=cStep; c<=C_MAX; c+=cStep) { ctx.beginPath(); ctx.moveTo(cToX(c), PAD.top); ctx.lineTo(cToX(c), H()-PAD.bottom); ctx.stroke(); }
+      ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, H() - PAD.bottom); ctx.lineTo(W() - PAD.right, H() - PAD.bottom); ctx.stroke();
+      
+      // Dikey Referans Çizgileri (Eksik Olanlar)
+      ctx.beginPath(); ctx.strokeStyle = 'rgba(107, 114, 128, 0.4)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      if(dynCeut <= C_MAX) { ctx.moveTo(cToX(dynCeut), tToY(dynA1)); ctx.lineTo(cToX(dynCeut), tToY(400)); } // Ötektoid
+      if(dynCmax <= C_MAX) { ctx.moveTo(cToX(dynCmax), tToY(1147)); ctx.lineTo(cToX(dynCmax), tToY(400)); } // Maks Gamma
+      if(4.3 <= C_MAX) { ctx.moveTo(cToX(4.3), tToY(1147)); ctx.lineTo(cToX(4.3), tToY(400)); } // Ötektik
+      ctx.stroke(); ctx.setLineDash([]);
+
+      ctx.beginPath(); ctx.strokeStyle = cLine; ctx.lineWidth = 2;
+      // Delta Bölgesi
+      ctx.moveTo(cToX(0), tToY(1538)); ctx.lineTo(cToX(0.09), tToY(1493)); 
+      ctx.moveTo(cToX(0), tToY(1538)); ctx.lineTo(cToX(0.53), tToY(1493)); 
+      ctx.moveTo(cToX(0), tToY(1394)); ctx.lineTo(cToX(0.09), tToY(1493)); 
+      ctx.moveTo(cToX(0), tToY(1394)); ctx.lineTo(cToX(0.17), tToY(1493)); 
+      if(C_MAX >= 0.09) { ctx.moveTo(cToX(0.09), tToY(1493)); ctx.lineTo(cToX(Math.min(C_MAX, 0.53)), tToY(1493)); }
+      
+      // Alpha - Gamma Sınırı (Kayıp olan çizgi A3 -> Max Alpha)
+      ctx.moveTo(cToX(0), tToY(dynA3)); ctx.lineTo(cToX(0.022), tToY(dynA1));
+
+      // Yatay Kritik Çizgiler
+      ctx.moveTo(cToX(0.022), tToY(dynA1)); ctx.lineTo(cToX(Math.min(C_MAX, 6.67)), tToY(dynA1)); 
+      if(C_MAX >= dynCmax) { ctx.moveTo(cToX(dynCmax), tToY(1147)); ctx.lineTo(cToX(Math.min(C_MAX, 6.67)), tToY(1147)); } 
+      if(C_MAX >= 4.3) { ctx.moveTo(cToX(4.3), tToY(1147)); ctx.lineTo(cToX(Math.min(C_MAX, 6.67)), tToY(1227)); } // Sementit Liquidus
+      ctx.moveTo(cToX(0.008), tToY(20)); ctx.lineTo(cToX(0.022), tToY(dynA1)); 
+      ctx.stroke();
+
+      drawPolyLine(calcA3, 0, dynCeut, 0.01, cLine); 
+      drawPolyLine(calcAcm, dynCeut, dynCmax, 0.02, cLine);
+      drawPolyLine(calcGammaLiquidus, 0.53, 4.3, 0.05, cLine); 
+      drawPolyLine(calcGammaSolidus, 0.17, dynCmax, 0.02, cLine);
+
+      if(currentTieLine && currentTieLine[1][0] <= C_MAX) { 
+        const p1 = currentTieLine[0], p2 = currentTieLine[1];
+        ctx.beginPath(); ctx.strokeStyle = '#e8a020'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
+        ctx.moveTo(cToX(p1[0]), tToY(p1[1])); ctx.lineTo(cToX(p2[0]), tToY(p2[1])); ctx.stroke(); ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(cToX(p1[0]), tToY(p1[1]), 4, 0, Math.PI*2); ctx.fillStyle = '#4fc3f7'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cToX(p2[0]), tToY(p2[1]), 4, 0, Math.PI*2); ctx.fillStyle = '#4fc3f7'; ctx.fill();
+      }
+
+      ctx.fillStyle = '#6b7280'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'right';
+      [400, Math.round(dynA1), Math.round(dynA3), 1147, 1394, 1538].forEach(t => ctx.fillText(t+"°", PAD.left - 5, tToY(t) + 3));
+      ctx.textAlign = 'center';
+      for(let c=cStep; c<=C_MAX; c+=cStep) { ctx.fillText("%"+c.toFixed(cStep<0.1?2:1), cToX(c), H() - PAD.bottom + 14); }
+      
+      if(currentC > 0 && currentC <= C_MAX) {
+        ctx.beginPath(); ctx.arc(cToX(currentC), tToY(currentT), 6, 0, Math.PI*2); 
+        ctx.fillStyle = '#e8a020'; ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth=2; ctx.stroke();
+      }
+    }
+
+    function findC_A3(T) { for(let c=0; c<=dynCeut; c+=0.001) if(calcA3(c) <= T) return c; return 0; }
+    function findC_Acm(T) { for(let c=dynCeut; c<=dynCmax; c+=0.005) if(calcAcm(c) >= T) return c; return dynCmax; }
+    function findC_Sol(T) { for(let c=0.17; c<=dynCmax; c+=0.005) if(calcGammaSolidus(c) <= T) return c; return dynCmax; }
+    function findC_Liq(T) { for(let c=0.53; c<=4.3; c+=0.01) if(calcGammaLiquidus(c) <= T) return c; return 4.3; }
+
+    function analyze(C, T) {
+      currentTieLine = null;
+      let phase = "", desc = "", math = "Tek Faz / Geçerli Değil", f1_lbl="", f1_val=0, f2_lbl="", f2_val=0, showBars=false;
+      let microType = "none", microFrac = 0; let handled = false;
+
+      // DELTA BÖLGESİ
+      if (T >= 1394 && T <= 1538 && C <= 0.53) {
+          let c_NH = 0.09 * (T - 1394) / 99; let c_NJ = 0.17 * (T - 1394) / 99;
+          let c_AH = 0.09 * (1538 - T) / 45; let c_AB = 0.53 * (1538 - T) / 45;
+          if (T >= 1493) {
+              if (C <= c_AH) { phase = "Delta Ferrit (δ)"; microType="ferrite"; microFrac=100; handled = true; }
+              else if (C <= c_AB) { phase = "Delta (δ) + Sıvı (L)"; showBars = true; currentTieLine = [[c_AH, T], [c_AB, T]]; f1_val = ((c_AB - C)/(c_AB - c_AH))*100; f1_lbl = "Delta (δ)"; f2_val = ((C - c_AH)/(c_AB - c_AH))*100; f2_lbl = "Sıvı (L)"; microType="liquid_solid"; microFrac=f1_val; handled = true; }
+              else { phase = "Sıvı (L)"; microType="liquid"; microFrac=100; handled = true; }
+          } else {
+              if (C <= c_NH) { phase = "Delta Ferrit (δ)"; microType="ferrite"; microFrac=100; handled = true; }
+              else if (C <= c_NJ) { phase = "Delta (δ) + Östenit (γ)"; showBars = true; currentTieLine = [[c_NH, T], [c_NJ, T]]; f1_val = ((c_NJ - C)/(c_NJ - c_NH))*100; f1_lbl = "Delta (δ)"; f2_val = ((C - c_NH)/(c_NJ - c_NH))*100; f2_lbl = "Östenit (γ)"; microType="aust_ferr"; microFrac=f1_val; handled = true; }
+          }
+      }
+
+      if(!handled) {
+          // Dinamik Alpha Sınırı (Sıcaklığa göre değişen Ferrit çözünürlüğü)
+          let c_alpha = 0.022;
+          if (T >= dynA1 && T <= dynA3) c_alpha = 0.022 * (dynA3 - T) / (dynA3 - dynA1);
+          else if (T < dynA1) c_alpha = 0.022 - 0.014 * (dynA1 - T) / (dynA1 - 20);
+
+          if (T >= 1147) {
+              if (C <= 4.3) {
+                  const c_liq = findC_Liq(T); const c_sol = findC_Sol(T);
+                  if (C > c_liq) { phase = "Sıvı (L)"; microType = "liquid"; microFrac=100; }
+                  else if (C > c_sol) { phase = "Sıvı (L) + Östenit (γ)"; showBars = true; currentTieLine = [[c_sol, T], [c_liq, T]]; f1_val = ((c_liq - C) / (c_liq - c_sol)) * 100; f1_lbl = "Östenit (γ)"; f2_val = ((C - c_sol) / (c_liq - c_sol)) * 100; f2_lbl = "Sıvı (L)"; microType = "liquid_solid"; microFrac = f1_val; }
+                  else { phase = "Östenit (γ)"; microType = "austenite"; microFrac=100; }
+              } else {
+                  // Sementit Liquidus Kontrolü
+                  let T_cem_liq = 1147 + 80 * (C - 4.3) / (6.67 - 4.3);
+                  if (T > T_cem_liq) { phase = "Sıvı (L)"; microType = "liquid"; microFrac=100; }
+                  else { 
+                      phase = "Sıvı (L) + Birincil Sementit"; showBars = true; 
+                      let c_l = 4.3 + (T - 1147) * (6.67 - 4.3) / 80; if(c_l > 6.67) c_l = 6.67;
+                      currentTieLine = [[c_l, T], [6.67, T]]; 
+                      f1_val = ((6.67 - C) / (6.67 - c_l)) * 100; f1_lbl = "Sıvı (L)"; 
+                      f2_val = ((C - c_l) / (6.67 - c_l)) * 100; f2_lbl = "Sementit"; 
+                      microType = "liquid_solid"; microFrac = f1_val; 
+                  }
+              }
+          }
+          else if (T >= dynA1) { // A1 ile 1147 Arası
+            const c_a3 = findC_A3(T); const c_acm = findC_Acm(T);
+            
+            if (C <= c_alpha) { phase = "Ferrit (α)"; microType = "ferrite"; microFrac = 100; }
+            else if (C < c_a3) { phase = "Östenit (γ) + Ferrit (α)"; showBars = true; currentTieLine = [[c_alpha, T], [c_a3, T]]; f1_val = ((c_a3 - C) / (c_a3 - c_alpha)) * 100; f1_lbl = "Ferrit (α)"; f2_val = ((C - c_alpha) / (c_a3 - c_alpha)) * 100; f2_lbl = "Östenit (γ)"; microType = "aust_ferr"; microFrac = f2_val; } 
+            else if (C <= c_acm) { phase = "Östenit (γ)"; microType = "austenite"; microFrac = 100; }
+            else { phase = "Östenit (γ) + Karbürler"; showBars = true; currentTieLine = [[c_acm, T], [6.67, T]]; f1_val = ((6.67 - C) / (6.67 - c_acm)) * 100; f1_lbl = "Östenit (γ)"; f2_val = ((C - c_acm) / (6.67 - c_acm)) * 100; f2_lbl = "Karbürler"; microType = "aust_cem"; microFrac = f1_val; } 
+          }
+          else { // T < A1 (Oda sıcaklığı bölgesi)
+            if (C <= c_alpha) { phase = "Ferrit (α)"; microType = "ferrite"; microFrac = 100; }
+            else {
+              phase = "Ferrit (α) + Karbürler"; showBars = true; currentTieLine = [[c_alpha, T], [6.67, T]];
+              f1_val = ((6.67 - C) / (6.67 - c_alpha)) * 100; f1_lbl = "Ferrit (α)"; f2_val = ((C - c_alpha) / (6.67 - c_alpha)) * 100; f2_lbl = "Karbür/Fe3C";
+              if(C < dynCeut) { math = "Hipootektoid"; microType = "hypo"; microFrac = ((C - c_alpha) / (dynCeut - c_alpha)) * 100; } 
+              else if (C < dynCmax) { math = "Hiperötektoid"; microType = "hyper"; microFrac = ((6.67 - C) / (6.67 - dynCeut)) * 100; } 
+              else { math = "Dökme Demir"; microType = "cast"; microFrac = 50; }
+            }
+          }
+      }
+
+      document.getElementById('phaseTitle').textContent = phase;
+      document.getElementById('tempCarbDisplay').textContent = `T: ${Math.round(T)} °C  |  C: ${C.toFixed(2)} %`;
+      document.getElementById('mathTitle').textContent = math;
+      
+      if(showBars) {
+        document.getElementById('fracContainer').style.display = 'block';
+        document.getElementById('lbl1').textContent = f1_lbl; document.getElementById('val1').textContent = `%${f1_val.toFixed(1)}`; document.getElementById('bar1').style.width = `${f1_val}%`;
+        document.getElementById('lbl2').textContent = f2_lbl; document.getElementById('val2').textContent = `%${f2_val.toFixed(1)}`; document.getElementById('bar2').style.width = `${f2_val}%`;
+      } else { document.getElementById('fracContainer').style.display = 'none'; }
+      
+      drawMicrostructure(microType, microFrac);
+    }
+
+    const mCtx = document.getElementById('microCanvas').getContext('2d');
+    function drawMicrostructure(type, frac) {
+      mCtx.clearRect(0,0, 200, 200);
+      let legendHTML = "";
+      
+      if(type === 'liquid') { mCtx.fillStyle = '#ff6b6b'; mCtx.fillRect(0,0,200,200); legendHTML = "<div><span style='color:#ff6b6b; font-size:14px;'>■</span> Sıvı (L)</div>"; }
+      else if(type === 'austenite') { mCtx.fillStyle = '#f1c40f'; mCtx.fillRect(0,0,200,200); legendHTML = "<div><span style='color:#f1c40f; font-size:14px;'>■</span> Östenit (γ)</div>"; }
+      else if(type === 'ferrite') { mCtx.fillStyle = '#ecf0f1'; mCtx.fillRect(0,0,200,200); legendHTML = "<div><span style='color:#ecf0f1; font-size:14px;'>■</span> Ferrit (α) / Delta (δ)</div>"; }
+      else { mCtx.fillStyle = '#ecf0f1'; mCtx.fillRect(0,0,200,200); } 
+      
+      mCtx.strokeStyle = 'rgba(0,0,0,0.5)'; mCtx.lineWidth = 2;
+      for(let i=0; i<8; i++) { mCtx.beginPath(); mCtx.moveTo(Math.random()*200, 0); mCtx.lineTo(Math.random()*200, 200); mCtx.stroke(); mCtx.beginPath(); mCtx.moveTo(0, Math.random()*200); mCtx.lineTo(200, Math.random()*200); mCtx.stroke(); }
+      
+      if(type === 'hypo' || type === 'hyper') {
+        const numPearlite = Math.floor((frac / 100) * 15);
+        for(let i=0; i<numPearlite; i++) {
+          const cx = Math.random()*200, cy = Math.random()*200, r = 20 + Math.random()*20;
+          mCtx.save(); mCtx.beginPath(); mCtx.arc(cx, cy, r, 0, Math.PI*2); mCtx.clip();
+          mCtx.fillStyle = '#bdc3c7'; mCtx.fill(); mCtx.strokeStyle = '#2c3e50'; mCtx.lineWidth = 2;
+          for(let y=cy-r; y<cy+r; y+=4) { mCtx.beginPath(); mCtx.moveTo(cx-r, y); mCtx.lineTo(cx+r, y); mCtx.stroke(); }
+          mCtx.restore();
+        }
+        if(type === 'hypo') legendHTML = "<div><span style='color:#ecf0f1; font-size:14px;'>■</span> Proötektoid Ferrit</div><div><span style='color:#bdc3c7; font-size:14px;'>⏸</span> Perlit (α+Fe3C)</div>";
+        if(type === 'hyper') legendHTML = "<div><span style='color:#ecf0f1; font-size:14px;'>■</span> İkincil Karbür</div><div><span style='color:#bdc3c7; font-size:14px;'>⏸</span> Perlit (α+Fe3C)</div>";
+      }
+      
+      if(type === 'liquid_solid') {
+         mCtx.fillStyle = '#ff6b6b'; mCtx.fillRect(0,0,200,200); 
+         const numSolid = Math.floor((frac / 100) * 20); mCtx.fillStyle = '#f1c40f';
+         for(let i=0; i<numSolid; i++) { mCtx.beginPath(); mCtx.arc(Math.random()*200, Math.random()*200, 15+Math.random()*15, 0, Math.PI*2); mCtx.fill(); }
+         legendHTML = "<div><span style='color:#ff6b6b; font-size:14px;'>■</span> Sıvı (L) Matrisi</div><div><span style='color:#f1c40f; font-size:14px;'>●</span> Katı Faz</div>";
+      }
+      
+      if(type === 'aust_ferr') {
+         const numFerrite = Math.floor((100 - frac) / 100 * 20); mCtx.fillStyle = '#ecf0f1'; 
+         for(let i=0; i<numFerrite; i++) { mCtx.beginPath(); mCtx.arc(Math.random()*200, Math.random()*200, 15+Math.random()*10, 0, Math.PI*2); mCtx.fill(); mCtx.stroke(); }
+         legendHTML = "<div><span style='color:#f1c40f; font-size:14px;'>■</span> Östenit Matrisi</div><div><span style='color:#ecf0f1; font-size:14px;'>●</span> Ferrit (α) Taneleri</div>";
+      }
+
+      if(type === 'aust_cem') {
+         const numCem = Math.floor(frac / 100 * 20); mCtx.fillStyle = '#ecf0f1'; 
+         for(let i=0; i<numCem; i++) { mCtx.beginPath(); mCtx.arc(Math.random()*200, Math.random()*200, 10+Math.random()*5, 0, Math.PI*2); mCtx.fill(); mCtx.stroke(); }
+         legendHTML = "<div><span style='color:#f1c40f; font-size:14px;'>■</span> Östenit Matrisi</div><div><span style='color:#ecf0f1; font-size:14px;'>●</span> Karbür Çökeltisi</div>";
+      }
+
+      if(type === 'cast') {
+         legendHTML = "<div><span style='color:#ecf0f1; font-size:14px;'>■</span> Karbür (Sementit) Ağı</div><div><span style='color:#bdc3c7; font-size:14px;'>●</span> Dönüşmüş Yapı</div>";
+      }
+      
+      document.getElementById('microLegend').innerHTML = legendHTML;
+      document.getElementById('microDesc').textContent = type === 'none' ? "Temsili Mikroyapı" : "Mikroyapı Analizi";
+    }
+
+    function handleInteract(e) {
+      if (e.type === 'touchmove') e.preventDefault();
+      const rect = canvas.getBoundingClientRect(); 
+      const cx = e.touches ? e.touches[0].clientX : e.clientX; 
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      const x = cx - rect.left; 
+      const y = cy - rect.top;
+      
+      if(x < PAD.left || x > W() - PAD.right || y < PAD.top || y > H() - PAD.bottom) return;
+      
+      currentC = xToC(x); currentT = yToT(y);
+      document.getElementById('inCarb').value = currentC.toFixed(2); document.getElementById('inTemp').value = Math.round(currentT);
+      
+      checkRadar(); analyze(currentC, currentT); draw();
+    }
+    
+    canvas.addEventListener('mousemove', handleInteract); canvas.addEventListener('touchmove', handleInteract, {passive: false});
+    
+    updateAlloys(); setTimeout(resize, 100);
+  </script>
+</body>
+</html>
+"""
+
+
+
